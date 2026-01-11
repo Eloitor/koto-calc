@@ -37,23 +37,16 @@ impl NN {
     pub fn factor(&self) -> KValue {
         match self.0.clone().factor() {
             Some(factors) => {
-                let mut koto_factors = Vec::new();
-                for (prime, exp) in factors {
-                    // Create NN objects for prime and exponent
-                    let prime_obj = KObject::from(NN(prime));
-                    let exp_obj = KObject::from(NN(exp));
+                let koto_factors: Vec<KValue> = factors
+                    .into_iter()
+                    .map(|(prime, exp)| {
+                        let prime_val = KValue::Object(KObject::from(NN(prime)));
+                        let exp_val = KValue::Object(KObject::from(NN(exp)));
+                        KValue::Tuple(vec![prime_val, exp_val].into())
+                    })
+                    .collect();
 
-                    let prime_val = KValue::Object(prime_obj);
-                    let exp_val = KValue::Object(exp_obj);
-                    let tuple = KValue::Tuple(vec![prime_val, exp_val].into());
-                    koto_factors.push(tuple);
-                }
-                // Create KList from Vec<KValue>
-                let mut list = KList::default();
-                for item in koto_factors {
-                    list.data_mut().push(item);
-                }
-                KValue::List(list)
+                KValue::List(KList::with_data(koto_factors.into()))
             }
             None => KValue::Null,
         }
