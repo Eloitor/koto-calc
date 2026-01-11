@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-algebraeon = "0.0.14"
-algebraeon-rings = "0.0.14"
+algebraeon = "0.0.15"
+algebraeon-rings = "0.0.15"
 koto = "0.16.0"
 koto_derive = "0.16.0"
 koto_runtime = "0.16.0"
