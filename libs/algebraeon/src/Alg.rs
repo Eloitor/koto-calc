@@ -4,7 +4,12 @@ use koto_runtime::{Result, derive::*, prelude::*};
 
 use algebraeon::nzq::{Integer, Natural, Rational};
 use algebraeon::nzq::traits::Fraction;
+use algebraeon::sets::structure::MetaType;
 use algebraeon_rings::isolated_algebraic::RealAlgebraic;
+use algebraeon_rings::structure::{
+    AdditiveGroupSignature, AdditionSignature, MultiplicationSignature,
+    PositiveRealNthRootSignature, TryReciprocalSignature,
+};
 
 /// A real algebraic number: either a rational number or an isolated real
 /// root of a polynomial with integer coefficients (algebraeon 0.0.17,
@@ -19,10 +24,10 @@ use algebraeon_rings::isolated_algebraic::RealAlgebraic;
 /// intervals until the roots can be decided to be equal or different
 /// (`cmp_mut`/`cmp_rat_mut` of algebraeon).
 ///
-/// Arithmetic between algebraic numbers is NOT exposed in this wrapper:
-/// algebraeon implements it through `RealAlgebraicStructure` (sum/product
-/// polynomials + root identification), but the scope of this bead is
-/// construction, comparison, refinement and decimal approximation.
+/// Arithmetic between algebraic numbers is exact: `RealAlgebraicStructure`
+/// computes the sum/product polynomials and identifies the resulting root,
+/// and `try_reciprocal` handles division (with a clear error for a zero
+/// divisor).
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
 pub struct Alg(pub RealAlgebraic);
 
@@ -189,9 +194,71 @@ impl Alg {
             }
         }
     }
+
+    /// The (positive) square root of a non-negative algebraic number, e.g.
+    /// Alg(Poly([-2, 0, 1]))[1].sqrt() = sqrt(sqrt(2)) ~ 1.1892. Errors for
+    /// negative values.
+    #[koto_method]
+    pub fn sqrt(&self) -> Result<KValue> {
+        match RealAlgebraic::structure().square_root(&self.0) {
+            Ok(root) => Ok(KValue::Object(KObject::from(Alg(root)))),
+            Err(()) => runtime_error!("Alg.sqrt() requires a non-negative value"),
+        }
+    }
 }
 
 impl KotoObject for Alg {
+    fn add(&self, other: &KValue) -> Result<KValue> {
+        let rhs = Self::alg_from_value(other)?;
+        Ok(KValue::Object(KObject::from(Alg(
+            RealAlgebraic::structure().add(&self.0, &rhs.0),
+        ))))
+    }
+
+    fn subtract(&self, other: &KValue) -> Result<KValue> {
+        let rhs = Self::alg_from_value(other)?;
+        Ok(KValue::Object(KObject::from(Alg(
+            RealAlgebraic::structure().sub(&self.0, &rhs.0),
+        ))))
+    }
+
+    fn multiply(&self, other: &KValue) -> Result<KValue> {
+        let rhs = Self::alg_from_value(other)?;
+        Ok(KValue::Object(KObject::from(Alg(
+            RealAlgebraic::structure().mul(&self.0, &rhs.0),
+        ))))
+    }
+
+    fn divide(&self, other: &KValue) -> Result<KValue> {
+        let rhs = Self::alg_from_value(other)?;
+        let structure = RealAlgebraic::structure();
+        match structure.try_reciprocal(&rhs.0) {
+            Some(inv) => Ok(KValue::Object(KObject::from(Alg(
+                structure.mul(&self.0, &inv),
+            )))),
+            None => runtime_error!("division by zero"),
+        }
+    }
+
+    fn divide_rhs(&self, other: &KValue) -> Result<KValue> {
+        // other / self = other * self^-1 (the field is commutative).
+        // This makes `1 / sqrt2` (object on the RHS) compute the inverse.
+        let lhs = Self::alg_from_value(other)?;
+        let structure = RealAlgebraic::structure();
+        match structure.try_reciprocal(&self.0) {
+            Some(inv) => Ok(KValue::Object(KObject::from(Alg(
+                structure.mul(&lhs.0, &inv),
+            )))),
+            None => runtime_error!("division by zero"),
+        }
+    }
+
+    fn negate(&self) -> Result<KValue> {
+        Ok(KValue::Object(KObject::from(Alg(
+            RealAlgebraic::structure().neg(&self.0),
+        ))))
+    }
+
     fn equal(&self, other: &KValue) -> Result<bool> {
         let other = Self::alg_from_value(other)?;
         Ok(self.0.clone().cmp_mut(&mut other.0.clone()).is_eq())

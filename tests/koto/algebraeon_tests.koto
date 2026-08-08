@@ -947,5 +947,100 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, lege
   assert_eq caught, 'caught'
 
 
+@test alg_arith_tests = ||
+  write 'Testing Alg arithmetic \t'
+
+  sqrt2 = Alg(Poly([-2, 0, 1]))[1]      # sqrt(2) ~ 1.41421
+  sqrt3 = Alg(Poly([-3, 0, 1]))[1]      # sqrt(3) ~ 1.73205
+  sqrt6 = Alg(Poly([-6, 0, 1]))[1]      # sqrt(6) ~ 2.44949
+
+  # Suma de dues arrels: sqrt2 + sqrt3 ~ 3.14626, min_poly x^4 - 10x^2 + 1
+  s = sqrt2 + sqrt3
+  assert s > 3.14
+  assert s < 3.15
+  assert_eq s.min_poly(), Poly([1, 0, -10, 0, 1])
+  assert_eq s.cmp(sqrt2 + sqrt3), 0
+
+  # Resta: sqrt3 - sqrt2 ~ 0.31784
+  d = sqrt3 - sqrt2
+  assert d > 0.31
+  assert d < 0.32
+
+  # Producte: sqrt2 * sqrt3 = sqrt6 (exacte)
+  p = sqrt2 * sqrt3
+  assert p > 2.44
+  assert p < 2.45
+  assert_eq p.min_poly(), Poly([-6, 0, 1])
+  assert_eq p.cmp(sqrt6), 0
+
+  # Divisio exacta: sqrt6 / sqrt3 = sqrt2; sqrt2 / sqrt2 = 1
+  q = sqrt6 / sqrt3
+  assert_eq q.cmp(sqrt2), 0
+  assert_eq (sqrt2 / sqrt2).cmp(Q(1)), 0
+
+  # Invers (objecte a la dreta): 1 / sqrt2 = sqrt2 / 2 ~ 0.70711
+  inv = 1 / sqrt2
+  assert inv > 0.707
+  assert inv < 0.708
+  assert_eq (inv * sqrt2).cmp(Q(1)), 0
+
+  # Negacio
+  assert_eq (-sqrt2).cmp(sqrt2), -1
+  assert_eq ((-sqrt2) + sqrt2).cmp(Q(0)), 0
+
+  # Operacions amb escalars Q / ZZ / NN / Number
+  # sqrt2 + Q(1): min_poly (x-1)^2 - 2 = x^2 - 2x - 1
+  s1 = sqrt2 + Q(1)
+  assert s1 > 2.41
+  assert s1 < 2.42
+  assert_eq s1.min_poly(), Poly([-1, -2, 1])
+  # sqrt2 * 2 = sqrt(8)
+  m2 = sqrt2 * 2
+  assert m2 > 2.82
+  assert m2 < 2.83
+  assert_eq m2.min_poly(), Poly([-8, 0, 1])
+  # sqrt2 - Q(1, 2) ~ 0.91421
+  r1 = sqrt2 - Q(1, 2)
+  assert r1 > 0.91
+  assert r1 < 0.92
+  # sqrt2 / 2 ~ 0.70711
+  dv = sqrt2 / 2
+  assert dv > 0.707
+  assert dv < 0.708
+  assert_eq dv.cmp(inv), 0
+  # sqrt2 + 1 (Number) i amb ZZ / NN
+  assert_eq (sqrt2 + 1).cmp(sqrt2 + Q(1)), 0
+  assert_eq (sqrt2 * ZZ(2)).cmp(m2), 0
+  assert_eq (sqrt2 * NN(3)).cmp(sqrt2 * 3), 0
+
+  # Arrel quadrada: sqrt(sqrt(2)) = 2^(1/4) ~ 1.18921
+  r = sqrt2.sqrt()
+  assert r > 1.18
+  assert r < 1.19
+  assert_eq (r * r).cmp(sqrt2), 0
+
+  # Errors: divisio per zero i arrel de negatiu
+  caught = try
+    sqrt2 / 0
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    sqrt2 / Q(0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    1 / Alg(Poly([0, 1]))[0]  # invers de zero (Alg a la dreta)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    (-sqrt2).sqrt()
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
 @main = ||
   print 'Algebraeon Koto tests passed'
