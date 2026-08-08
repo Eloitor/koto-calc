@@ -5,6 +5,11 @@
 - [CLI](./cli.md)
 - [Language Guide](./language_guide.md)
 
+# Algebraeon — Exact Algebra
+
+- [Algebraeon Overview](./algebraeon.md)
+- [Full Reference](./libs/algebraeon.md)
+
 # Core Library
 
 - [io](./core_lib/io.md)
@@ -21,7 +26,6 @@
 
 # Libraries
 
-- [algebraeon](./libs/algebraeon.md)
 - [color](./libs/color.md)
 - [geometry](./libs/geometry.md)
 - [json](./libs/json.md)
