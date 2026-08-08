@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -1281,6 +1281,113 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm
   assert_eq caught, 'caught'
   caught = try
     c4.order(9)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test complex_tests = ||
+  write 'Testing ComplexAlg \t'
+
+  i = ComplexAlg.i()
+  # unitat imaginaria: i^2 = -1, parts real/imag, conjugat, min_poly, grau
+  assert_eq '{i}', 'i'
+  assert_eq (i * i).real().cmp(Q(-1)), 0
+  assert_eq (i * i).imag().cmp(Q(0)), 0
+  assert_eq i.real().cmp(Q(0)), 0
+  assert_eq i.imag().cmp(Q(1)), 0
+  assert_eq i.conjugate().real().cmp(Q(0)), 0
+  assert_eq i.conjugate().imag().cmp(Q(-1)), 0
+  assert_eq i.min_poly(), Poly([1, 0, 1])
+  assert_eq i.degree(), NN(2)
+
+  # arrels de x^2 + 1 = i i -i (ordre [-i, i] d'algebraeon)
+  roots = ComplexAlg(Poly([1, 0, 1]))
+  assert_eq size(roots), 2
+  assert roots[0] == -i or roots[1] == -i
+  assert roots[0] == i or roots[1] == i
+
+  # construccio a + b i
+  z1 = ComplexAlg(Q(1), Q(2))
+  z2 = ComplexAlg(Q(3), Q(-4))
+  assert_eq z1.real().cmp(Q(1)), 0
+  assert_eq z1.imag().cmp(Q(2)), 0
+  # suma: (1+2i)+(3-4i) = 4 - 2i
+  s = z1 + z2
+  assert_eq s.real().cmp(Q(4)), 0
+  assert_eq s.imag().cmp(Q(-2)), 0
+  # producte: (1+2i)(3-4i) = 11 + 2i
+  p = z1 * z2
+  assert_eq p.real().cmp(Q(11)), 0
+  assert_eq p.imag().cmp(Q(2)), 0
+  # divisio: (1+2i)/(3-4i) = -1/5 + (2/5)i
+  d = z1 / z2
+  assert_eq d.real().cmp(Q(-1, 5)), 0
+  assert_eq d.imag().cmp(Q(2, 5)), 0
+  # conjugat i (a+bi)(a-bi) = a^2 + b^2
+  assert_eq z1.conjugate().real().cmp(Q(1)), 0
+  assert_eq z1.conjugate().imag().cmp(Q(-2)), 0
+  assert_eq (z1 * z1.conjugate()).real().cmp(Q(5)), 0
+  assert_eq (z1 * z1.conjugate()).imag().cmp(Q(0)), 0
+  # invers: 1/(1+2i) = 1/5 - (2/5)i
+  inv = 1 / z1
+  assert_eq inv.real().cmp(Q(1, 5)), 0
+  assert_eq inv.imag().cmp(Q(-2, 5)), 0
+  assert_eq (inv * z1).real().cmp(Q(1)), 0
+  assert_eq (inv * z1).imag().cmp(Q(0)), 0
+  # negacio i operacions amb escalars
+  assert_eq (-z1).real().cmp(Q(-1)), 0
+  assert_eq (-z1).imag().cmp(Q(-2)), 0
+  assert_eq (z1 + 1).real().cmp(Q(2)), 0
+  assert_eq (z1 + 1).imag().cmp(Q(2)), 0
+  assert_eq (z1 - Q(1)).real().cmp(Q(0)), 0
+  assert_eq (z1 * Q(2)).real().cmp(Q(2)), 0
+  assert_eq (z1 * Q(2)).imag().cmp(Q(4)), 0
+  assert_eq (z1 / 2).real().cmp(Q(1, 2)), 0
+  assert_eq (z1 / 2).imag().cmp(Q(1)), 0
+
+  # arrels de x^3 - 1: 1 i (-1 ± i sqrt(3))/2
+  cb = ComplexAlg(Poly([-1, 0, 0, 1]))
+  assert_eq size(cb), 3
+  assert_eq cb[0].real().cmp(Q(1)), 0
+  assert_eq cb[0].imag().cmp(Q(0)), 0
+  # la parella complexa te part real -1/2 i part imaginaria sqrt(3)/2 (exacta)
+  assert_eq cb[2].real().cmp(Q(-1, 2)), 0
+  assert_eq cb[2].imag().cmp(Alg(Poly([-3, 0, 4]))[1]), 0
+  # la parella complexa es conjugada
+  assert cb[1].conjugate() == cb[2]
+
+  # min_poly i grau
+  assert_eq z1.min_poly(), Poly([5, -2, 1])   # (x-1)^2 + 4 = x^2 - 2x + 5
+  assert_eq z1.degree(), NN(2)
+  assert_eq ComplexAlg(Q(7)).degree(), NN(1)
+  assert_eq ComplexAlg(Q(0)).real().cmp(Q(0)), 0
+
+  # to_float: parell [real, imag]
+  tf = i.to_float()
+  assert tf[0] > -0.000000001 and tf[0] < 0.000000001
+  assert tf[1] > 0.999999999 and tf[1] < 1.000000001
+  tf2 = z2.to_float()
+  assert tf2[0] > 2.999999999 and tf2[0] < 3.000000001
+  assert tf2[1] > -4.000000001 and tf2[1] < -3.999999999
+
+  # display a + b i amb decimals, o exacte quan es racional
+  assert_eq '{ComplexAlg(Q(0), Q(1))}', 'i'
+  assert_eq '{ComplexAlg(Q(0), Q(-1))}', '-i'
+  assert_eq '{z1}', '1 + 2i'
+  assert_eq '{ComplexAlg(Q(1), Q(-1))}', '1 - 1i'
+  assert_eq '{ComplexAlg(Q(5), Q(0))}', '5'
+  assert_eq '{ComplexAlg(Q(1, 2), Q(0))}', '1/2'
+  assert_eq '{ComplexAlg(Q(0), Q(0))}', '0'
+
+  # errors: divisio per zero
+  caught = try
+    z1 / 0
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    1 / ComplexAlg(Q(0))
   catch e
     'caught'
   assert_eq caught, 'caught'

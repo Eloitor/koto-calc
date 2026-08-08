@@ -1,5 +1,6 @@
 mod Alg;
 mod CF;
+mod ComplexAlg;
 mod FF;
 mod Group;
 mod Ideal;
@@ -152,6 +153,27 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Alg", alg);
+
+    let mut complex_alg = KMap::default();
+
+    complex_alg.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| ComplexAlg::ComplexAlg::from_args(ctx.args())).into(),
+    );
+
+    complex_alg.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("ComplexAlg".into())).into(),
+    );
+
+    complex_alg.add_fn("i", |_ctx| {
+        Ok(KValue::Object(KObject::from(ComplexAlg::ComplexAlg(
+            algebraeon_rings::isolated_algebraic::ComplexAlgebraic::i(),
+        ))))
+    });
+
+    result.insert("ComplexAlg", complex_alg);
+
 
     let mut ideal = KMap::default();
 
