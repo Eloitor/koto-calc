@@ -2,6 +2,7 @@ mod Mat;
 mod NN;
 mod Poly;
 mod Q;
+mod Quat;
 mod ZZ;
 use koto_runtime::prelude::*;
 
@@ -114,6 +115,20 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Mat", mat);
+
+    let mut quat = KMap::default();
+
+    quat.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| Quat::Quat::from_args(ctx.args())).into(),
+    );
+
+    quat.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Quat".into())).into(),
+    );
+
+    result.insert("Quat", quat);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {

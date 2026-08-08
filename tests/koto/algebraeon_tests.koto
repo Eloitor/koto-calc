@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat
 
 @post_test = ||
   print 'ok'
@@ -350,6 +350,105 @@ from algebraeon import NN, ZZ, Q, Mat, Poly
   assert_eq caught, 'caught'
   caught = try
     mq.lll()
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test quat_tests = ||
+  write 'Testing Quat \t'
+
+  # Construccio: 4 coeficients Q (Number/NN/ZZ promocionats a Q)
+  assert_eq Quat(1, 2, 3, 4).coeffs(), (Q(1), Q(2), Q(3), Q(4))
+  assert_eq Quat(Q(1, 2), 2, 3, 4).coeffs(), (Q(1, 2), Q(2), Q(3), Q(4))
+  assert_eq Quat(1, 2, 3, 4), Quat(Q(1), Q(2), Q(3), Q(4))
+  assert Quat(1, 2, 3, 4) != Quat(1, 2, 3, 5)
+  assert_eq Quat(0, 0, 0, 0), Quat(0, 0, 0, Q(0))
+
+  # Suma i resta
+  q = Quat(1, 2, 3, 4)
+  assert_eq q + Quat(1, -2, -3, -4), Quat(2, 0, 0, 0)
+  assert_eq q - Quat(1, -2, -3, -4), Quat(0, 4, 6, 8)
+  assert_eq q + 1, Quat(2, 2, 3, 4)
+  assert_eq 1 + q, Quat(2, 2, 3, 4)
+  assert_eq q - Q(1, 2), Quat(Q(1, 2), 2, 3, 4)
+  assert_eq 1 - q, Quat(0, -2, -3, -4)
+
+  # Multiplicacio per escalar
+  assert_eq q * 2, Quat(2, 4, 6, 8)
+  assert_eq 2 * q, Quat(2, 4, 6, 8)
+  assert_eq q * Q(1, 2), Quat(Q(1, 2), 1, Q(3, 2), 2)
+
+  # Regles de Hamilton: i^2 = j^2 = k^2 = ijk = -1, i*j = k, j*i = -k
+  i = Quat(0, 1, 0, 0)
+  j = Quat(0, 0, 1, 0)
+  k = Quat(0, 0, 0, 1)
+  assert_eq i * i, Quat(-1, 0, 0, 0)
+  assert_eq j * j, Quat(-1, 0, 0, 0)
+  assert_eq k * k, Quat(-1, 0, 0, 0)
+  assert_eq i * j, k
+  assert_eq j * i, -k
+  assert_eq j * k, i
+  assert_eq k * j, -i
+  assert_eq k * i, j
+  assert_eq i * k, -j
+  # Associativitat: (i*j)*k = i*(j*k) = -1
+  assert_eq (i * j) * k, Quat(-1, 0, 0, 0)
+  assert_eq i * (j * k), Quat(-1, 0, 0, 0)
+
+  # Exemples coneguts (verificats contra la definicio)
+  assert_eq Quat(1, 2, 0, 0) * Quat(3, 4, 0, 0), Quat(-5, 10, 0, 0)
+  assert_eq Quat(1, 1, 0, 0) * Quat(2, 0, 1, 0), Quat(2, 2, 1, 1)
+  assert_eq Quat(2, 0, 1, 0) * Quat(1, 1, 0, 0), Quat(2, 2, 1, -1)
+  # No commutativa
+  assert Quat(1, 1, 0, 0) * Quat(2, 0, 1, 0) != Quat(2, 0, 1, 0) * Quat(1, 1, 0, 0)
+  # (1+i)(1-i) = 2
+  assert_eq Quat(1, 1, 0, 0) * Quat(1, -1, 0, 0), Quat(2, 0, 0, 0)
+  # q * conj(q) = norma
+  assert_eq q * q.conjugate(), Quat(30, 0, 0, 0)
+  # Casos amb termes creuats j/k i i/k (regressio del signe de la
+  # multiplicacio; (1+j)(1+k) = 1 + i + j + k)
+  assert_eq Quat(1, 0, 1, 0) * Quat(1, 0, 0, 1), Quat(1, 1, 1, 1)
+  assert_eq Quat(1, 2, 3, 4) * Quat(5, 6, 7, 8), Quat(-60, 12, 30, 24)
+
+  # Conjugacio, norma reduida i traca reduida
+  assert_eq q.conjugate(), Quat(1, -2, -3, -4)
+  assert_eq q.conjugate().conjugate(), q
+  assert_eq q.norm(), Q(30)
+  assert_eq i.norm(), Q(1)
+  assert_eq Quat(3, -4, 0, 0).norm(), Q(25)
+  assert_eq Quat(0, 0, 0, 0).norm(), Q(0)
+  assert_eq q.trace(), Q(2)
+  assert_eq Quat(3, -4, 0, 0).trace(), Q(6)
+  assert_eq i.trace(), Q(0)
+  assert_eq q.norm(), q.conjugate().norm()
+
+  # coeffs i to_float
+  assert_eq Quat(1, 2, 3, 4).to_float(), (1.0, 2.0, 3.0, 4.0)
+  assert_eq Quat(Q(1, 2), 0, 0, 0).to_float(), (0.5, 0.0, 0.0, 0.0)
+
+  # Display: signes correctes i fraccions reduides
+  assert_eq '{Quat(1, 2, -3, Q(1, 2))}', '1 + 2i - 3j + (1/2)k'
+  assert_eq '{Quat(0, 1, 0, 0)}', 'i'
+  assert_eq '{Quat(0, 0, 0, 0)}', '0'
+  assert_eq '{Quat(-1, 0, 0, 0)}', '-1'
+  assert_eq '{Quat(1, -2, 0, 0)}', '1 - 2i'
+  assert_eq '{Quat(0, 0, 1, -1)}', 'j - k'
+  assert_eq '{Quat(Q(1, 3), 0, 0, Q(-2, 3))}', '1/3 - (2/3)k'
+
+  # Errors: arguments incorrectes
+  caught = try
+    Quat(1, 2)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Quat(1, 2, 3, 4, 5)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Quat('a', 2, 3, 4)
   catch e
     'caught'
   assert_eq caught, 'caught'
