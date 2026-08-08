@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ
+from algebraeon import NN, ZZ, Q
 
 @post_test = ||
   print 'ok'
@@ -85,6 +85,95 @@ from algebraeon import NN, ZZ
   assert_eq ZZ(-13).mod(ZZ(5)), ZZ(2)
   assert_eq ZZ(4).mod(ZZ(3)), ZZ(1)
   assert_eq ZZ(-4).mod(ZZ(3)), ZZ(2)
+
+
+@test q_tests = ||
+  write 'Testing Q \t'
+
+  # Constructor i reduccio
+  assert_eq Q(6, 4), Q(3, 2)
+  assert_eq Q(-2, -4), Q(1, 2)
+  assert_eq Q(0, 5), Q(0, 1)
+  assert_eq Q(NN(1), NN(2)), Q(1, 2)
+  assert_eq Q(ZZ(-1), ZZ(2)), Q(-1, 2)
+  assert_eq Q(Q(1, 2)), Q(1, 2)
+  assert_eq Q(0.5), Q(1, 2)
+  assert_eq Q(2), Q(2, 1)
+
+  # Aritmetica amb Q, NN, ZZ i Number
+  assert_eq Q(1, 2) + Q(1, 3), Q(5, 6)
+  assert_eq Q(1, 2) - Q(1, 4), Q(1, 4)
+  assert_eq Q(2, 3) * Q(3, 4), Q(1, 2)
+  assert_eq Q(1, 2) / Q(3, 4), Q(2, 3)
+  assert_eq Q(1, 2) + 1, Q(3, 2)
+  assert_eq Q(1, 2) + NN(1), Q(3, 2)
+  assert_eq Q(1, 2) + ZZ(1), Q(3, 2)
+  assert_eq Q(1, 2) * 4, Q(2)
+  assert_eq Q(1, 2) / ZZ(2), Q(1, 4)
+  assert_eq -Q(1, 2), Q(-1, 2)
+
+  # Assignacio += -= *= /=
+  a = Q(1, 2)
+  a += Q(1, 4)
+  a *= 2
+  a -= NN(1)
+  a /= ZZ(4)
+  assert_eq a, Q(1, 8)
+
+  # Comparacions (amb Q i Number)
+  assert Q(1, 2) < Q(3, 4)
+  assert Q(3, 4) > Q(1, 2)
+  assert Q(1, 2) <= Q(1, 2)
+  assert Q(1, 2) >= Q(1, 2)
+  assert Q(1, 2) != Q(2, 3)
+  assert_eq Q(1, 2) == 0.5, true
+  assert Q(1, 2) < 1
+  assert Q(3, 2) > 1.25
+
+  # Metodes num/den/is_integer/is_square/sqrt_if_square/height/to_float
+  assert_eq Q(3, 2).num(), ZZ(3)
+  assert_eq Q(-3, 2).num(), ZZ(-3)
+  assert_eq Q(3, 2).den(), NN(2)
+  assert_eq Q(3).den(), NN(1)
+  assert Q(4, 2).is_integer()
+  assert not Q(3, 2).is_integer()
+  assert Q(4, 9).is_square()
+  assert not Q(2, 3).is_square()
+  assert_eq Q(4, 9).sqrt_if_square(), Q(2, 3)
+  assert_eq Q(2, 3).sqrt_if_square(), null
+  assert_eq Q(3, 2).height(), NN(3)
+  assert_eq Q(-2, 5).height(), NN(5)
+  assert_eq Q(3, 2).to_float(), 1.5
+  assert_eq Q(-7, 4).to_float(), -1.75
+
+  # Conversions Q -> ZZ / NN
+  assert_eq Q(3).to_zz(), ZZ(3)
+  assert_eq Q(4, 2).to_zz(), ZZ(2)
+  assert_eq Q(4, 2).to_nn(), NN(2)
+  assert_eq Q(0).to_nn(), NN(0)
+
+  # Display: fraccio reduida num/den, i nomes num si den == 1
+  assert_eq '{Q(6, 4)}', '3/2'
+  assert_eq '{Q(-1, 2)}', '-1/2'
+  assert_eq '{Q(3)}', '3'
+  assert_eq '{Q(0, 5)}', '0'
+
+  # Errors: denominador zero i divisio per zero
+  caught = try
+    Q(1, 0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Q(1, 2) / 0
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Q(1, 2) / Q(0, 3)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
 
 
 @main = ||
