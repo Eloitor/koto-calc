@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8880774b.js";
+            window.path_to_searchindex_js = "searchindex-c400e9fc.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a681759e.js"></script>
+        <script src="toc-c548091b.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -176,16 +176,30 @@
                     <main>
                         <h1 id="koto-calc-documentation"><a class="header" href="#koto-calc-documentation">koto-calc Documentation</a></h1>
 <p>koto-calc is an interactive calculator and REPL built on the Koto language,
-extended with an algebraic types module (algebraeon) for exact arithmetic.</p>
+extended with Algebraeon for exact arithmetic and symbolic computation.</p>
+<h2 id="algebraeon-exact-algebra-no-rounding"><a class="header" href="#algebraeon-exact-algebra-no-rounding">Algebraeon: exact algebra, no rounding</a></h2>
+<blockquote>
+<p>Factor arbitrary-precision integers, keep rational results as fractions,
+isolate exact algebraic roots, and compute with polynomials, matrices,
+finite fields, groups, quaternions, and more. Start with the
+<strong><a href="./algebraeon.html">Algebraeon Overview</a></strong>, then use the
+<strong><a href="./libs/algebraeon.html">Full Reference</a></strong> for the complete API.</p>
+</blockquote>
 <h2 id="sections"><a class="header" href="#sections">Sections</a></h2>
 <ul>
 <li><a href="./about.html">About koto-calc</a> — Project overview, features, and current state</li>
+<li><a href="./cli.html">CLI Reference</a> — Command-line interface reference</li>
 <li><a href="./language_guide.html">Language Guide</a> — The Koto language</li>
+<li><strong>Algebraeon — Exact Algebra</strong>
+<ul>
+<li><a href="./algebraeon.html">Overview</a> — Why exact algebra matters and a quick tour</li>
+<li><a href="./libs/algebraeon.html">Full Reference</a> — Detailed API and validated examples</li>
+</ul>
+</li>
 <li><a href="./core_lib/">Core Library</a> — Standard library modules (io, iterator, koto,
 list, map, number, os, range, string, test, tuple)</li>
-<li><a href="./libs/">Library Modules</a> — Extra modules: algebraeon, color, geometry,
-json, random, regex, tempfile, toml, yaml</li>
-<li><a href="./cli.html">CLI Reference</a> — Command-line interface reference</li>
+<li><a href="./libs/">Library Modules</a> — Extra modules: color, geometry, json, random,
+regex, tempfile, toml, yaml</li>
 </ul>
 <h2 id="code-examples"><a class="header" href="#code-examples">Code Examples</a></h2>
 <h3 id="print-and-check"><a class="header" href="#print-and-check"><code>print!</code> and <code>check!</code></a></h3>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>list - koto-calc</title>
+        <title>Algebraeon Overview - koto-calc</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
-        <link rel="stylesheet" href="../css/variables-8adf115d.css">
-        <link rel="stylesheet" href="../css/general-e96d0476.css">
-        <link rel="stylesheet" href="../css/chrome-d279d366.css">
-        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-c400e9fc.js";
+            window.path_to_searchindex_js = "searchindex-c400e9fc.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-c548091b.js"></script>
+        <script src="toc-c548091b.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -105,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -140,7 +140,7 @@
                     <h1 class="menu-title">koto-calc</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -174,341 +174,120 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="list"><a class="header" href="#list">list</a></h1>
-<p>Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.</p>
-<h2 id="clear"><a class="header" href="#clear">clear</a></h2>
-<pre><code class="language-kototype">|List| -&gt; List
+                        <h1 id="algebraeon--exact-algebra"><a class="header" href="#algebraeon--exact-algebra">Algebraeon — Exact Algebra</a></h1>
+<p>Algebraeon is koto-calc’s exact-algebra toolkit. It keeps mathematical values
+as integers, reduced fractions, algebraic roots, and symbolic structures rather
+than silently rounding them to floating-point approximations. That means you
+can factor large integers, compare algebraic numbers, invert rational matrices,
+and calculate in finite fields without losing information.</p>
+<blockquote>
+<p><strong>Start here, then go deeper:</strong> the <a href="./libs/algebraeon.html">Full Reference</a>
+documents every available constructor, method, and module-level function.</p>
+</blockquote>
+<p>Import the types you need from the built-in <code>algebraeon</code> module:</p>
+<pre><code class="language-koto">from algebraeon import Q, Poly, Mat, Alg
 </code></pre>
-<p>Clears the list by removing all of its elements, and returns the cleared list.</p>
-<h3 id="example"><a class="header" href="#example">Example</a></h3>
-<pre><code class="language-koto">x = [1, 2, 3]
-print! x.clear()
-check! []
-</code></pre>
-<h2 id="contains"><a class="header" href="#contains">contains</a></h2>
-<pre><code class="language-kototype">|List, value: Any| -&gt; Bool
-</code></pre>
-<p>Returns <code>true</code> if the list contains an element that matches the input <code>value</code>.</p>
-<p>Matching is performed with the <code>==</code> equality operator.</p>
-<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
-<pre><code class="language-koto">print! [1, 'hello', (99, -1)].contains 'hello'
-check! true
-</code></pre>
-<h2 id="extend"><a class="header" href="#extend">extend</a></h2>
-<pre><code class="language-kototype">|List, new_elements: Iterable| -&gt; List
-</code></pre>
-<p>Extends the list with the output of the iterator, and returns the list.</p>
-<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
-<pre><code class="language-koto">x = [1, 2, 3]
-print! x.extend 'abc'
-check! [1, 2, 3, 'a', 'b', 'c']
-print! x.last()
-check! c
-print! x.extend [10, 20, 30]
-check! [1, 2, 3, 'a', 'b', 'c', 10, 20, 30]
-print! x.last()
-check! 30
-</code></pre>
-<h3 id="see-also"><a class="header" href="#see-also">See also</a></h3>
-<ul>
-<li><a href="#push"><code>list.push</code></a></li>
-</ul>
-<h2 id="fill"><a class="header" href="#fill">fill</a></h2>
-<pre><code class="language-kototype">|List, value: Any| -&gt; List
-</code></pre>
-<p>Fills the list with copies of the provided value, and returns the list.</p>
-<h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
-<pre><code class="language-koto">x = [1, 2, 3]
-print! x.fill 99
-check! [99, 99, 99]
-print! x
-check! [99, 99, 99]
-</code></pre>
-<h2 id="first"><a class="header" href="#first">first</a></h2>
-<pre><code class="language-kototype">|List| -&gt; Any?
-</code></pre>
-<p>Returns the first value in the list, or <code>null</code> if the list is empty.</p>
-<h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
-<pre><code class="language-koto">print! [99, -1, 42].first()
-check! 99
+<h2 id="the-exact-algebra-toolbox"><a class="header" href="#the-exact-algebra-toolbox">The exact-algebra toolbox</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Type or family</th><th>What it does</th></tr>
+</thead>
+<tbody>
+<tr><td><code>NN</code></td><td>Arbitrary-precision natural numbers, with primes, factorization, divisors, and combinatorics.</td></tr>
+<tr><td><code>ZZ</code></td><td>Arbitrary-precision signed integers and integer number theory.</td></tr>
+<tr><td><code>Q</code></td><td>Reduced rational numbers, so values such as <code>1/3</code> stay exact.</td></tr>
+<tr><td><code>QSqrt</code></td><td>Elements of quadratic fields <code>Q(sqrt(d))</code>, including exact conjugates, norms, and inverses.</td></tr>
+<tr><td><code>Alg</code></td><td>Exact real algebraic numbers represented as isolated roots of polynomials.</td></tr>
+<tr><td><code>ComplexAlg</code></td><td>Exact complex algebraic numbers, including polynomial roots and the imaginary unit.</td></tr>
+<tr><td><code>CF</code></td><td>Finite and periodic continued fractions, convergents, and exact rational values.</td></tr>
+<tr><td><code>FF</code></td><td>Prime and extension finite fields <code>GF(p^k)</code> with exact field arithmetic.</td></tr>
+<tr><td><code>Ideal</code> / <code>ZZn</code></td><td>Ideals of the integers and residue rings such as <code>Z/12Z</code>.</td></tr>
+<tr><td><code>Poly</code></td><td>Univariate polynomials over <code>ZZ</code> or <code>Q</code>, with evaluation, gcd, derivatives, and factorization.</td></tr>
+<tr><td><code>MultiPoly</code></td><td>Symbolic multivariate integer polynomials with evaluation and symmetric-polynomial tools.</td></tr>
+<tr><td><code>PolyQuot</code></td><td>Exact number fields presented as quotient rings <code>Q[x]/(f)</code>.</td></tr>
+<tr><td><code>Mat</code></td><td>Integer and rational matrices with determinants, exact inverses, and LLL reduction.</td></tr>
+<tr><td><code>Perm</code></td><td>Permutations with composition, inverses, signs, and cycle decomposition.</td></tr>
+<tr><td><code>Group</code></td><td>Finite groups represented by multiplication tables, with standard constructors.</td></tr>
+<tr><td><code>Quat</code></td><td>Hamilton quaternions over the rationals, with conjugate, norm, and inverse.</td></tr>
+<tr><td>Stirling numbers</td><td>Exact first- and second-kind Stirling numbers via <code>NN</code> and <code>ZZ</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="a-quick-tour"><a class="header" href="#a-quick-tour">A quick tour</a></h2>
+<p>Each example below is ready to paste into a koto-calc script or REPL.</p>
+<h3 id="fractions-stay-fractions"><a class="header" href="#fractions-stay-fractions">Fractions stay fractions</a></h3>
+<pre><code class="language-koto">from algebraeon import Q
 
-print! [].first()
-check! null
+third = Q(1, 3)
+print third + Q(1, 6) # 1/2
 </code></pre>
-<h3 id="see-also-1"><a class="header" href="#see-also-1">See also</a></h3>
-<ul>
-<li><a href="#get"><code>list.get</code></a></li>
-<li><a href="#last"><code>list.last</code></a></li>
-</ul>
-<h2 id="get"><a class="header" href="#get">get</a></h2>
-<pre><code class="language-kototype">|List, index: Number| -&gt; Any?
-</code></pre>
-<pre><code class="language-kototype">|List, index: Number, default: Any| -&gt; Any?
-</code></pre>
-<p>Gets the element at the given <code>index</code> in the list.</p>
-<p>If the list doesn’t contain a value at that position then the provided <code>default</code>
-value is returned. If no default value is provided then <code>null</code> is returned.</p>
-<h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
-<pre><code class="language-koto">x = [99, -1, 42]
+<p>There is no intermediate binary floating-point value: the result is the
+reduced fraction <code>1/2</code>.</p>
+<h3 id="factor-arbitrary-precision-integers"><a class="header" href="#factor-arbitrary-precision-integers">Factor arbitrary-precision integers</a></h3>
+<pre><code class="language-koto">from algebraeon import NN
 
-print! x.get 1
-check! -1
+print NN(12345).factor() # [(3, 1), (5, 1), (823, 1)]
+</code></pre>
+<h3 id="work-with-an-exact-square-root"><a class="header" href="#work-with-an-exact-square-root">Work with an exact square root</a></h3>
+<pre><code class="language-koto">from algebraeon import Alg, Q
 
-print! x.get -1
-check! null
+sqrt2 = Alg([-2, 0, 1])[1]
+print sqrt2.min_poly() # -2 + x^2
+print sqrt2 &gt; Q(7, 5) # true
+</code></pre>
+<p><code>sqrt2</code> is stored as an isolated root of <code>x^2 - 2</code>. Its usual display,
+<code>1.414213562</code>, is only a readable approximation; the minimal polynomial and
+comparisons remain exact.</p>
+<h3 id="factor-polynomials"><a class="header" href="#factor-polynomials">Factor polynomials</a></h3>
+<p>Coefficients are listed from the constant term upwards, so the polynomial
+below is <code>6 - 5x + x^2</code>.</p>
+<pre><code class="language-koto">from algebraeon import Poly
 
-print! x.get 5, 123
-check! 123
+f = Poly([6, -5, 1])
+print f.factor() # [(-2 + x, 1), (-3 + x, 1)]
 </code></pre>
-<h3 id="see-also-2"><a class="header" href="#see-also-2">See also</a></h3>
-<ul>
-<li><a href="#first"><code>list.first</code></a></li>
-<li><a href="#last"><code>list.last</code></a></li>
-</ul>
-<h2 id="insert"><a class="header" href="#insert">insert</a></h2>
-<pre><code class="language-kototype">|List, position: Number, value: Any| -&gt; List
-</code></pre>
-<p>Inserts the value into the list at the given index position,
-and returns the list.</p>
-<p>Elements in the list at or after the given position will be shifted to make
-space for the new value.</p>
-<p>An error is thrown if <code>position</code> is negative or greater than the size of the
-list.</p>
-<h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
-<pre><code class="language-koto">x = [99, -1, 42]
-print! x.insert 2, 'hello'
-check! [99, -1, 'hello', 42]
-print! x
-check! [99, -1, 'hello', 42]
-</code></pre>
-<h3 id="see-also-3"><a class="header" href="#see-also-3">See also</a></h3>
-<ul>
-<li><a href="#remove"><code>list.remove</code></a></li>
-</ul>
-<h2 id="is_empty"><a class="header" href="#is_empty">is_empty</a></h2>
-<pre><code class="language-kototype">|List| -&gt; Bool
-</code></pre>
-<p>Returns <code>true</code> if the list has a size of zero, and <code>false</code> otherwise.</p>
-<h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
-<pre><code class="language-koto">print! [].is_empty()
-check! true
+<h3 id="invert-a-matrix-without-rounding"><a class="header" href="#invert-a-matrix-without-rounding">Invert a matrix without rounding</a></h3>
+<pre><code class="language-koto">from algebraeon import Mat
 
-print! [1, 2, 3].is_empty()
-check! false
+m = Mat([[1, 2], [3, 4]])
+print m.inverse()     # [[-2, 1], [3/2, -1/2]]
+print m.inverse() * m # [[1, 0], [0, 1]]
 </code></pre>
-<h2 id="last"><a class="header" href="#last">last</a></h2>
-<pre><code class="language-kototype">|List| -&gt; Any?
-</code></pre>
-<p>Returns the last value in the list, or <code>null</code> if the list is empty.</p>
-<h3 id="example-8"><a class="header" href="#example-8">Example</a></h3>
-<pre><code class="language-koto">print! [99, -1, 42].last()
-check! 42
+<h3 id="explore-a-finite-group"><a class="header" href="#explore-a-finite-group">Explore a finite group</a></h3>
+<pre><code class="language-koto">from algebraeon import Group
 
-print! [].last()
-check! null
+c4 = Group.cyclic(4)
+print c4          # C4 (size 4)
+print c4.order(1) # 4
 </code></pre>
-<h3 id="see-also-4"><a class="header" href="#see-also-4">See also</a></h3>
-<ul>
-<li><a href="#first"><code>list.first</code></a></li>
-<li><a href="#get"><code>list.get</code></a></li>
-</ul>
-<h2 id="pop"><a class="header" href="#pop">pop</a></h2>
-<pre><code class="language-kototype">|List| -&gt; Any?
-</code></pre>
-<p>Removes the last value from the list and returns it.</p>
-<p>If the list is empty then <code>null</code> is returned.</p>
-<h3 id="example-9"><a class="header" href="#example-9">Example</a></h3>
-<pre><code class="language-koto">x = [99, -1, 42]
-print! x.pop()
-check! 42
+<p><code>Group</code> also constructs dihedral, symmetric, alternating, Klein four, and
+quaternion groups, all backed by finite multiplication tables.</p>
+<h3 id="calculate-in-a-finite-field"><a class="header" href="#calculate-in-a-finite-field">Calculate in a finite field</a></h3>
+<pre><code class="language-koto">from algebraeon import FF
 
-print! x
-check! [99, -1]
-
-print! [].pop()
-check! null
+gf7 = FF(7)
+x = gf7.of(3)
+print x.inverse()     # 5
+print x * x.inverse() # 1
 </code></pre>
-<h3 id="see-also-5"><a class="header" href="#see-also-5">See also</a></h3>
-<ul>
-<li><a href="#push"><code>list.push</code></a></li>
-</ul>
-<h2 id="push"><a class="header" href="#push">push</a></h2>
-<pre><code class="language-kototype">|List, value: Any| -&gt; List
-</code></pre>
-<p>Adds the <code>value</code> to the end of the list, and returns the list.</p>
-<h3 id="example-10"><a class="header" href="#example-10">Example</a></h3>
-<pre><code class="language-koto">x = [99, -1]
-print! x.push 'hello'
-check! [99, -1, 'hello']
-print! x
-check! [99, -1, 'hello']
-</code></pre>
-<h3 id="see-also-6"><a class="header" href="#see-also-6">See also</a></h3>
-<ul>
-<li><a href="#pop"><code>list.pop</code></a></li>
-</ul>
-<h2 id="remove"><a class="header" href="#remove">remove</a></h2>
-<pre><code class="language-kototype">|List, position: Number| -&gt; Any
-</code></pre>
-<p>Removes the value at the given position from the list, and returns the removed value.</p>
-<p>An error is thrown if the position isn’t a valid index in the list.</p>
-<h3 id="example-11"><a class="header" href="#example-11">Example</a></h3>
-<pre><code class="language-koto">[99, -1, 42].remove 1
-# [99, 42]
-</code></pre>
-<h3 id="see-also-7"><a class="header" href="#see-also-7">See also</a></h3>
-<ul>
-<li><a href="#insert"><code>list.insert</code></a></li>
-</ul>
-<h2 id="resize"><a class="header" href="#resize">resize</a></h2>
-<pre><code class="language-kototype">|List, new_size: Number| -&gt; List
-</code></pre>
-<pre><code class="language-kototype">|List, new_size: Number, default: Any| -&gt; List
-</code></pre>
-<p>Grows or shrinks the list to the specified size, and returns the list.
-If the new size is larger, then copies of the <code>default</code> value (or <code>null</code> if no
-value is provided) are used to fill the new space.</p>
-<h3 id="example-12"><a class="header" href="#example-12">Example</a></h3>
-<pre><code class="language-koto">x = [1, 2]
-print! x.resize 4, 'x'
-check! [1, 2, 'x', 'x']
-
-print! x.resize 3
-check! [1, 2, 'x']
-
-print! x.resize 4
-check! [1, 2, 'x', null]
-</code></pre>
-<h2 id="resize_with"><a class="header" href="#resize_with">resize_with</a></h2>
-<pre><code class="language-kototype">|List, new_size: Number, generator: || -&gt; Any| -&gt; List
-</code></pre>
-<p>Grows or shrinks the list to the specified size, and returns the list.
-If the new size is larger, then the provided function will be called repeatedly
-to fill the remaining space, with the result of the function being added to the
-end of the list.</p>
-<h3 id="example-13"><a class="header" href="#example-13">Example</a></h3>
-<pre><code class="language-koto">new_entries = (5, 6, 7, 8).iter()
-x = [1, 2]
-print! x.resize_with 4, || new_entries.next().get()
-check! [1, 2, 5, 6]
-
-print! x.resize_with 2, || new_entries.next().get()
-check! [1, 2]
-</code></pre>
-<h2 id="retain"><a class="header" href="#retain">retain</a></h2>
-<pre><code class="language-kototype">|List, test: Any| -&gt; List
-</code></pre>
-<p>Retains matching values in the list (discarding values that don’t match), and
-returns the list.</p>
-<p>If <code>test</code> is a function, then the function will be called with each of
-the list’s values, and if the function returns <code>true</code> then the value will be
-retained, otherwise if the function returns <code>false</code> then the value will be
-discarded.</p>
-<p>If the test value is not a function, then the list’s values will be compared
-using the <code>==</code> equality operator, and then retained if they match.</p>
-<h3 id="example-14"><a class="header" href="#example-14">Example</a></h3>
-<pre><code class="language-koto">x = (1..10).to_list()
-print! x.retain |n| n &lt; 5
-check! [1, 2, 3, 4]
-print! x
-check! [1, 2, 3, 4]
-
-x = [1, 3, 8, 3, 9, -1]
-print! x.retain 3
-check! [3, 3]
-print! x
-check! [3, 3]
-</code></pre>
-<h2 id="reverse"><a class="header" href="#reverse">reverse</a></h2>
-<pre><code class="language-kototype">|List| -&gt; List
-</code></pre>
-<p>Reverses the order of the list’s contents, and returns the list.</p>
-<h3 id="example-15"><a class="header" href="#example-15">Example</a></h3>
-<pre><code class="language-koto">x = ['hello', -1, 99, 'world']
-print! x.reverse()
-check! ['world', 99, -1, 'hello']
-print! x
-check! ['world', 99, -1, 'hello']
-</code></pre>
-<h2 id="sort"><a class="header" href="#sort">sort</a></h2>
-<pre><code class="language-kototype">|List| -&gt; List
-</code></pre>
-<p>Sorts the list in place, and returns the list.</p>
-<pre><code class="language-kototype">|List, key: |Any| -&gt; Any| -&gt; List
-</code></pre>
-<p>Sorts the list in place, based on the output of calling a <code>key</code> function for
-each of the list’s elements, and returns the list.</p>
-<p>The key function’s result is cached, so it’s only called once per element.</p>
-<h3 id="example-16"><a class="header" href="#example-16">Example</a></h3>
-<pre><code class="language-koto">x = [1, -1, 99, 42]
-print! x.sort()
-check! [-1, 1, 42, 99]
-print! x
-check! [-1, 1, 42, 99]
-
-x = ['bb', 'ccc', 'a']
-print! x.sort size
-check! ['a', 'bb', 'ccc']
-print! x
-check! ['a', 'bb', 'ccc']
-
-x = [2, 1, 3]
-# Sort in reverse order by using a key function
-print! x.sort |n| -n
-check! [3, 2, 1]
-print! x
-check! [3, 2, 1]
-</code></pre>
-<h2 id="swap"><a class="header" href="#swap">swap</a></h2>
-<pre><code class="language-kototype">|first: List, second: List| -&gt; Null
-</code></pre>
-<p>Swaps the contents of the two input lists.</p>
-<h3 id="example-17"><a class="header" href="#example-17">Example</a></h3>
-<pre><code class="language-koto">x = [1, 2, 3]
-y = [7, 8, 9]
-x.swap y
-
-print! x
-check! [7, 8, 9]
-
-print! y
-check! [1, 2, 3]
-</code></pre>
-<h2 id="to_tuple"><a class="header" href="#to_tuple">to_tuple</a></h2>
-<pre><code class="language-kototype">|List| -&gt; Tuple
-</code></pre>
-<p>Returns a copy of the list data as a tuple.</p>
-<h3 id="example-18"><a class="header" href="#example-18">Example</a></h3>
-<pre><code class="language-koto">print! [1, 2, 3].to_tuple()
-check! (1, 2, 3)
-</code></pre>
-<h2 id="transform"><a class="header" href="#transform">transform</a></h2>
-<pre><code class="language-kototype">|List, transformer: |Any| -&gt; Any| -&gt; List
-</code></pre>
-<p>Transforms the list data in place by replacing each value with the result of
-calling the provided <code>transformer</code> function, and then returns the list.</p>
-<h3 id="example-19"><a class="header" href="#example-19">Example</a></h3>
-<pre><code class="language-koto">x = ['aaa', 'bb', 'c']
-print! x.transform size
-check! [3, 2, 1]
-print! x
-check! [3, 2, 1]
-
-print! x.transform |n| '{n}!'
-check! ['3!', '2!', '1!']
-print! x
-check! ['3!', '2!', '1!']
-</code></pre>
+<p>Prime fields are only the beginning: <code>FF(p, k)</code> constructs extension fields
+using Algebraeon’s Conway-polynomial database.</p>
+<h2 id="where-to-go-next"><a class="header" href="#where-to-go-next">Where to go next</a></h2>
+<p>The <a href="./libs/algebraeon.html">Algebraeon Full Reference</a> contains detailed type
+signatures and validated examples for the complete API. You can also read
+about the underlying Rust library on the
+<a href="https://crates.io/crates/algebraeon">Algebraeon crate page</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../core_lib/koto.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="language_guide.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../core_lib/map.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="libs/algebraeon.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -518,11 +297,11 @@ check! ['3!', '2!', '1!']
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../core_lib/koto.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="language_guide.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../core_lib/map.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="libs/algebraeon.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -542,13 +321,13 @@ check! ['3!', '2!', '1!']
         </script>
 
 
-        <script src="../elasticlunr-ef4e11c1.min.js"></script>
-        <script src="../mark-09e88c2c.min.js"></script>
-        <script src="../searcher-09f2665d.js"></script>
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
 
-        <script src="../clipboard-1626706a.min.js"></script>
-        <script src="../highlight-abc7f01d.js"></script>
-        <script src="../book-609e4cb8.js"></script>
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
 
         <!-- Custom JS scripts -->
 
