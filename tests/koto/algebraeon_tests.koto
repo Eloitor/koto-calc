@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -1468,6 +1468,76 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm
   assert_eq caught, 'caught'
   caught = try
     x / QSqrt(2, 0, 0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test polyquot_tests = ||
+  write 'Testing PolyQuot \t'
+
+  # Q(i) = Q[x]/(x^2 + 1); representatives are reduced modulo x^2 + 1.
+  qi = PolyQuot(Poly([1, 0, 1]))
+  assert_eq qi.degree(), NN(2)
+  assert_eq '{qi}', 'Q[x]/(1 + x^2)'
+  i = qi.generator()
+  assert_eq i, qi.of(Poly([0, 1]))
+  assert_eq i, qi.of([0, 1])
+  assert_eq i.degree(), NN(2)
+  assert_eq i.to_poly(), Poly([0, 1])
+  assert_eq (i * i).to_poly(), Poly([-1])
+  assert_eq '{qi.of([0, 0, 1])}', '-1'
+
+  # Arithmetic is exact in the quotient.
+  a = qi.of([1, 1])
+  b = qi.of([2, -1])
+  assert_eq (a + b).to_poly(), Poly([3])
+  assert_eq (a - b).to_poly(), Poly([-1, 2])
+  assert_eq (a * b).to_poly(), Poly([3, 1])
+  assert_eq (-a).to_poly(), Poly([-1, -1])
+
+  # Extended Euclid gives (1 + i)^-1 = (1 - i)/2.
+  inv = a.inverse()
+  assert_eq inv.to_poly(), Poly([Q(1, 2), Q(-1, 2)])
+  assert_eq (a * inv).to_poly(), Poly([1])
+  assert_eq a.min_poly(), Poly([2, -2, 1])
+  assert_eq a.norm(), Q(2)
+  assert_eq a.trace(), Q(2)
+  assert_eq i.min_poly(), Poly([1, 0, 1])
+  assert_eq i.norm(), Q(1)
+  assert_eq i.trace(), Q(0)
+
+  # A cubic number field: alpha^3 = 2 in Q[x]/(x^3 - 2).
+  qc = PolyQuot(Poly([-2, 0, 0, 1]))
+  alpha = qc.generator()
+  assert_eq qc.degree(), NN(3)
+  assert_eq alpha.degree(), NN(3)
+  assert_eq (alpha * alpha * alpha).to_poly(), Poly([2])
+  assert_eq alpha.inverse().to_poly(), Poly([0, 0, Q(1, 2)])
+  assert_eq (alpha * alpha.inverse()).to_poly(), Poly([1])
+  assert_eq alpha.min_poly(), Poly([-2, 0, 0, 1])
+  assert_eq alpha.norm(), Q(2)
+  assert_eq alpha.trace(), Q(0)
+
+  # The constructor enforces a monic irreducible modulus, inverses reject 0,
+  # and arithmetic never mixes distinct quotient fields.
+  caught = try
+    PolyQuot(Poly([1, 0, 2]))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    PolyQuot(Poly([-1, 0, 1]))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    qi.of([0]).inverse()
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    i + PolyQuot(Poly([2, 0, 1])).generator()
   catch e
     'caught'
   assert_eq caught, 'caught'
