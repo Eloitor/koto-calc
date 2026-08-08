@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-c400e9fc.js";
+            window.path_to_searchindex_js = "../searchindex-7d0a2a4c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-c548091b.js"></script>
@@ -177,236 +177,244 @@
                         <h1 id="algebraeon"><a class="header" href="#algebraeon">algebraeon</a></h1>
 <p><a href="https://crates.io/crates/algebraeon">Algebraeon</a> support for Koto:
 arbitrary precision arithmetic, number theory, polynomials, and matrices.</p>
-<p>The module provides the types <a href="#nn"><code>NN</code></a> (natural numbers),
-<a href="#zz"><code>ZZ</code></a> (integers), <a href="#q"><code>Q</code></a> (rationals),
+<p>The module provides the types <a href="#n"><code>N</code></a> (natural numbers),
+<a href="#z"><code>Z</code></a> (integers), <a href="#q"><code>Q</code></a> (rationals),
 <a href="#poly"><code>Poly</code></a> (univariate polynomials), <a href="#mat"><code>Mat</code></a> (matrices),
 <a href="#quat"><code>Quat</code></a> (Hamilton quaternions) and <a href="#alg"><code>Alg</code></a> (real algebraic
 numbers), plus the module-level functions <a href="#gcd"><code>gcd</code></a> and <a href="#lcm"><code>lcm</code></a>.</p>
-<h2 id="nn"><a class="header" href="#nn">NN</a></h2>
+<h2 id="naming-convention"><a class="header" href="#naming-convention">Naming convention</a></h2>
+<p>Basic number domains use ASCII forms of their mathematical symbols: <code>N</code>
+(naturals), <code>Z</code> (integers), and <code>Q</code> (rationals). <code>Zn(n)</code> is the residue ring
+ℤ/nℤ. Other structures use PascalCase names or established acronyms, for
+example <code>Poly</code>, <code>Mat</code>, <code>ComplexAlg</code>, <code>FF</code>, and <code>CF</code>.</p>
+<p>The former constructors <code>NN</code>, <code>ZZ</code>, and <code>ZZn</code> remain compatibility aliases
+during the 0.2 transition. They construct the same canonical <code>N</code>, <code>Z</code>, and
+<code>Zn</code> runtime types.</p>
+<h2 id="n"><a class="header" href="#n">N</a></h2>
 <pre><code class="language-kototype">|| -&gt; Iterator
-|Number| -&gt; NN
+|Number| -&gt; N
 </code></pre>
 <p>Natural (non-negative integer) values with arbitrary precision.</p>
-<p>Called with no arguments, <code>NN()</code> returns an iterator over the natural numbers
+<p>Called with no arguments, <code>N()</code> returns an iterator over the natural numbers
 <code>0, 1, 2, ...</code>.</p>
 <h3 id="example"><a class="header" href="#example">Example</a></h3>
-<pre><code class="language-koto">print! NN(5).factorial()
+<pre><code class="language-koto">print! N(5).factorial()
 check! 120
 
-print! NN(5) - NN(3)
+print! N(5) - N(3)
 check! 2
 
-print! NN().take(4).to_list()
+print! N().take(4).to_list()
 check! [0, 1, 2, 3]
 </code></pre>
-<h2 id="nnbitcount"><a class="header" href="#nnbitcount">NN.bitcount</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; Number
+<h2 id="nbitcount"><a class="header" href="#nbitcount">N.bitcount</a></h2>
+<pre><code class="language-kototype">|N| -&gt; Number
 </code></pre>
 <p>Returns the number of bits needed to represent the value.</p>
 <h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
-<pre><code class="language-koto">print! NN(5).bitcount()
+<pre><code class="language-koto">print! N(5).bitcount()
 check! 3
 </code></pre>
-<h2 id="nnis_prime"><a class="header" href="#nnis_prime">NN.is_prime</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; Bool
+<h2 id="nis_prime"><a class="header" href="#nis_prime">N.is_prime</a></h2>
+<pre><code class="language-kototype">|N| -&gt; Bool
 </code></pre>
 <p>Returns <code>true</code> if the value is prime.</p>
 <h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
-<pre><code class="language-koto">print! NN(17).is_prime()
+<pre><code class="language-koto">print! N(17).is_prime()
 check! true
 
-print! NN(12).is_prime()
+print! N(12).is_prime()
 check! false
 </code></pre>
-<h2 id="nnis_squarefree"><a class="header" href="#nnis_squarefree">NN.is_squarefree</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; Bool
+<h2 id="nis_squarefree"><a class="header" href="#nis_squarefree">N.is_squarefree</a></h2>
+<pre><code class="language-kototype">|N| -&gt; Bool
 </code></pre>
 <p>Returns <code>true</code> if the value has no repeated prime factors.</p>
 <h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
-<pre><code class="language-koto">print! NN(10).is_squarefree()
+<pre><code class="language-koto">print! N(10).is_squarefree()
 check! true
 
-print! NN(12).is_squarefree()
+print! N(12).is_squarefree()
 check! false
 </code></pre>
-<h2 id="nnfactor"><a class="header" href="#nnfactor">NN.factor</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; [(NN, NN)]
+<h2 id="nfactor"><a class="header" href="#nfactor">N.factor</a></h2>
+<pre><code class="language-kototype">|N| -&gt; [(N, N)]
 </code></pre>
 <p>Returns the prime factorization of the value as a list of
 <code>(prime, exponent)</code> tuples.</p>
 <h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
-<pre><code class="language-koto">print! NN(60).factor()
+<pre><code class="language-koto">print! N(60).factor()
 check! [(2, 2), (3, 1), (5, 1)]
 </code></pre>
-<h2 id="nnfactorial"><a class="header" href="#nnfactorial">NN.factorial</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; NN
+<h2 id="nfactorial"><a class="header" href="#nfactorial">N.factorial</a></h2>
+<pre><code class="language-kototype">|N| -&gt; N
 </code></pre>
 <p>Returns the factorial of the value.</p>
 <h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
-<pre><code class="language-koto">print! NN(5).factorial()
+<pre><code class="language-koto">print! N(5).factorial()
 check! 120
 </code></pre>
-<h2 id="nndivisors"><a class="header" href="#nndivisors">NN.divisors</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; [NN]
+<h2 id="ndivisors"><a class="header" href="#ndivisors">N.divisors</a></h2>
+<pre><code class="language-kototype">|N| -&gt; [N]
 </code></pre>
 <p>Returns the value’s divisors in ascending order.</p>
 <h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
-<pre><code class="language-koto">print! NN(12).divisors()
+<pre><code class="language-koto">print! N(12).divisors()
 check! [1, 2, 3, 4, 6, 12]
 </code></pre>
-<h2 id="nneuler_totient"><a class="header" href="#nneuler_totient">NN.euler_totient</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; NN
+<h2 id="neuler_totient"><a class="header" href="#neuler_totient">N.euler_totient</a></h2>
+<pre><code class="language-kototype">|N| -&gt; N
 </code></pre>
 <p>Returns the value of <a href="https://en.wikipedia.org/wiki/Euler%27s_totient_function">Euler’s totient function</a>,
 the count of positive integers up to the value that are coprime to it.</p>
 <h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
-<pre><code class="language-koto">print! NN(10).euler_totient()
+<pre><code class="language-koto">print! N(10).euler_totient()
 check! 4
 </code></pre>
-<h2 id="nnis_square"><a class="header" href="#nnis_square">NN.is_square</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; Bool
+<h2 id="nis_square"><a class="header" href="#nis_square">N.is_square</a></h2>
+<pre><code class="language-kototype">|N| -&gt; Bool
 </code></pre>
 <p>Returns <code>true</code> if the value is a perfect square.</p>
 <h3 id="example-8"><a class="header" href="#example-8">Example</a></h3>
-<pre><code class="language-koto">print! NN(16).is_square()
+<pre><code class="language-koto">print! N(16).is_square()
 check! true
 
-print! NN(18).is_square()
+print! N(18).is_square()
 check! false
 </code></pre>
-<h2 id="nnsqrt_floor"><a class="header" href="#nnsqrt_floor">NN.sqrt_floor</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; NN
+<h2 id="nsqrt_floor"><a class="header" href="#nsqrt_floor">N.sqrt_floor</a></h2>
+<pre><code class="language-kototype">|N| -&gt; N
 </code></pre>
 <p>Returns the floor of the square root of the value.</p>
 <h3 id="example-9"><a class="header" href="#example-9">Example</a></h3>
-<pre><code class="language-koto">print! NN(17).sqrt_floor()
+<pre><code class="language-koto">print! N(17).sqrt_floor()
 check! 4
 </code></pre>
-<h2 id="nnsqrt_ceil"><a class="header" href="#nnsqrt_ceil">NN.sqrt_ceil</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; NN
+<h2 id="nsqrt_ceil"><a class="header" href="#nsqrt_ceil">N.sqrt_ceil</a></h2>
+<pre><code class="language-kototype">|N| -&gt; N
 </code></pre>
 <p>Returns the ceiling of the square root of the value.</p>
 <h3 id="example-10"><a class="header" href="#example-10">Example</a></h3>
-<pre><code class="language-koto">print! NN(17).sqrt_ceil()
+<pre><code class="language-koto">print! N(17).sqrt_ceil()
 check! 5
 </code></pre>
-<h2 id="nnis_power_test"><a class="header" href="#nnis_power_test">NN.is_power_test</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; (Bool, NN?, NN?)
+<h2 id="nis_power_test"><a class="header" href="#nis_power_test">N.is_power_test</a></h2>
+<pre><code class="language-kototype">|N| -&gt; (Bool, N?, N?)
 </code></pre>
 <p>Returns <code>(true, base, exponent)</code> if the value can be written as <code>base^exponent</code>
 with <code>exponent &gt; 1</code>, otherwise <code>(false, null, null)</code>.</p>
 <h3 id="example-11"><a class="header" href="#example-11">Example</a></h3>
-<pre><code class="language-koto">print! NN(8).is_power_test()
+<pre><code class="language-koto">print! N(8).is_power_test()
 check! (true, 2, 3)
 
-print! NN(6).is_power_test()
+print! N(6).is_power_test()
 check! (false, null, null)
 </code></pre>
-<h2 id="nnprimality_test"><a class="header" href="#nnprimality_test">NN.primality_test</a></h2>
-<pre><code class="language-kototype">|NN| -&gt; String
+<h2 id="nprimality_test"><a class="header" href="#nprimality_test">N.primality_test</a></h2>
+<pre><code class="language-kototype">|N| -&gt; String
 </code></pre>
 <p>Returns <code>'prime'</code> or <code>'composite'</code> (both <code>0</code> and <code>1</code> are reported as
 <code>'composite'</code>).</p>
 <h3 id="example-12"><a class="header" href="#example-12">Example</a></h3>
-<pre><code class="language-koto">print! NN(17).primality_test()
+<pre><code class="language-koto">print! N(17).primality_test()
 check! prime
 
-print! NN(12).primality_test()
+print! N(12).primality_test()
 check! composite
 </code></pre>
-<h2 id="nnprimes"><a class="header" href="#nnprimes">NN.primes</a></h2>
+<h2 id="nprimes"><a class="header" href="#nprimes">N.primes</a></h2>
 <pre><code class="language-kototype">|| -&gt; Iterator
 </code></pre>
 <p>Returns an iterator over the prime numbers.</p>
 <h3 id="example-13"><a class="header" href="#example-13">Example</a></h3>
-<pre><code class="language-koto">print! NN.primes().take(6).to_list()
+<pre><code class="language-koto">print! N.primes().take(6).to_list()
 check! [2, 3, 5, 7, 11, 13]
 </code></pre>
-<h2 id="zz"><a class="header" href="#zz">ZZ</a></h2>
-<pre><code class="language-kototype">|Number| -&gt; ZZ
+<h2 id="z"><a class="header" href="#z">Z</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; Z
 </code></pre>
 <p>Integer values with arbitrary precision.</p>
-<p><code>ZZ</code> supports arithmetic (<code>+ - *</code>), comparisons, and assignment operators
-(<code>+= -= *=</code>) with other <code>ZZ</code> values, <code>NN</code> values, and plain numbers.</p>
+<p><code>Z</code> supports arithmetic (<code>+ - *</code>), comparisons, and assignment operators
+(<code>+= -= *=</code>) with other <code>Z</code> values, <code>N</code> values, and plain numbers.</p>
 <h3 id="example-14"><a class="header" href="#example-14">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(5) + ZZ(-3)
+<pre><code class="language-koto">print! Z(5) + Z(-3)
 check! 2
 
-print! ZZ(4) * ZZ(-2)
+print! Z(4) * Z(-2)
 check! -8
 
-print! ZZ(5) + NN(3)
+print! Z(5) + N(3)
 check! 8
 </code></pre>
-<h2 id="zzabs"><a class="header" href="#zzabs">ZZ.abs</a></h2>
-<pre><code class="language-kototype">|ZZ| -&gt; NN
+<h2 id="zabs"><a class="header" href="#zabs">Z.abs</a></h2>
+<pre><code class="language-kototype">|Z| -&gt; N
 </code></pre>
-<p>Returns the absolute value of the integer as an <code>NN</code>.</p>
+<p>Returns the absolute value of the integer as an <code>N</code>.</p>
 <h3 id="example-15"><a class="header" href="#example-15">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-9).abs()
+<pre><code class="language-koto">print! Z(-9).abs()
 check! 9
 </code></pre>
-<h2 id="zzis_irreducible"><a class="header" href="#zzis_irreducible">ZZ.is_irreducible</a></h2>
-<pre><code class="language-kototype">|ZZ| -&gt; Bool
+<h2 id="zis_irreducible"><a class="header" href="#zis_irreducible">Z.is_irreducible</a></h2>
+<pre><code class="language-kototype">|Z| -&gt; Bool
 </code></pre>
 <p>Returns <code>true</code> if the value is irreducible (i.e. a prime, up to sign).</p>
 <h3 id="example-16"><a class="header" href="#example-16">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(7).is_irreducible()
+<pre><code class="language-koto">print! Z(7).is_irreducible()
 check! true
 
-print! ZZ(9).is_irreducible()
+print! Z(9).is_irreducible()
 check! false
 </code></pre>
-<h2 id="zzis_square"><a class="header" href="#zzis_square">ZZ.is_square</a></h2>
-<pre><code class="language-kototype">|ZZ| -&gt; Bool
+<h2 id="zis_square"><a class="header" href="#zis_square">Z.is_square</a></h2>
+<pre><code class="language-kototype">|Z| -&gt; Bool
 </code></pre>
 <p>Returns <code>true</code> if the value is a perfect square.</p>
 <h3 id="example-17"><a class="header" href="#example-17">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(9).is_square()
+<pre><code class="language-koto">print! Z(9).is_square()
 check! true
 
-print! ZZ(10).is_square()
+print! Z(10).is_square()
 check! false
 </code></pre>
-<h2 id="zzfactor"><a class="header" href="#zzfactor">ZZ.factor</a></h2>
-<pre><code class="language-kototype">|ZZ| -&gt; [(ZZ, NN)]
+<h2 id="zfactor"><a class="header" href="#zfactor">Z.factor</a></h2>
+<pre><code class="language-kototype">|Z| -&gt; [(Z, N)]
 </code></pre>
 <p>Returns the prime factorization of the value as a list of
 <code>(prime, exponent)</code> tuples. The sign is ignored.</p>
 <h3 id="example-18"><a class="header" href="#example-18">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-12).factor()
+<pre><code class="language-koto">print! Z(-12).factor()
 check! [(2, 2), (3, 1)]
 </code></pre>
-<h2 id="zzdivmod"><a class="header" href="#zzdivmod">ZZ.divmod</a></h2>
-<pre><code class="language-kototype">|ZZ, ZZ| -&gt; (ZZ, ZZ)
+<h2 id="zdivmod"><a class="header" href="#zdivmod">Z.divmod</a></h2>
+<pre><code class="language-kototype">|Z, Z| -&gt; (Z, Z)
 </code></pre>
 <p>Returns the quotient and remainder of a floor division, with a
 non-negative remainder.</p>
 <h3 id="example-19"><a class="header" href="#example-19">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-7).divmod(ZZ(3))
+<pre><code class="language-koto">print! Z(-7).divmod(Z(3))
 check! (-3, 2)
 </code></pre>
-<h2 id="zzdiv_floor"><a class="header" href="#zzdiv_floor">ZZ.div_floor</a></h2>
-<pre><code class="language-kototype">|ZZ, ZZ| -&gt; ZZ
+<h2 id="zdiv_floor"><a class="header" href="#zdiv_floor">Z.div_floor</a></h2>
+<pre><code class="language-kototype">|Z, Z| -&gt; Z
 </code></pre>
 <p>Returns the quotient of a floor division.</p>
 <h3 id="example-20"><a class="header" href="#example-20">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-7).div_floor(ZZ(3))
+<pre><code class="language-koto">print! Z(-7).div_floor(Z(3))
 check! -3
 
-print! ZZ(-13).div_floor(ZZ(5))
+print! Z(-13).div_floor(Z(5))
 check! -3
 </code></pre>
-<h2 id="zzmod"><a class="header" href="#zzmod">ZZ.mod</a></h2>
-<pre><code class="language-kototype">|ZZ, ZZ| -&gt; ZZ
+<h2 id="zmod"><a class="header" href="#zmod">Z.mod</a></h2>
+<pre><code class="language-kototype">|Z, Z| -&gt; Z
 </code></pre>
 <p>Returns the non-negative remainder of a floor division, coherent with
-<a href="#zz-div-floor"><code>div_floor</code></a>.</p>
+<a href="#z-div-floor"><code>div_floor</code></a>.</p>
 <h3 id="example-21"><a class="header" href="#example-21">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-7).mod(ZZ(3))
+<pre><code class="language-koto">print! Z(-7).mod(Z(3))
 check! 2
 
-print! ZZ(-13).mod(ZZ(5))
+print! Z(-13).mod(Z(5))
 check! 2
 </code></pre>
 <h2 id="q"><a class="header" href="#q">Q</a></h2>
@@ -416,7 +424,7 @@ check! 2
 <p>Rational numbers, stored as reduced fractions <code>num / den</code>.</p>
 <p>The denominator must be non-zero. A single argument is treated as a whole
 number. <code>Q</code> supports arithmetic (<code>+ - * /</code>), comparisons, and assignment
-operators (<code>+= -= *= /=</code>) with other <code>Q</code> values, <code>NN</code> values, <code>ZZ</code> values and
+operators (<code>+= -= *= /=</code>) with other <code>Q</code> values, <code>N</code> values, <code>Z</code> values and
 plain numbers.</p>
 <p>The display form is the reduced fraction <code>num/den</code>, or just <code>num</code> when the
 denominator is <code>1</code>.</p>
@@ -437,7 +445,7 @@ print! Q(3)
 check! 3
 </code></pre>
 <h2 id="qnum"><a class="header" href="#qnum">Q.num</a></h2>
-<pre><code class="language-kototype">|Q| -&gt; ZZ
+<pre><code class="language-kototype">|Q| -&gt; Z
 </code></pre>
 <p>Returns the numerator of the reduced fraction.</p>
 <h3 id="example-23"><a class="header" href="#example-23">Example</a></h3>
@@ -448,7 +456,7 @@ print! Q(-3, 2).num()
 check! -3
 </code></pre>
 <h2 id="qden"><a class="header" href="#qden">Q.den</a></h2>
-<pre><code class="language-kototype">|Q| -&gt; NN
+<pre><code class="language-kototype">|Q| -&gt; N
 </code></pre>
 <p>Returns the denominator of the reduced fraction.</p>
 <h3 id="example-24"><a class="header" href="#example-24">Example</a></h3>
@@ -490,7 +498,7 @@ print! Q(2, 3).sqrt_if_square()
 check! null
 </code></pre>
 <h2 id="qheight"><a class="header" href="#qheight">Q.height</a></h2>
-<pre><code class="language-kototype">|Q| -&gt; NN
+<pre><code class="language-kototype">|Q| -&gt; N
 </code></pre>
 <p>Returns the height of the value: <code>max(|num|, den)</code> of the reduced fraction.</p>
 <h3 id="example-28"><a class="header" href="#example-28">Example</a></h3>
@@ -509,9 +517,9 @@ check! 5
 check! 1.5
 </code></pre>
 <h2 id="qto_zz"><a class="header" href="#qto_zz">Q.to_zz</a></h2>
-<pre><code class="language-kototype">|Q| -&gt; ZZ
+<pre><code class="language-kototype">|Q| -&gt; Z
 </code></pre>
-<p>Converts the value to a <code>ZZ</code> (the value must be a whole number).</p>
+<p>Converts the value to a <code>Z</code> (the value must be a whole number).</p>
 <h3 id="example-30"><a class="header" href="#example-30">Example</a></h3>
 <pre><code class="language-koto">print! Q(3).to_zz()
 check! 3
@@ -520,9 +528,9 @@ print! Q(4, 2).to_zz()
 check! 2
 </code></pre>
 <h2 id="qto_nn"><a class="header" href="#qto_nn">Q.to_nn</a></h2>
-<pre><code class="language-kototype">|Q| -&gt; NN
+<pre><code class="language-kototype">|Q| -&gt; N
 </code></pre>
-<p>Converts the value to an <code>NN</code> (the value must be a non-negative whole number).</p>
+<p>Converts the value to an <code>N</code> (the value must be a non-negative whole number).</p>
 <h3 id="example-31"><a class="header" href="#example-31">Example</a></h3>
 <pre><code class="language-koto">print! Q(4, 2).to_nn()
 check! 2
@@ -533,13 +541,13 @@ check! 0
 <h2 id="poly"><a class="header" href="#poly">Poly</a></h2>
 <pre><code class="language-kototype">|List| -&gt; Poly
 </code></pre>
-<p>Univariate polynomials over <code>ZZ</code> or <code>Q</code>.</p>
+<p>Univariate polynomials over <code>Z</code> or <code>Q</code>.</p>
 <p>The constructor takes a list of coefficients in ascending order, with the
 first element being the constant term: <code>Poly([6, -5, 1])</code> represents
 <code>6 - 5x + x^2</code>.</p>
-<p>The coefficients are stored as <code>ZZ</code> when all of them are integers, and
+<p>The coefficients are stored as <code>Z</code> when all of them are integers, and
 promoted to <code>Q</code> when any of them is a fraction. Arithmetic (<code>+ - *</code>) works
-with other polynomials and with <code>NN</code>/<code>ZZ</code>/<code>Q</code> scalars, promoting <code>ZZ</code> to <code>Q</code>
+with other polynomials and with <code>N</code>/<code>Z</code>/<code>Q</code> scalars, promoting <code>Z</code> to <code>Q</code>
 when needed.</p>
 <p>The display form shows the terms in ascending order of degree, e.g.
 <code>6 - 5x + x^2</code>.</p>
@@ -555,7 +563,7 @@ print! a * Q(1, 2)
 check! 3 - (5/2)x + (1/2)x^2
 </code></pre>
 <h2 id="polydegree"><a class="header" href="#polydegree">Poly.degree</a></h2>
-<pre><code class="language-kototype">|Poly| -&gt; NN
+<pre><code class="language-kototype">|Poly| -&gt; N
 </code></pre>
 <p>Returns the degree of the polynomial (the zero polynomial has degree <code>0</code>).</p>
 <h3 id="example-33"><a class="header" href="#example-33">Example</a></h3>
@@ -566,7 +574,7 @@ print! Poly([7]).degree()
 check! 0
 </code></pre>
 <h2 id="polycoeffs"><a class="header" href="#polycoeffs">Poly.coeffs</a></h2>
-<pre><code class="language-kototype">|Poly| -&gt; [ZZ] | [Q]
+<pre><code class="language-kototype">|Poly| -&gt; [Z] | [Q]
 </code></pre>
 <p>Returns the coefficients in ascending order, starting with the constant term.</p>
 <h3 id="example-34"><a class="header" href="#example-34">Example</a></h3>
@@ -577,9 +585,9 @@ print! Poly([3, Q(-5, 2), Q(1, 2)]).coeffs()
 check! [3, -5/2, 1/2]
 </code></pre>
 <h2 id="polyeval"><a class="header" href="#polyeval">Poly.eval</a></h2>
-<pre><code class="language-kototype">|Poly, x: Number| -&gt; ZZ | Q
+<pre><code class="language-kototype">|Poly, x: Number| -&gt; Z | Q
 </code></pre>
-<p>Evaluates the polynomial at <code>x</code> (which may be a <code>Number</code>, <code>NN</code>, <code>ZZ</code> or <code>Q</code>).</p>
+<p>Evaluates the polynomial at <code>x</code> (which may be a <code>Number</code>, <code>N</code>, <code>Z</code> or <code>Q</code>).</p>
 <h3 id="example-35"><a class="header" href="#example-35">Example</a></h3>
 <pre><code class="language-koto">a = Poly([6, -5, 1])
 print! a.eval(2)
@@ -609,7 +617,7 @@ promoting to <code>Q</code> if needed.</p>
 check! -2 + x
 </code></pre>
 <h2 id="polyfactor"><a class="header" href="#polyfactor">Poly.factor</a></h2>
-<pre><code class="language-kototype">|Poly| -&gt; [(Poly, NN)]
+<pre><code class="language-kototype">|Poly| -&gt; [(Poly, N)]
 </code></pre>
 <p>Returns the irreducible factorization of the polynomial as a list of
 <code>(factor, exponent)</code> tuples.</p>
@@ -623,11 +631,11 @@ check! [(1 + x^2, 1)]
 <h2 id="mat"><a class="header" href="#mat">Mat</a></h2>
 <pre><code class="language-kototype">|List of lists| -&gt; Mat
 </code></pre>
-<p>Matrices over <code>ZZ</code> or <code>Q</code>, given row by row: <code>Mat([[1, 2], [3, 4]])</code> is the
+<p>Matrices over <code>Z</code> or <code>Q</code>, given row by row: <code>Mat([[1, 2], [3, 4]])</code> is the
 <code>2x2</code> matrix with rows <code>[1, 2]</code> and <code>[3, 4]</code>.</p>
-<p>The entries are stored as <code>ZZ</code> when all of them are integers, and promoted
+<p>The entries are stored as <code>Z</code> when all of them are integers, and promoted
 to <code>Q</code> when any of them is a fraction. Arithmetic (<code>+ - *</code>) works with other
-matrices and with <code>NN</code>/<code>ZZ</code>/<code>Q</code> scalars.</p>
+matrices and with <code>N</code>/<code>Z</code>/<code>Q</code> scalars.</p>
 <p>The display form is a list of rows, e.g. <code>[[1, 2], [3, 4]]</code>.</p>
 <h3 id="example-39"><a class="header" href="#example-39">Example</a></h3>
 <pre><code class="language-koto">m = Mat([[1, 2], [3, 4]])
@@ -641,7 +649,7 @@ print! m.det()
 check! -2
 </code></pre>
 <h2 id="matrows"><a class="header" href="#matrows">Mat.rows</a></h2>
-<pre><code class="language-kototype">|Mat| -&gt; NN
+<pre><code class="language-kototype">|Mat| -&gt; N
 </code></pre>
 <p>Returns the number of rows.</p>
 <h3 id="example-40"><a class="header" href="#example-40">Example</a></h3>
@@ -649,7 +657,7 @@ check! -2
 check! 2
 </code></pre>
 <h2 id="matcols"><a class="header" href="#matcols">Mat.cols</a></h2>
-<pre><code class="language-kototype">|Mat| -&gt; NN
+<pre><code class="language-kototype">|Mat| -&gt; N
 </code></pre>
 <p>Returns the number of columns.</p>
 <h3 id="example-41"><a class="header" href="#example-41">Example</a></h3>
@@ -657,7 +665,7 @@ check! 2
 check! 2
 </code></pre>
 <h2 id="matat"><a class="header" href="#matat">Mat.at</a></h2>
-<pre><code class="language-kototype">|Mat, row: Number, col: Number| -&gt; ZZ | Q
+<pre><code class="language-kototype">|Mat, row: Number, col: Number| -&gt; Z | Q
 </code></pre>
 <p>Returns the entry at the given row and column (zero-based).</p>
 <h3 id="example-42"><a class="header" href="#example-42">Example</a></h3>
@@ -682,7 +690,7 @@ print! m.mul(Mat([[5, 6], [7, 8]]))
 check! [[19, 22], [43, 50]]
 </code></pre>
 <h2 id="matdet"><a class="header" href="#matdet">Mat.det</a></h2>
-<pre><code class="language-kototype">|Mat| -&gt; ZZ | Q
+<pre><code class="language-kototype">|Mat| -&gt; Z | Q
 </code></pre>
 <p>Returns the determinant (only defined for square matrices).</p>
 <h3 id="example-45"><a class="header" href="#example-45">Example</a></h3>
@@ -692,7 +700,7 @@ check! -2
 <h2 id="matinverse"><a class="header" href="#matinverse">Mat.inverse</a></h2>
 <pre><code class="language-kototype">|Mat| -&gt; Mat
 </code></pre>
-<p>Returns the inverse of the matrix over <code>Q</code> (a <code>ZZ</code> matrix is promoted to
+<p>Returns the inverse of the matrix over <code>Q</code> (a <code>Z</code> matrix is promoted to
 <code>Q</code>). An error is thrown if the matrix is singular.</p>
 <h3 id="example-46"><a class="header" href="#example-46">Example</a></h3>
 <pre><code class="language-koto">m = Mat([[1, 2], [3, 4]])
@@ -713,19 +721,19 @@ An error is thrown if the matrix contains fractions.</p>
 check! [[-1, 0], [0, 1]]
 </code></pre>
 <h2 id="gcd"><a class="header" href="#gcd">gcd</a></h2>
-<pre><code class="language-kototype">|NN, NN| -&gt; NN
+<pre><code class="language-kototype">|N, N| -&gt; N
 </code></pre>
 <p>Returns the greatest common divisor of two natural numbers.</p>
 <h3 id="example-48"><a class="header" href="#example-48">Example</a></h3>
-<pre><code class="language-koto">print! gcd(NN(12), NN(18))
+<pre><code class="language-koto">print! gcd(N(12), N(18))
 check! 6
 </code></pre>
 <h2 id="lcm"><a class="header" href="#lcm">lcm</a></h2>
-<pre><code class="language-kototype">|NN, NN| -&gt; NN
+<pre><code class="language-kototype">|N, N| -&gt; N
 </code></pre>
 <p>Returns the least common multiple of two natural numbers.</p>
 <h3 id="example-49"><a class="header" href="#example-49">Example</a></h3>
-<pre><code class="language-koto">print! lcm(NN(4), NN(6))
+<pre><code class="language-koto">print! lcm(N(4), N(6))
 check! 12
 </code></pre>
 <h2 id="quat"><a class="header" href="#quat">Quat</a></h2>
@@ -733,7 +741,7 @@ check! 12
 </code></pre>
 <p><a href="https://en.wikipedia.org/wiki/Quaternion">Hamilton quaternions</a> over <code>Q</code>,
 constructed from four coefficients <code>a + bi + cj + dk</code> (each
-<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code> argument is promoted to <code>Q</code>).</p>
+<code>Number</code>/<code>N</code>/<code>Z</code>/<code>Q</code> argument is promoted to <code>Q</code>).</p>
 <p>Multiplication is the Hamilton product, defined by
 <code>i^2 = j^2 = k^2 = ijk = -1</code> with <code>i*j = k</code>, <code>j*k = i</code> and <code>k*i = j</code> (the
 cross terms anti-commute: <code>j*i = -k</code>, …), so multiplication is not
@@ -742,7 +750,7 @@ wrapper works around a bug in algebraeon 0.0.17 (upstream issue #244) that
 produced wrong signs in the <code>i</code>/<code>j</code> cross terms of
 <code>QuaternionAlgebraStructure::mul</code>.</p>
 <p><code>Quat</code> supports arithmetic (<code>+ - *</code>) with other <code>Quat</code> values and with
-scalars (<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code>, on either side), negation, and equality
+scalars (<code>Number</code>/<code>N</code>/<code>Z</code>/<code>Q</code>, on either side), negation, and equality
 (<code>==</code>, <code>!=</code>).</p>
 <p>The display form is e.g. <code>1 + 2i - 3j + (1/2)k</code>: zero terms are omitted,
 the coefficient <code>1</code> is dropped on <code>i</code>/<code>j</code>/<code>k</code>, and fractional coefficients
@@ -837,13 +845,13 @@ check! (1.0, 2.0, 3.0, 4.0)
 <pre><code class="language-kototype">|Poly | List| -&gt; [Alg]
 </code></pre>
 <p>Real algebraic numbers: exact real roots of polynomials. The constructor
-takes a <code>Poly</code> (over <code>ZZ</code> or <code>Q</code>) or a coefficient list (as in
+takes a <code>Poly</code> (over <code>Z</code> or <code>Q</code>) or a coefficient list (as in
 <code>Poly([...])</code>), and returns the <strong>list of isolated real roots in increasing
 order</strong>, with multiplicity. Polynomials of degree <code>0</code> (including the zero
 polynomial) and polynomials without real roots give an empty list.</p>
 <p>Each <code>Alg</code> value is a root with an isolating interval, so comparisons are
 exact: <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code> and <code>==</code> work between two <code>Alg</code> values and
-between an <code>Alg</code> and a scalar (<code>Q</code>/<code>NN</code>/<code>ZZ</code>/<code>Number</code>, compared exactly as
+between an <code>Alg</code> and a scalar (<code>Q</code>/<code>N</code>/<code>Z</code>/<code>Number</code>, compared exactly as
 a rational). Arithmetic between algebraic numbers is not exposed.</p>
 <p>The display form is a decimal approximation with 9 significant decimals
 (e.g. <code>1.414213562</code>), or the exact reduced fraction for rational values
@@ -872,7 +880,7 @@ check! [-1.414213562, 1.414213562]
 <pre><code class="language-kototype">|Alg, Alg | Number| -&gt; Number
 </code></pre>
 <p>Exact comparison: <code>-1</code> if smaller, <code>0</code> if equal, <code>1</code> if greater. The
-argument may be another <code>Alg</code> or a scalar (<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code>),
+argument may be another <code>Alg</code> or a scalar (<code>Number</code>/<code>N</code>/<code>Z</code>/<code>Q</code>),
 compared exactly as a rational.</p>
 <h3 id="example-57"><a class="header" href="#example-57">Example</a></h3>
 <pre><code class="language-koto">roots = Alg(Poly([-2, 0, 1]))
@@ -938,7 +946,7 @@ check! 6.0
 <h2 id="ideal"><a class="header" href="#ideal">Ideal</a></h2>
 <pre><code class="language-kototype">|Number, ...| -&gt; Ideal
 </code></pre>
-<p>Ideals of <code>ZZ</code> are principal. <code>Ideal(a, b, ...)</code> is the ideal generated by
+<p>Ideals of <code>Z</code> are principal. <code>Ideal(a, b, ...)</code> is the ideal generated by
 its integer arguments; its canonical non-negative generator is displayed with
 suffix <code>Z</code>. Thus <code>Ideal(4, 6)</code> is <code>2Z</code>.</p>
 <h3 id="example-62"><a class="header" href="#example-62">Example</a></h3>
@@ -957,17 +965,17 @@ check! false
 <h2 id="idealcontains"><a class="header" href="#idealcontains">Ideal.contains</a></h2>
 <pre><code class="language-kototype">|Ideal, Number| -&gt; Bool
 </code></pre>
-<p>Tests whether an integer belongs to the ideal. <code>NN</code> and <code>ZZ</code> values are also
+<p>Tests whether an integer belongs to the ideal. <code>N</code> and <code>Z</code> values are also
 accepted.</p>
 <h3 id="example-63"><a class="header" href="#example-63">Example</a></h3>
-<pre><code class="language-koto">print! Ideal(6).contains(ZZ(-12))
+<pre><code class="language-koto">print! Ideal(6).contains(Z(-12))
 check! true
 
 print! Ideal(0).contains(3)
 check! false
 </code></pre>
 <h2 id="idealgenerator"><a class="header" href="#idealgenerator">Ideal.generator</a></h2>
-<pre><code class="language-kototype">|Ideal| -&gt; NN
+<pre><code class="language-kototype">|Ideal| -&gt; N
 </code></pre>
 <p>Returns the canonical non-negative generator.</p>
 <h3 id="example-64"><a class="header" href="#example-64">Example</a></h3>
@@ -977,7 +985,7 @@ check! 2
 <h2 id="idealsum"><a class="header" href="#idealsum">Ideal.sum</a></h2>
 <pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
 </code></pre>
-<p>Returns the sum of two ideals. In <code>ZZ</code>, this is the ideal generated by the
+<p>Returns the sum of two ideals. In <code>Z</code>, this is the ideal generated by the
 greatest common divisor of their generators.</p>
 <h3 id="example-65"><a class="header" href="#example-65">Example</a></h3>
 <pre><code class="language-koto">print! Ideal(6).sum(Ideal(15))
@@ -986,7 +994,7 @@ check! 3Z
 <h2 id="idealintersect"><a class="header" href="#idealintersect">Ideal.intersect</a></h2>
 <pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
 </code></pre>
-<p>Returns the intersection of two ideals. In <code>ZZ</code>, its generator is the least
+<p>Returns the intersection of two ideals. In <code>Z</code>, its generator is the least
 common multiple of the two generators.</p>
 <h3 id="example-66"><a class="header" href="#example-66">Example</a></h3>
 <pre><code class="language-koto">print! Ideal(6).intersect(Ideal(15))
@@ -1003,7 +1011,7 @@ check! 90Z
 <h2 id="idealquotient"><a class="header" href="#idealquotient">Ideal.quotient</a></h2>
 <pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
 </code></pre>
-<p>Returns the ideal quotient <code>(I : J) = {x in ZZ : xJ subset I}</code>.</p>
+<p>Returns the ideal quotient <code>(I : J) = {x in Z : xJ subset I}</code>.</p>
 <h3 id="example-68"><a class="header" href="#example-68">Example</a></h3>
 <pre><code class="language-koto">print! Ideal(6).quotient(Ideal(2))
 check! 3Z
@@ -1020,42 +1028,42 @@ check! true
 print! Ideal(6) == Ideal(-6)
 check! true
 </code></pre>
-<h2 id="zzn"><a class="header" href="#zzn">ZZn</a></h2>
-<pre><code class="language-kototype">|Number| -&gt; ZZn
+<h2 id="zn"><a class="header" href="#zn">Zn</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; Zn
 </code></pre>
-<p>The ring <code>ZZn(n)</code> is the ring of integers modulo a positive modulus <code>n</code>.
+<p>The ring <code>Zn(n)</code> is ℤ/nℤ, the ring of integers modulo a positive modulus <code>n</code>.
 Call <code>.of(x)</code> to create the residue class of an integer. Classes from the same
 ring support <code>+</code>, <code>-</code>, <code>*</code> and unary <code>-</code>; their display is <code>[x] mod n</code> with a
 canonical representative.</p>
 <h3 id="example-70"><a class="header" href="#example-70">Example</a></h3>
-<pre><code class="language-koto">print! ZZn(6)
-check! ZZn
+<pre><code class="language-koto">print! Zn(6)
+check! Zn
 
-print! ZZn(6).of(7) + ZZn(6).of(5)
+print! Zn(6).of(7) + Zn(6).of(5)
 check! [0] mod 6
 
-print! -ZZn(6).of(1)
+print! -Zn(6).of(1)
 check! [5] mod 6
 </code></pre>
-<h2 id="zznof"><a class="header" href="#zznof">ZZn.of</a></h2>
-<pre><code class="language-kototype">|ZZn, Number| -&gt; ZZnElement
+<h2 id="znof"><a class="header" href="#znof">Zn.of</a></h2>
+<pre><code class="language-kototype">|Zn, Number| -&gt; ZnElement
 </code></pre>
 <p>Creates a residue class, reducing the argument modulo the ring modulus.
-<code>NN</code> and <code>ZZ</code> values are accepted too.</p>
+<code>N</code> and <code>Z</code> values are accepted too.</p>
 <h3 id="example-71"><a class="header" href="#example-71">Example</a></h3>
-<pre><code class="language-koto">print! ZZn(7).of(-1)
+<pre><code class="language-koto">print! Zn(7).of(-1)
 check! [6] mod 7
 
-print! ZZn(6).of(7) * ZZn(6).of(5)
+print! Zn(6).of(7) * Zn(6).of(5)
 check! [5] mod 6
 </code></pre>
-<h2 id="zznelementinverse"><a class="header" href="#zznelementinverse">ZZnElement.inverse</a></h2>
-<pre><code class="language-kototype">|ZZnElement| -&gt; ZZnElement
+<h2 id="znelementinverse"><a class="header" href="#znelementinverse">ZnElement.inverse</a></h2>
+<pre><code class="language-kototype">|ZnElement| -&gt; ZnElement
 </code></pre>
 <p>Returns a multiplicative inverse. It errors when the residue is not coprime
 to the modulus.</p>
 <h3 id="example-72"><a class="header" href="#example-72">Example</a></h3>
-<pre><code class="language-koto">print! ZZn(7).of(5).inverse()
+<pre><code class="language-koto">print! Zn(7).of(5).inverse()
 check! [3] mod 7
 </code></pre>
 <h2 id="ff"><a class="header" href="#ff">FF</a></h2>
@@ -1103,7 +1111,7 @@ check! [0, 1]
 check! 5
 </code></pre>
 <h2 id="ffelementorder"><a class="header" href="#ffelementorder">FFElement.order</a></h2>
-<pre><code class="language-kototype">|FFElement| -&gt; NN
+<pre><code class="language-kototype">|FFElement| -&gt; N
 </code></pre>
 <p>Returns the multiplicative order of a non-zero element.</p>
 <h3 id="example-76"><a class="header" href="#example-76">Example</a></h3>
@@ -1161,7 +1169,7 @@ defined for periodic or infinite continued fractions.</p>
 check! 22/7
 </code></pre>
 <h2 id="cfconvergent"><a class="header" href="#cfconvergent">CF.convergent</a></h2>
-<pre><code class="language-kototype">|CF, NN| -&gt; Q
+<pre><code class="language-kototype">|CF, N| -&gt; Q
 </code></pre>
 <p>Returns the convergent at index <code>n</code>, starting at index zero. Convergents also
 work for periodic and infinite continued fractions.</p>
@@ -1170,9 +1178,9 @@ work for periodic and infinite continued fractions.</p>
 check! 41/29
 </code></pre>
 <h2 id="cftake"><a class="header" href="#cftake">CF.take</a></h2>
-<pre><code class="language-kototype">|CF, NN| -&gt; [ZZ]
+<pre><code class="language-kototype">|CF, N| -&gt; [Z]
 </code></pre>
-<p>Returns the first <code>n</code> coefficients as a list of <code>ZZ</code> values. A finite
+<p>Returns the first <code>n</code> coefficients as a list of <code>Z</code> values. A finite
 continued fraction stops when its coefficients run out.</p>
 <h3 id="example-82"><a class="header" href="#example-82">Example</a></h3>
 <pre><code class="language-koto">print! CF([3, 7]).take(4)
@@ -1373,7 +1381,7 @@ check! 1 - 2i
 check! 5 - 2x + x^2
 </code></pre>
 <h2 id="complexalgdegree"><a class="header" href="#complexalgdegree">ComplexAlg.degree</a></h2>
-<pre><code class="language-kototype">|ComplexAlg| -&gt; NN
+<pre><code class="language-kototype">|ComplexAlg| -&gt; N
 </code></pre>
 <p>Returns the degree of the minimal polynomial.</p>
 <h3 id="example-102"><a class="header" href="#example-102">Example</a></h3>
@@ -1389,7 +1397,7 @@ check! 2
 check! [1.0, 2.0]
 </code></pre>
 <h2 id="legendre"><a class="header" href="#legendre">legendre</a></h2>
-<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+<pre><code class="language-kototype">|Number, Number| -&gt; Z
 </code></pre>
 <p>Returns the Legendre symbol <code>(a / p)</code> as <code>-1</code>, <code>0</code> or <code>1</code>. The bottom
 argument must be an odd prime.</p>
@@ -1401,7 +1409,7 @@ print! legendre(3, 7)
 check! -1
 </code></pre>
 <h2 id="jacobi"><a class="header" href="#jacobi">jacobi</a></h2>
-<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+<pre><code class="language-kototype">|Number, Number| -&gt; Z
 </code></pre>
 <p>Returns the Jacobi symbol <code>(a / n)</code> for an odd positive <code>n</code>; <code>n</code> need not be
 prime.</p>
@@ -1413,7 +1421,7 @@ print! jacobi(3, 9)
 check! 0
 </code></pre>
 <h2 id="kronecker"><a class="header" href="#kronecker">kronecker</a></h2>
-<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+<pre><code class="language-kototype">|Number, Number| -&gt; Z
 </code></pre>
 <p>Returns the Kronecker symbol <code>(a / n)</code>, extending the Jacobi symbol to even,
 negative and zero bottom arguments.</p>
@@ -1437,17 +1445,17 @@ check! [2, 1, 2, 1, 1, 4, 1, 1, 6]
 print! e_cf.convergent(5)
 check! 87/32
 </code></pre>
-<h2 id="zzideal"><a class="header" href="#zzideal">ZZ.ideal</a></h2>
-<pre><code class="language-kototype">|ZZ| -&gt; Ideal
+<h2 id="zideal"><a class="header" href="#zideal">Z.ideal</a></h2>
+<pre><code class="language-kototype">|Z| -&gt; Ideal
 </code></pre>
 <p>Returns the principal ideal generated by the integer. The generator is
 canonicalized, so negative integers produce the same ideal as their absolute
 values.</p>
 <h3 id="example-108"><a class="header" href="#example-108">Example</a></h3>
-<pre><code class="language-koto">print! ZZ(-6).ideal()
+<pre><code class="language-koto">print! Z(-6).ideal()
 check! 6Z
 
-print! ZZ(0).ideal()
+print! Z(0).ideal()
 check! 0Z
 </code></pre>
 

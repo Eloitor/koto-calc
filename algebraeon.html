@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-c400e9fc.js";
+            window.path_to_searchindex_js = "searchindex-7d0a2a4c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c548091b.js"></script>
@@ -185,8 +185,16 @@ and calculate in finite fields without losing information.</p>
 documents every available constructor, method, and module-level function.</p>
 </blockquote>
 <p>Import the types you need from the built-in <code>algebraeon</code> module:</p>
-<pre><code class="language-koto">from algebraeon import Q, Poly, Mat, Alg
+<pre><code class="language-koto">from algebraeon import N, Z, Q, Zn, Poly, Mat, Alg
 </code></pre>
+<h3 id="naming-convention"><a class="header" href="#naming-convention">Naming convention</a></h3>
+<p>Basic number domains use their ASCII mathematical symbols: <code>N</code> for natural
+numbers, <code>Z</code> for integers, and <code>Q</code> for rationals. <code>Zn(n)</code> denotes the residue
+ring ℤ/nℤ. Other structures use descriptive PascalCase names or established
+acronyms such as <code>Poly</code>, <code>Mat</code>, <code>FF</code>, and <code>CF</code>.</p>
+<p>For compatibility with 0.1 scripts, <code>NN</code>, <code>ZZ</code>, and <code>ZZn</code> remain aliases for
+<code>N</code>, <code>Z</code>, and <code>Zn</code>; values created through an alias still have the canonical
+runtime type name.</p>
 <h2 id="the-exact-algebra-toolbox"><a class="header" href="#the-exact-algebra-toolbox">The exact-algebra toolbox</a></h2>
 <div class="table-wrapper">
 <table>
@@ -194,23 +202,23 @@ documents every available constructor, method, and module-level function.</p>
 <tr><th>Type or family</th><th>What it does</th></tr>
 </thead>
 <tbody>
-<tr><td><code>NN</code></td><td>Arbitrary-precision natural numbers, with primes, factorization, divisors, and combinatorics.</td></tr>
-<tr><td><code>ZZ</code></td><td>Arbitrary-precision signed integers and integer number theory.</td></tr>
+<tr><td><code>N</code></td><td>Arbitrary-precision natural numbers, with primes, factorization, divisors, and combinatorics.</td></tr>
+<tr><td><code>Z</code></td><td>Arbitrary-precision signed integers and integer number theory.</td></tr>
 <tr><td><code>Q</code></td><td>Reduced rational numbers, so values such as <code>1/3</code> stay exact.</td></tr>
 <tr><td><code>QSqrt</code></td><td>Elements of quadratic fields <code>Q(sqrt(d))</code>, including exact conjugates, norms, and inverses.</td></tr>
 <tr><td><code>Alg</code></td><td>Exact real algebraic numbers represented as isolated roots of polynomials.</td></tr>
 <tr><td><code>ComplexAlg</code></td><td>Exact complex algebraic numbers, including polynomial roots and the imaginary unit.</td></tr>
 <tr><td><code>CF</code></td><td>Finite and periodic continued fractions, convergents, and exact rational values.</td></tr>
 <tr><td><code>FF</code></td><td>Prime and extension finite fields <code>GF(p^k)</code> with exact field arithmetic.</td></tr>
-<tr><td><code>Ideal</code> / <code>ZZn</code></td><td>Ideals of the integers and residue rings such as <code>Z/12Z</code>.</td></tr>
-<tr><td><code>Poly</code></td><td>Univariate polynomials over <code>ZZ</code> or <code>Q</code>, with evaluation, gcd, derivatives, and factorization.</td></tr>
+<tr><td><code>Ideal</code> / <code>Zn</code></td><td>Ideals of the integers and residue rings such as <code>Z/12Z</code>.</td></tr>
+<tr><td><code>Poly</code></td><td>Univariate polynomials over <code>Z</code> or <code>Q</code>, with evaluation, gcd, derivatives, and factorization.</td></tr>
 <tr><td><code>MultiPoly</code></td><td>Symbolic multivariate integer polynomials with evaluation and symmetric-polynomial tools.</td></tr>
 <tr><td><code>PolyQuot</code></td><td>Exact number fields presented as quotient rings <code>Q[x]/(f)</code>.</td></tr>
 <tr><td><code>Mat</code></td><td>Integer and rational matrices with determinants, exact inverses, and LLL reduction.</td></tr>
 <tr><td><code>Perm</code></td><td>Permutations with composition, inverses, signs, and cycle decomposition.</td></tr>
 <tr><td><code>Group</code></td><td>Finite groups represented by multiplication tables, with standard constructors.</td></tr>
 <tr><td><code>Quat</code></td><td>Hamilton quaternions over the rationals, with conjugate, norm, and inverse.</td></tr>
-<tr><td>Stirling numbers</td><td>Exact first- and second-kind Stirling numbers via <code>NN</code> and <code>ZZ</code>.</td></tr>
+<tr><td>Stirling numbers</td><td>Exact first- and second-kind Stirling numbers via <code>N</code> and <code>Z</code>.</td></tr>
 </tbody>
 </table>
 </div>
@@ -225,9 +233,9 @@ print third + Q(1, 6) # 1/2
 <p>There is no intermediate binary floating-point value: the result is the
 reduced fraction <code>1/2</code>.</p>
 <h3 id="factor-arbitrary-precision-integers"><a class="header" href="#factor-arbitrary-precision-integers">Factor arbitrary-precision integers</a></h3>
-<pre><code class="language-koto">from algebraeon import NN
+<pre><code class="language-koto">from algebraeon import N
 
-print NN(12345).factor() # [(3, 1), (5, 1), (823, 1)]
+print N(12345).factor() # [(3, 1), (5, 1), (823, 1)]
 </code></pre>
 <h3 id="work-with-an-exact-square-root"><a class="header" href="#work-with-an-exact-square-root">Work with an exact square root</a></h3>
 <pre><code class="language-koto">from algebraeon import Alg, Q
