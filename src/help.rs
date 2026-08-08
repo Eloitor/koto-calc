@@ -180,7 +180,7 @@ To get help, run 'help <topic>', e.g. 'help strings', or 'help map.keys'.
 Tab completion can be used to browse available topics, \
 e.g. pressing tab twice after 'help io.' will bring up a list of io module items.
 
-A rendered version of the help docs can also be found here: https://koto.dev/docs
+A rendered version of the help docs can also be found here: https://eloitor.github.io/koto-calc/
 
 Help is available for the following topics:",
                 );
