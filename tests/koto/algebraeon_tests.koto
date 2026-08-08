@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat
+from algebraeon import NN, ZZ, Q, Mat, Poly
 
 @post_test = ||
   print 'ok'
@@ -171,6 +171,98 @@ from algebraeon import NN, ZZ, Q, Mat
   assert_eq caught, 'caught'
   caught = try
     Q(1, 2) / Q(0, 3)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test poly_tests = ||
+  write 'Testing Poly \t'
+
+  # Construccio: coeficients de grau 0 amunt (coeffs[0] = terme independent)
+  # ZZ per defecte, Q si hi ha fraccions
+  p = Poly([6, -5, 1])          # x^2 - 5x + 6
+  assert_eq p.degree(), NN(2)
+  assert_eq p.coeffs(), [ZZ(6), ZZ(-5), ZZ(1)]
+
+  q = Poly([3, Q(-5, 2), Q(1, 2)])   # 3 - (5/2)x + (1/2)x^2 = (1/2)(x-2)(x-3)
+  assert_eq q.degree(), NN(2)
+  assert_eq q.coeffs(), [Q(3), Q(-5, 2), Q(1, 2)]
+
+  # Polinomi zero i grau
+  assert_eq Poly([]).degree(), NN(0)
+  assert_eq Poly([0, 0, 0]).degree(), NN(0)
+  assert_eq Poly([7]).degree(), NN(0)
+
+  # Suma / resta / multiplicacio (amb Poly i escalars)
+  a = Poly([6, -5, 1])          # x^2 - 5x + 6
+  b = Poly([1, 1])              # x + 1
+  assert_eq a + b, Poly([7, -4, 1])
+  assert_eq a - b, Poly([5, -6, 1])
+  assert_eq a * b, Poly([6, 1, -4, 1])   # x^3 - 4x^2 + x + 6
+  assert_eq a * 2, Poly([12, -10, 2])
+  assert_eq 2 * a, Poly([12, -10, 2])
+  assert_eq a * NN(2), Poly([12, -10, 2])
+  assert_eq a * ZZ(2), Poly([12, -10, 2])
+  assert_eq a * Q(1, 2), Poly([3, Q(-5, 2), Q(1, 2)])
+
+  # Promocio ZZ -> Q en operacions mixtes
+  mixed = Poly([Q(1, 2), 0, 1])  # x^2 + 1/2
+  assert_eq mixed + a, Poly([Q(13, 2), Q(-5), Q(2)])
+  assert_eq mixed * a, Poly([Q(3), Q(-5, 2), Q(13, 2), Q(-5), Q(1)])
+
+  # eval (x pot ser Number/NN/ZZ/Q)
+  assert_eq a.eval(2), ZZ(0)
+  assert_eq a.eval(ZZ(3)), ZZ(0)
+  assert_eq a.eval(Q(1, 2)), Q(15, 4)
+  assert_eq a.eval(0.5), Q(15, 4)
+
+  # derivative
+  assert_eq a.derivative(), Poly([-5, 2])
+  assert_eq Poly([5]).derivative(), Poly([])
+  assert_eq Poly([1, 0, 0, 1]).derivative(), Poly([0, 0, 3])
+
+  # gcd (monic; promou a Q si cal)
+  assert_eq a.gcd(Poly([2, -3, 1])), Poly([-2, 1])
+  assert_eq Poly([12, -10, 2]).gcd(Poly([2, -3, 1])), Poly([-2, 1])
+  assert_eq Poly([Q(1, 2), 0, Q(1, 2)]).gcd(Poly([Q(1, 3), 0, Q(1, 3)])), Poly([1, 0, 1])
+
+  # factor: x^2 - 5x + 6 -> (x-2)(x-3)
+  f = a.factor()
+  assert_eq f, [(Poly([-2, 1]), NN(1)), (Poly([-3, 1]), NN(1))]
+
+  # factor sobre Q
+  fq = q.factor()
+  assert_eq fq, [(Poly([-2, 1]), NN(1)), (Poly([-3, 1]), NN(1))]
+
+  # factor irreductible (sobre ZZ i sobre Q)
+  fi = Poly([1, 0, 1]).factor()
+  assert_eq fi, [(Poly([1, 0, 1]), NN(1))]
+  fiq = Poly([Q(3, 2), Q(-5, 2), Q(1, 2)]).factor()
+  assert_eq fiq, [(Poly([3, -5, 1]), NN(1))]
+
+  # display: format estandard ascendent amb variable x
+  assert_eq '{a}', '6 - 5x + x^2'
+  assert_eq '{Poly([0])}', '0'
+  assert_eq '{Poly([-1, 0, 1])}', '-1 + x^2'
+  assert_eq '{Poly([1, 1])}', '1 + x'
+  assert_eq '{Poly([3, 0, -2])}', '3 - 2x^2'
+  assert_eq '{Poly([Q(1, 2), 0, 1])}', '(1/2) + x^2'
+  assert_eq '{Poly([Q(-3, 2), Q(1, 2)])}', '-(3/2) + (1/2)x'
+
+  # Errors: constructor sense llista i operacions amb tipus incorrectes
+  caught = try
+    Poly(1)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Poly([1, 2]) + 5
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Poly([1, 2]).eval('x')
   catch e
     'caught'
   assert_eq caught, 'caught'

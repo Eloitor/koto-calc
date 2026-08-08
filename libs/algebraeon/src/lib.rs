@@ -1,5 +1,6 @@
 mod Mat;
 mod NN;
+mod Poly;
 mod Q;
 mod ZZ;
 use koto_runtime::prelude::*;
@@ -77,7 +78,23 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Q", q);
+    let mut poly = KMap::default();
 
+    poly.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| match ctx.args() {
+            [KValue::List(list)] => Ok(Poly::Poly::from_koto_list(list)?.into()),
+            unexpected => unexpected_args("|List|", unexpected),
+        })
+        .into(),
+    );
+
+    poly.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Poly".into())).into(),
+    );
+
+    result.insert("Poly", poly);
 
 
     let mut mat = KMap::default();
