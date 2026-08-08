@@ -57,10 +57,10 @@ fn scalar_from_value(value: &KValue) -> Result<Scalar> {
             } else if let Ok(q) = object.cast::<Q>() {
                 Ok(Scalar::Rat(q.0.clone()))
             } else {
-                unexpected_type("Number, NN, ZZ, or Q", value)
+                unexpected_type("Number, N natural, Z integer, or Q rational", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, ZZ, or Q", unexpected),
+        unexpected => unexpected_type("Number, N natural, Z integer, or Q rational", unexpected),
     }
 }
 

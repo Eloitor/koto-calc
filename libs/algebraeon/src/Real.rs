@@ -78,7 +78,7 @@ impl Real {
     pub fn to_float(&self, args: &[KValue]) -> Result<KValue> {
         let decimals = match args {
             [KValue::Number(n)] if n.is_i64() && i64::from(*n) >= 0 => i64::from(*n) as u32,
-            unexpected => return unexpected_args("|NN|", unexpected),
+            unexpected => return unexpected_args("|N|", unexpected),
         };
         // Refine until the interval is narrower than half of 10^-decimals, so
         // the midpoint rounds correctly to `decimals` decimal places.

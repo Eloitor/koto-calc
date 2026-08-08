@@ -24,10 +24,10 @@ fn integer_from_value(value: &KValue) -> Result<Integer> {
             } else if let Ok(zz) = object.cast::<ZZ>() {
                 Ok(zz.to_integer())
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 
@@ -52,10 +52,10 @@ fn natural_from_value(value: &KValue) -> Result<Natural> {
                 }
                 Ok(Natural::try_from(i).unwrap())
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 

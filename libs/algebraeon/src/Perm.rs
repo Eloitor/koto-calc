@@ -30,10 +30,10 @@ pub(crate) fn usize_from_value(value: &KValue) -> Result<usize> {
                         .map_err(|_| koto_runtime::Error::from("number too large"))
                 }
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 

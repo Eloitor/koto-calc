@@ -20,10 +20,10 @@ fn integer_from_value(value: &KValue) -> Result<Integer> {
             } else if let Ok(zz) = object.cast::<ZZ>() {
                 Ok(zz.to_integer())
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 
@@ -186,6 +186,7 @@ fn inverse_mod(a: &Integer, m: &Integer) -> Option<Integer> {
 /// The ring ZZ/nZZ of integers modulo n. ZZn(n) builds the ring for a
 /// positive modulus n; ZZn(n).of(x) returns the class of x (a ZZnElement).
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
+#[koto(type_name = "Zn")]
 pub struct ZZn {
     modulus: Integer,
 }
@@ -198,7 +199,7 @@ impl ZZn {
             [n] => {
                 let modulus = integer_from_value(n)?;
                 if modulus <= Integer::ZERO {
-                    return runtime_error!("ZZn: modulus must be positive, got {}", modulus);
+                    return runtime_error!("Zn: modulus must be positive, got {}", modulus);
                 }
                 Ok(KValue::Object(KObject::from(Self { modulus })))
             }
@@ -231,12 +232,12 @@ impl KotoObject for ZZn {
                 let other = other.cast::<Self>().unwrap();
                 Ok(self.modulus == other.modulus)
             }
-            unexpected => unexpected_type("ZZn", unexpected),
+            unexpected => unexpected_type("Zn residue ring", unexpected),
         }
     }
 
     fn display(&self, ctx: &mut DisplayContext) -> koto_runtime::Result<()> {
-        ctx.append("ZZn");
+        ctx.append("Zn");
         Ok(())
     }
 }
@@ -244,6 +245,7 @@ impl KotoObject for ZZn {
 /// A residue class [x] in ZZ/nZZ, stored with its canonical representative
 /// 0 <= x < n. Display format: "[x] mod n".
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
+#[koto(type_name = "ZnElement")]
 pub struct ZZnElement {
     modulus: Integer,
     value: Integer,
@@ -260,7 +262,7 @@ impl ZZnElement {
                 value: inv,
             }))),
             None => runtime_error!(
-                "ZZn: {} has no inverse modulo {} (not coprime with the modulus)",
+                "Zn: {} has no inverse modulo {} (not coprime with the modulus)",
                 self.value,
                 self.modulus
             ),
@@ -275,7 +277,7 @@ impl KotoObject for ZZnElement {
                 let other = other.cast::<Self>().unwrap();
                 Ok(self.modulus == other.modulus && self.value == other.value)
             }
-            unexpected => unexpected_type("ZZnElement", unexpected),
+            unexpected => unexpected_type("ZnElement residue class", unexpected),
         }
     }
 
@@ -285,7 +287,7 @@ impl KotoObject for ZZnElement {
                 let other = other.cast::<Self>().unwrap();
                 if self.modulus != other.modulus {
                     return runtime_error!(
-                        "ZZn: cannot add classes with different moduli {} and {}",
+                        "Zn: cannot add classes with different moduli {} and {}",
                         self.modulus,
                         other.modulus
                     );
@@ -297,7 +299,7 @@ impl KotoObject for ZZnElement {
                     value: r,
                 })))
             }
-            unexpected => unexpected_type("ZZnElement", unexpected),
+            unexpected => unexpected_type("ZnElement residue class", unexpected),
         }
     }
 
@@ -307,7 +309,7 @@ impl KotoObject for ZZnElement {
                 let other = other.cast::<Self>().unwrap();
                 if self.modulus != other.modulus {
                     return runtime_error!(
-                        "ZZn: cannot subtract classes with different moduli {} and {}",
+                        "Zn: cannot subtract classes with different moduli {} and {}",
                         self.modulus,
                         other.modulus
                     );
@@ -319,7 +321,7 @@ impl KotoObject for ZZnElement {
                     value: r,
                 })))
             }
-            unexpected => unexpected_type("ZZnElement", unexpected),
+            unexpected => unexpected_type("ZnElement residue class", unexpected),
         }
     }
 
@@ -329,7 +331,7 @@ impl KotoObject for ZZnElement {
                 let other = other.cast::<Self>().unwrap();
                 if self.modulus != other.modulus {
                     return runtime_error!(
-                        "ZZn: cannot multiply classes with different moduli {} and {}",
+                        "Zn: cannot multiply classes with different moduli {} and {}",
                         self.modulus,
                         other.modulus
                     );
@@ -341,7 +343,7 @@ impl KotoObject for ZZnElement {
                     value: r,
                 })))
             }
-            unexpected => unexpected_type("ZZnElement", unexpected),
+            unexpected => unexpected_type("ZnElement residue class", unexpected),
         }
     }
 

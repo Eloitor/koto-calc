@@ -40,7 +40,7 @@ pub fn make_module() -> KMap {
 
     nn.insert_meta(
         MetaKey::UnaryOp(UnaryOp::Display),
-        KNativeFunction::new(|_ctx| Ok("NN".into())).into(),
+        KNativeFunction::new(|_ctx| Ok("N".into())).into(),
     );
     nn.add_fn("primes", |_ctx| {
         Ok(KValue::Object(KObject::from(
@@ -48,6 +48,7 @@ pub fn make_module() -> KMap {
         )))
     });
 
+    result.insert("N", nn.clone());
     result.insert("NN", nn);
 
     let mut zz = KMap::default();
@@ -63,9 +64,10 @@ pub fn make_module() -> KMap {
 
     zz.insert_meta(
         MetaKey::UnaryOp(UnaryOp::Display),
-        KNativeFunction::new(|_ctx| Ok("ZZ".into())).into(),
+        KNativeFunction::new(|_ctx| Ok("Z".into())).into(),
     );
 
+    result.insert("Z", zz.clone());
     result.insert("ZZ", zz);
 
     let mut q = KMap::default();
@@ -260,9 +262,10 @@ pub fn make_module() -> KMap {
 
     zzn.insert_meta(
         MetaKey::UnaryOp(UnaryOp::Display),
-        KNativeFunction::new(|_ctx| Ok("ZZn".into())).into(),
+        KNativeFunction::new(|_ctx| Ok("Zn".into())).into(),
     );
 
+    result.insert("Zn", zzn.clone());
     result.insert("ZZn", zzn);
 
     let mut ff = KMap::default();
@@ -440,7 +443,7 @@ pub fn make_module() -> KMap {
                 Ok(result_nn.into())
             } else {
                 // If not both NN::NN, return an error with the original arguments
-                unexpected_args("|NN, NN|", &[n.clone().into(), m.clone().into()])
+                unexpected_args("|N, N|", &[n.clone().into(), m.clone().into()])
             }
         }
         unexpected => unexpected_args("|Object, Object|", unexpected),
@@ -456,7 +459,7 @@ pub fn make_module() -> KMap {
                 Ok(result_nn.into())
             } else {
                 // If not both NN::NN, return an error with the original arguments
-                unexpected_args("|NN, NN|", &[n.clone().into(), m.clone().into()])
+                unexpected_args("|N, N|", &[n.clone().into(), m.clone().into()])
             }
         }
         unexpected => unexpected_args("|Object, Object|", unexpected),

@@ -19,10 +19,10 @@ pub(crate) fn integer_from_value(value: &KValue) -> Result<Integer> {
             } else if let Ok(zz) = object.cast::<ZZ>() {
                 Ok(zz.to_integer())
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 
@@ -47,10 +47,10 @@ pub(crate) fn natural_from_value(value: &KValue) -> Result<Natural> {
                 }
                 Ok(Natural::try_from(i).unwrap())
             } else {
-                unexpected_type("Number, NN, or ZZ", value)
+                unexpected_type("Number, N natural, or Z integer", value)
             }
         }
-        unexpected => unexpected_type("Number, NN, or ZZ", unexpected),
+        unexpected => unexpected_type("Number, N natural, or Z integer", unexpected),
     }
 }
 
@@ -231,7 +231,7 @@ impl CF {
     pub fn convergent(&self, args: &[KValue]) -> Result<KValue> {
         let n = match args {
             [KValue::Number(n)] if n.is_i64() && i64::from(*n) >= 0 => i64::from(*n) as usize,
-            unexpected => return unexpected_args("|NN|", unexpected),
+            unexpected => return unexpected_args("|N|", unexpected),
         };
         let mut p_prev2 = Integer::ZERO; // p_{-2}
         let mut p_prev1 = Integer::ONE; // p_{-1}
@@ -266,7 +266,7 @@ impl CF {
     pub fn take(&self, args: &[KValue]) -> Result<KValue> {
         let n = match args {
             [KValue::Number(n)] if n.is_i64() && i64::from(*n) >= 0 => i64::from(*n) as usize,
-            unexpected => return unexpected_args("|NN|", unexpected),
+            unexpected => return unexpected_args("|N|", unexpected),
         };
         let mut vals = Vec::new();
         for i in 0..n {

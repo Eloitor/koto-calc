@@ -10,6 +10,7 @@ use algebraeon_rings::structure::{
 };
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
+#[koto(type_name = "Z")]
 pub struct ZZ(Integer);
 
 #[koto_impl]
@@ -59,7 +60,7 @@ impl ZZ {
                 let n_int = self.to_integer();
                 if n_int < Integer::ZERO {
                     return runtime_error!(
-                        "ZZ.stirling1_signed: n must be non-negative, got {}",
+                        "Z.stirling1_signed: n must be non-negative, got {}",
                         n_int
                     );
                 }
@@ -68,7 +69,7 @@ impl ZZ {
                     .map_err(|_| koto_runtime::Error::from("number too large"))?;
                 if k > n {
                     return runtime_error!(
-                        "ZZ.stirling1_signed: k must be <= n (got k={}, n={})",
+                        "Z.stirling1_signed: k must be <= n (got k={}, n={})",
                         k,
                         n
                     );
@@ -77,7 +78,7 @@ impl ZZ {
                     .map_err(|_| koto_runtime::Error::from("invalid Stirling input"))?;
                 Ok(KValue::Object(KObject::from(ZZ::from_integer(s))))
             }
-            unexpected => unexpected_args("|NN|", unexpected),
+            unexpected => unexpected_args("|N|", unexpected),
         }
     }
 
@@ -114,7 +115,7 @@ impl ZZ {
                     .into(),
                 ))
             }
-            unexpected => unexpected_args("|ZZ|", unexpected),
+            unexpected => unexpected_args("|Z|", unexpected),
         }
     }
 
@@ -126,7 +127,7 @@ impl ZZ {
                 let (q, _r) = self.0.clone().div_mod(other.0.clone());
                 Ok(KValue::Object(KObject::from(ZZ(q))))
             }
-            unexpected => unexpected_args("|ZZ|", unexpected),
+            unexpected => unexpected_args("|Z|", unexpected),
         }
     }
 
@@ -146,7 +147,7 @@ impl ZZ {
                 };
                 Ok(KValue::Object(KObject::from(ZZ(r))))
             }
-            unexpected => unexpected_args("|ZZ|", unexpected),
+            unexpected => unexpected_args("|Z|", unexpected),
         }
     }
 }
@@ -168,7 +169,7 @@ impl KotoObject for ZZ {
                 let result = ZZ(self.0.clone() + Integer::from(i64::from(other)));
                 Ok(KValue::Object(KObject::from(result)))
             }
-            unexpected => unexpected_type("ZZ", unexpected),
+            unexpected => unexpected_type("Z integer", unexpected),
         }
     }
 
@@ -198,7 +199,7 @@ impl KotoObject for ZZ {
                 let result = self.0.clone() * other.0.clone();
                 Ok(KValue::Object(KObject::from(Self(result))))
             }
-            unexpected => unexpected_type("ZZ", unexpected),
+            unexpected => unexpected_type("Z integer", unexpected),
         }
     }
 
@@ -209,7 +210,7 @@ impl KotoObject for ZZ {
                 let result = self.0.clone() - other.0.clone();
                 Ok(KValue::Object(KObject::from(Self(result))))
             }
-            unexpected => unexpected_type("ZZ", unexpected),
+            unexpected => unexpected_type("Z integer", unexpected),
         }
     }
 
@@ -229,7 +230,7 @@ impl KotoObject for ZZ {
                 self.0 += Integer::from(i64::from(other));
                 Ok(())
             }
-            unexpected => unexpected_type("ZZ, NN, or Number", unexpected),
+            unexpected => unexpected_type("Z integer, N natural, or Number", unexpected),
         }
     }
 
@@ -249,7 +250,7 @@ impl KotoObject for ZZ {
                 self.0 *= Integer::from(i64::from(other));
                 Ok(())
             }
-            unexpected => unexpected_type("ZZ, NN, or Number", unexpected),
+            unexpected => unexpected_type("Z integer, N natural, or Number", unexpected),
         }
     }
 }

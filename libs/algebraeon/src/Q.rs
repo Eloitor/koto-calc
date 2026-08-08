@@ -13,7 +13,7 @@ pub struct Q(pub Rational);
 
 #[koto_impl]
 impl Q {
-    /// Converts a Koto value (Number, NN, ZZ, or Q) into an algebraeon Rational.
+    /// Converts a Koto value (Number, N natural, Z integer, or Q rational) into an algebraeon Rational.
     pub fn rational_from_value(value: &KValue) -> Result<Rational> {
         match value {
             KValue::Number(n) => {
@@ -36,10 +36,10 @@ impl Q {
                 } else if let Ok(q) = object.cast::<Q>() {
                     Ok(q.0.clone())
                 } else {
-                    unexpected_type("Number, NN, ZZ, or Q", value)
+                    unexpected_type("Number, N natural, Z integer, or Q rational", value)
                 }
             }
-            unexpected => unexpected_type("Number, NN, ZZ, or Q", unexpected),
+            unexpected => unexpected_type("Number, N natural, Z integer, or Q rational", unexpected),
         }
     }
 
@@ -137,7 +137,7 @@ impl Q {
                     self.0.clone().approximate(&max_den),
                 ))))
             }
-            unexpected => unexpected_args("|NN|", unexpected),
+            unexpected => unexpected_args("|N|", unexpected),
         }
     }
 

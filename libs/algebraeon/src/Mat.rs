@@ -75,7 +75,7 @@ fn index_from_value(value: &KValue) -> Result<usize> {
                 .map_err(|_| koto_runtime::Error::from(format!("index too large")))?;
             Ok(u)
         }
-        unexpected => unexpected_type("Number or NN (index)", unexpected),
+        unexpected => unexpected_type("Number or N natural (index)", unexpected),
     }
 }
 
@@ -91,10 +91,10 @@ impl Mat {
                 } else if object.is_a::<NN>() || object.is_a::<ZZ>() {
                     Ok(true)
                 } else {
-                    unexpected_type("Number, NN, ZZ, or Q", value)
+                    unexpected_type("Number, N natural, Z integer, or Q rational", value)
                 }
             }
-            unexpected => unexpected_type("Number, NN, ZZ, or Q", unexpected),
+            unexpected => unexpected_type("Number, N natural, Z integer, or Q rational", unexpected),
         }
     }
 
@@ -114,10 +114,10 @@ impl Mat {
                         Err(()) => runtime_error!("expected an integer entry, got {}", q.0),
                     }
                 } else {
-                    unexpected_type("Number, NN, ZZ, or Q", value)
+                    unexpected_type("Number, N natural, Z integer, or Q rational", value)
                 }
             }
-            unexpected => unexpected_type("Number, NN, ZZ, or Q", unexpected),
+            unexpected => unexpected_type("Number, N natural, Z integer, or Q rational", unexpected),
         }
     }
 
@@ -266,7 +266,7 @@ impl Mat {
                         .map_err(|e| mat_error("Mat.at", &e)),
                 }
             }
-            unexpected => unexpected_args("|NN, NN|", unexpected),
+            unexpected => unexpected_args("|N, N|", unexpected),
         }
     }
 
@@ -285,7 +285,7 @@ impl Mat {
     pub fn mul(&self, args: &[KValue]) -> Result<KValue> {
         match args {
             [other] => self.multiply(other),
-            unexpected => unexpected_args("|Mat| or |Number/NN/ZZ/Q|", unexpected),
+            unexpected => unexpected_args("|Mat| or |Number/N/Z/Q|", unexpected),
         }
     }
 
@@ -325,7 +325,7 @@ impl Mat {
     ///
     /// Takes the rows of the matrix as the basis of a lattice and returns a
     /// new Mat whose rows are an LLL-reduced basis (delta = 3/4, standard
-    /// inner product). Only defined for integer (ZZ) matrices.
+    /// inner product). Only defined for integer (Z) matrices.
     #[koto_method]
     pub fn lll(&self) -> Result<KValue> {
         match self {
@@ -338,7 +338,7 @@ impl Mat {
                 Ok(KValue::Object(KObject::from(Mat::ZZ(reduced))))
             }
             Mat::Q(_) => runtime_error!(
-                "Mat.lll: LLL reduction is only defined for integer (ZZ) matrices"
+                "Mat.lll: LLL reduction is only defined for integer (Z) matrices"
             ),
         }
     }
@@ -349,7 +349,7 @@ impl Mat {
     /// the Smith normal form (diagonal with positive entries dividing the
     /// next one), `U` and `V` are unimodular matrices, and `rank` (an NN) is
     /// the number of non-zero diagonal entries of `S`. Only defined for
-    /// integer (ZZ) matrices.
+    /// integer (Z) matrices.
     #[koto_method]
     pub fn smith(&self) -> Result<KValue> {
         match self {
@@ -364,7 +364,7 @@ impl Mat {
                 .into())))
             }
             Mat::Q(_) => runtime_error!(
-                "Mat.smith: Smith normal form is only defined for integer (ZZ) matrices"
+                "Mat.smith: Smith normal form is only defined for integer (Z) matrices"
             ),
         }
     }

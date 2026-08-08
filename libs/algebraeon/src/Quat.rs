@@ -85,7 +85,7 @@ impl Quat {
         Self::from_rationals(real, i, j, k)
     }
 
-    /// Converts a Koto value (Number, NN, ZZ, or Q) into a Rational.
+    /// Converts a Koto value (Number, N natural, Z integer, or Q rational) into a Rational.
     fn rational_from_value(value: &KValue) -> Result<Rational> {
         Q::rational_from_value(value)
     }

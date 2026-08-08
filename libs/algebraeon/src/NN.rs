@@ -10,6 +10,7 @@ use algebraeon::rings::natural::functions::{IsPowerTestResult, is_power_test};
 use algebraeon_rings::structure::{MetaFactoringMonoid, MetaFactoringMonoidNaturalExponent, UniqueFactorizationMonoidSignature};
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
+#[koto(type_name = "NIterator")]
 pub struct NNIterator {
     pub counter: Natural,
 }
@@ -21,6 +22,7 @@ impl NNIterator {
 
 /// Infinite iterator over the prime numbers (2, 3, 5, 7, ...)
 #[derive(KotoType)]
+#[koto(type_name = "NPrimesIterator")]
 pub struct NNPrimesIterator {
     iter: Box<dyn Iterator<Item = usize>>,
 }
@@ -50,6 +52,7 @@ impl NNPrimesIterator {
 }
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
+#[koto(type_name = "N")]
 pub struct NN(pub Natural);
 
 #[koto_impl]
@@ -167,14 +170,14 @@ impl NN {
                     .try_into()
                     .map_err(|_| koto_runtime::Error::from("number too large"))?;
                 if k > n {
-                    return runtime_error!("NN.stirling1: k must be <= n (got k={}, n={})", k, n);
+                    return runtime_error!("N.stirling1: k must be <= n (got k={}, n={})", k, n);
                 }
                 let s = stirling_number1_signed(n, k)
                     .map_err(|_| koto_runtime::Error::from("invalid Stirling input"))?
                     .abs();
                 Ok(KValue::Object(KObject::from(NN(s))))
             }
-            unexpected => unexpected_args("|NN|", unexpected),
+            unexpected => unexpected_args("|N|", unexpected),
         }
     }
 
@@ -191,13 +194,13 @@ impl NN {
                     .try_into()
                     .map_err(|_| koto_runtime::Error::from("number too large"))?;
                 if k > n {
-                    return runtime_error!("NN.stirling2: k must be <= n (got k={}, n={})", k, n);
+                    return runtime_error!("N.stirling2: k must be <= n (got k={}, n={})", k, n);
                 }
                 let s = stirling_number2(n, k)
                     .map_err(|_| koto_runtime::Error::from("invalid Stirling input"))?;
                 Ok(KValue::Object(KObject::from(NN(s))))
             }
-            unexpected => unexpected_args("|NN|", unexpected),
+            unexpected => unexpected_args("|N|", unexpected),
         }
     }
 
@@ -265,7 +268,7 @@ impl KotoObject for NN {
                 let result = self.0.clone() + other.0.clone();
                 Ok(KValue::Object(KObject::from(Self(result))))
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
@@ -276,7 +279,7 @@ impl KotoObject for NN {
                 let result = self.0.clone() - other.0.clone();
                 Ok(KValue::Object(KObject::from(Self(result))))
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
@@ -287,7 +290,7 @@ impl KotoObject for NN {
                 self.0 -= other.0.clone();
                 Ok(())
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
@@ -298,7 +301,7 @@ impl KotoObject for NN {
                 let result = self.0.clone() * other.0.clone();
                 Ok(KValue::Object(KObject::from(Self(result))))
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
@@ -309,7 +312,7 @@ impl KotoObject for NN {
                 self.0 += other.0.clone();
                 Ok(())
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
@@ -320,7 +323,7 @@ impl KotoObject for NN {
                 self.0 *= other.0.clone();
                 Ok(())
             }
-            unexpected => unexpected_type("NN", unexpected),
+            unexpected => unexpected_type("N natural", unexpected),
         }
     }
 
