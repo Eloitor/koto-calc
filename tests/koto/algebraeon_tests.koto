@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -1471,6 +1471,39 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm
   catch e
     'caught'
   assert_eq caught, 'caught'
+
+
+@test multipoly_tests = ||
+  write 'Testing MultiPoly \t'
+
+  x = Variable('x')
+  y = Variable('y')
+  z = Variable('z')
+  assert_eq x.name(), 'x'
+
+  # Terms are [map variable-name -> exponent, integer coefficient].
+  p = MultiPoly([x, y], [[{'x': 1}, 2], [{'y': 1}, 3]])
+  assert_eq p.vars(), ['x', 'y']
+  assert_eq p.degree(), NN(1)
+  assert_eq p.eval({'x': 2, 'y': 3}), ZZ(13)
+  assert_eq p.terms(), [[{'x': NN(1)}, ZZ(2)], [{'y': NN(1)}, ZZ(3)]]
+
+  assert_eq '{p}', '2x + 3y'
+  assert_eq '{p + p}', '4x + 6y'
+  assert_eq '{p * p}', '4x^2 + 12x*y + 9y^2'
+  assert_eq p * 2, MultiPoly([x, y], [[{'x': 1}, 4], [{'y': 1}, 6]])
+  assert_eq 2 * p, MultiPoly([x, y], [[{'x': 1}, 4], [{'y': 1}, 6]])
+  assert_eq '{-p}', '-2x - 3y'
+
+  symmetric = MultiPoly([x, y], [[{'x': 1}, 1], [{'y': 1}, 1]])
+  assert symmetric.is_symmetric([x, y])
+  assert_eq '{symmetric}', 'x + y'
+
+  # e_2(x, y, z) = xy + xz + yz.
+  e2 = MultiPoly.elementary(2, [x, y, z])
+  assert_eq '{e2}', 'x*y + x*z + y*z'
+  assert_eq e2.eval({'x': 2, 'y': 3, 'z': 5}), ZZ(31)
+  assert e2.is_symmetric([x, y, z])
 
 
 @main = ||

@@ -8,8 +8,10 @@ mod Mat;
 mod Perm;
 mod NN;
 mod Poly;
+mod PolyQuot;
 mod Q;
 mod QSqrt;
+mod MultiPoly;
 mod Quat;
 mod ZZ;
 use algebraeon_rings::num_theory::{
@@ -108,6 +110,19 @@ pub fn make_module() -> KMap {
 
     result.insert("Poly", poly);
 
+    let mut polyquot = KMap::default();
+
+    polyquot.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| PolyQuot::PolyQuot::from_args(ctx.args())).into(),
+    );
+
+    polyquot.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("PolyQuot".into())).into(),
+    );
+
+    result.insert("PolyQuot", polyquot);
 
     let mut mat = KMap::default();
 
@@ -126,6 +141,37 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Mat", mat);
+
+    let mut variable = KMap::default();
+    variable.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| MultiPoly::Variable::from_args(ctx.args())).into(),
+    );
+
+    variable.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Variable".into())).into(),
+    );
+
+    result.insert("Variable", variable);
+
+    let mut multipoly = KMap::default();
+    multipoly.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| MultiPoly::MultiPoly::from_args(ctx.args())).into(),
+    );
+
+    multipoly.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("MultiPoly".into())).into(),
+    );
+
+    multipoly.add_fn("Variable", |ctx| MultiPoly::Variable::from_args(ctx.args()));
+    multipoly.add_fn("elementary", |ctx| {
+        MultiPoly::MultiPoly::elementary_from_args(ctx.args())
+    });
+
+    result.insert("MultiPoly", multipoly);
 
     let mut qsqrt = KMap::default();
 
