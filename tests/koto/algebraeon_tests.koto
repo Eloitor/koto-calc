@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg
 
 @post_test = ||
   print 'ok'
@@ -449,6 +449,96 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat
   assert_eq caught, 'caught'
   caught = try
     Quat('a', 2, 3, 4)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test alg_tests = ||
+  write 'Testing Alg \t'
+
+  # Construccio: Alg(Poly) o Alg(llista de coeficients) -> llista d'arrels
+  # reals aillades en ordre creixent (amb multiplicitat)
+  roots = Alg(Poly([-2, 0, 1]))     # x^2 - 2
+  assert_eq size(roots), 2
+  assert roots[0] < roots[1]
+
+  # Comparacio exacta entre Alg
+  assert_eq roots[0].cmp(roots[1]), -1
+  assert_eq roots[1].cmp(roots[0]), 1
+  assert_eq roots[0].cmp(roots[0]), 0
+  assert_eq roots[0], roots[0]
+  assert roots[0] != roots[1]
+  assert roots[0] <= roots[0]
+  assert roots[1] >= roots[1]
+
+  # sqrt(2) = roots[1] (l'arrel positiva)
+  sqrt2 = roots[1]
+  assert sqrt2.to_float() > 1.41
+  assert sqrt2.to_float() < 1.42
+  # Comparacio exacta amb racionals (arrels de polinomis lineals)
+  assert_eq sqrt2.cmp(Alg(Poly([-141, 100]))[0]), 1   # sqrt2 > 141/100
+  assert_eq sqrt2.cmp(Alg(Poly([-142, 100]))[0]), -1  # sqrt2 < 142/100
+  assert sqrt2 > Q(141, 100)
+  assert sqrt2 < 1.42
+
+  # x^2 + 1 -> cap arrel real
+  assert_eq size(Alg(Poly([1, 0, 1]))), 0
+  # Grau 0 (constant i zero) -> cap arrel
+  assert_eq size(Alg(Poly([5]))), 0
+  assert_eq size(Alg(Poly([]))), 0
+  # Constructor amb llista de coeficients
+  assert_eq size(Alg([-2, 0, 1])), 2
+  # Multiplicitat: (x-1)^2 -> dues arrels (1 i 1)
+  assert_eq size(Alg(Poly([1, -2, 1]))), 2
+
+  # Arrel racional (polinomi lineal): x - 6 -> [6]
+  rat = Alg(Poly([-6, 1]))[0]
+  assert_eq rat.to_float(), 6.0
+  assert_eq rat.accuracy(), Q(0)
+  assert_eq rat.min_poly(), Poly([-6, 1])
+  assert_eq rat.cmp(Q(6)), 0
+  assert_eq rat, Q(6)
+
+  # min_poly de les arrels de x^2 - 2
+  assert_eq sqrt2.min_poly(), Poly([-2, 0, 1])
+  assert_eq roots[0].min_poly(), Poly([-2, 0, 1])
+
+  # accuracy inicial: interval d'aillament no buit
+  assert roots[0].accuracy() > Q(0)
+
+  # Refinament: accuracy demanada assolida, mateix nombre
+  r = sqrt2.refine(Q(1, 1000))
+  assert r.accuracy() < Q(1, 1000)
+  assert r.accuracy() > Q(0)
+  assert_eq r.cmp(sqrt2), 0
+  r2 = sqrt2.refine(Q(1, 1000000))
+  assert r2.accuracy() <= r.accuracy()
+  assert_eq r2.cmp(sqrt2), 0
+
+  # Display: aproximacio decimal (iracionals) / fraccio (racionals)
+  assert '{sqrt2}'.starts_with('1.414')
+  assert '{roots[0]}'.starts_with('-1.414')
+  assert_eq '{rat}', '6'
+
+  # Errors
+  caught = try
+    Alg(5)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Alg('x')
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    sqrt2.refine(0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    sqrt2.refine(Q(-1, 2))
   catch e
     'caught'
   assert_eq caught, 'caught'

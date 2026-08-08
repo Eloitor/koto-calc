@@ -1,3 +1,4 @@
+mod Alg;
 mod Mat;
 mod NN;
 mod Poly;
@@ -129,6 +130,20 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Quat", quat);
+
+    let mut alg = KMap::default();
+
+    alg.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| Alg::Alg::from_args(ctx.args())).into(),
+    );
+
+    alg.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Alg".into())).into(),
+    );
+
+    result.insert("Alg", alg);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {
