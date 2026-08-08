@@ -1,3 +1,4 @@
+use crate::CF::CF;
 use crate::NN::NN;
 use crate::ZZ::ZZ;
 use koto_runtime::{Result, derive::*, prelude::*};
@@ -98,6 +99,54 @@ impl Q {
             Ok(natural) => Ok(KValue::Object(KObject::from(NN(natural)))),
             Err(()) => runtime_error!("Q.to_nn() requires a non-negative integer value, got {}", self.0),
         }
+    }
+
+    /// The simplest rational number in the closed interval [self, other]
+    /// (smallest denominator, then smallest numerator). Requires self <= other.
+    #[koto_method]
+    pub fn simplest_between(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [other] => {
+                let other = Self::rational_from_value(other)?;
+                if self.0 > other {
+                    return runtime_error!(
+                        "Q.simplest_between: expected self <= other, got {} and {}",
+                        self.0,
+                        other
+                    );
+                }
+                Ok(KValue::Object(KObject::from(Self(
+                    Rational::simplest_rational_in_closed_interval(&self.0, &other),
+                ))))
+            }
+            unexpected => unexpected_args("|Q|", unexpected),
+        }
+    }
+
+    /// The best rational approximation of self with denominator at most
+    /// max_denominator (closest value, ties broken by smaller denominator).
+    #[koto_method]
+    pub fn approximate(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [max_den] => {
+                let max_den = crate::CF::natural_from_value(max_den)?;
+                if max_den == Natural::ZERO {
+                    return runtime_error!("Q.approximate: max_denominator must be positive");
+                }
+                Ok(KValue::Object(KObject::from(Self(
+                    self.0.clone().approximate(&max_den),
+                ))))
+            }
+            unexpected => unexpected_args("|NN|", unexpected),
+        }
+    }
+
+    /// The (finite) simple continued fraction of this rational number,
+    /// e.g. Q(22, 7).to_cf() = CF([3, 7]).
+    #[koto_method]
+    pub fn to_cf(&self) -> KValue {
+        let (num, den) = (&self.0).numerator_and_denominator();
+        KValue::Object(KObject::from(CF::from_rational(num, den)))
     }
 }
 

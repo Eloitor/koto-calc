@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -791,6 +791,157 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF
   assert_eq caught, 'caught'
   caught = try
     FF('a')
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test nt2_tests = ||
+  write 'Testing NT2 \t'
+
+  # ---- Quadratic symbols: Legendre (a/p) with p an odd prime ----
+  # Squares mod 7 are {1, 2, 4}, so (2/7) = 1 and (3/7) = -1.
+  assert_eq legendre(2, 7), ZZ(1)
+  assert_eq legendre(3, 7), ZZ(-1)
+  assert_eq legendre(1, 7), ZZ(1)
+  assert_eq legendre(4, 7), ZZ(1)
+  assert_eq legendre(5, 7), ZZ(-1)
+  assert_eq legendre(6, 7), ZZ(-1)
+  assert_eq legendre(0, 7), ZZ(0)
+  assert_eq legendre(-1, 7), ZZ(-1)  # 7 = 3 mod 4
+  assert_eq legendre(2, 13), ZZ(-1)  # 13 = 5 mod 8
+  assert_eq legendre(NN(2), ZZ(7)), ZZ(1)  # accepts NN/ZZ
+
+  # Legendre errors: p must be an odd prime
+  caught = try
+    legendre(1, 9)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    legendre(1, 2)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    legendre(1, -3)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+  # ---- Jacobi (a/n) with n odd (no primality required) ----
+  assert_eq jacobi(2, 9), ZZ(1)  # (2/3)^2
+  assert_eq jacobi(3, 9), ZZ(0)  # 3 | 9
+  assert_eq jacobi(5, 9), ZZ(1)  # (5/3)^2 = (-1)^2
+  assert_eq jacobi(2, 15), ZZ(1)  # (2/3)(2/5) = (-1)(-1)
+  assert_eq jacobi(7, 15), ZZ(-1)  # (7/3)(7/5) = (1)(-1)
+  assert_eq jacobi(-1, 9), ZZ(1)  # (-1)^((9-1)/2) = 1
+  assert_eq jacobi(1, 1), ZZ(1)
+
+  # Jacobi errors: n must be odd
+  caught = try
+    jacobi(1, 2)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    jacobi(1, 0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+  # ---- Kronecker (a/n): extends to even and negative n ----
+  assert_eq kronecker(2, 7), ZZ(1)  # coincides with Legendre for odd primes
+  assert_eq kronecker(3, 7), ZZ(-1)
+  assert_eq kronecker(2, 8), ZZ(0)  # (2/2)^3 = 0
+  assert_eq kronecker(3, 8), ZZ(-1)  # 3 = 3 mod 8
+  assert_eq kronecker(-1, 4), ZZ(1)  # (-1)^2 factor
+  assert_eq kronecker(2, -1), ZZ(1)  # sign convention for n = -1
+  assert_eq kronecker(-2, -1), ZZ(-1)
+  assert_eq kronecker(1, 0), ZZ(1)  # (1/0) = 1
+  assert_eq kronecker(2, 0), ZZ(0)
+  assert_eq kronecker(4, 12), ZZ(0)
+
+  # ---- Continued fractions ----
+  # Finite CF: 22/7 = [3, 7]
+  assert_eq CF([3, 7]).value(), Q(22, 7)
+  assert_eq CF([3, 7]).convergent(0), Q(3)
+  assert_eq CF([3, 7]).convergent(1), Q(22, 7)
+  assert_eq CF([3, 7]).to_float(), 22.0 / 7.0
+  assert_eq CF([3, 7]).take(4), [ZZ(3), ZZ(7)]
+  assert_eq '{CF([3, 7])}', '[3, 7]'
+  assert_eq '{CF([1, 2, 3])}', '[1, 2, 3]'
+
+  # Periodic CF: sqrt(2) = [1; 2, 2, ...]
+  s2 = CF.periodic([1], [2])
+  assert_eq s2.convergent(0), Q(1)
+  assert_eq s2.convergent(1), Q(3, 2)
+  assert_eq s2.convergent(2), Q(7, 5)
+  assert_eq s2.convergent(3), Q(17, 12)
+  assert_eq s2.convergent(4), Q(41, 29)
+  assert_eq '{s2}', '[1; 2]'
+
+  # Periodic CF: golden ratio = [1; 1, 1, ...] (Fibonacci ratios)
+  phi = CF.periodic([1], [1])
+  assert_eq phi.convergent(4), Q(8, 5)
+
+  # Euler's constant e = [2; 1, 2, 1, 1, 4, 1, 1, 6, ...]
+  e_cf = eulers_constant()
+  assert_eq e_cf.take(9), [ZZ(2), ZZ(1), ZZ(2), ZZ(1), ZZ(1), ZZ(4), ZZ(1), ZZ(1), ZZ(6)]
+  assert_eq e_cf.convergent(0), Q(2)
+  assert_eq e_cf.convergent(1), Q(3)
+  assert_eq e_cf.convergent(2), Q(8, 3)
+  assert_eq e_cf.convergent(5), Q(87, 32)
+
+  # Q.to_cf(): Euclidean algorithm (values match algebraeon's own tests)
+  assert_eq Q(22, 7).to_cf(), CF([3, 7])
+  assert_eq Q(9, 10).to_cf(), CF([0, 1, 9])
+  assert_eq Q(-9, 10).to_cf(), CF([-1, 10])
+  assert_eq Q(-5678, 1234).to_cf(), CF([-5, 2, 1, 1, 30, 4])
+  assert_eq Q(2).to_cf(), CF([2])
+
+  # CF errors
+  caught = try
+    CF([1, 0])  # coefficient after the first must be positive
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    CF.periodic([], [])  # empty repeating part
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    CF.periodic([2], [-1])  # negative repeating coefficient
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    CF.periodic([1], [2]).value()  # periodic CF has no rational value
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    CF([3, 7]).convergent(2)  # finite CF too short
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+  # ---- Q: simplest_between / approximate ----
+  assert_eq Q(1, 3).simplest_between(Q(1, 2)), Q(1, 2)
+  assert_eq Q(-1, 3).simplest_between(Q(1, 3)), Q(0)
+  assert_eq Q(1, 3).simplest_between(Q(2, 5)), Q(1, 3)
+  assert_eq Q(1, 3).simplest_between(Q(1, 3)), Q(1, 3)
+  assert_eq Q(355, 113).approximate(NN(100)), Q(311, 99)
+  assert_eq Q(355, 113).approximate(NN(10)), Q(22, 7)
+  assert_eq Q(22, 7).approximate(NN(10)), Q(22, 7)
+  caught = try
+    Q(1, 2).simplest_between(Q(1, 3))  # requires self <= other
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Q(1, 2).approximate(NN(0))  # max_denominator must be positive
   catch e
     'caught'
   assert_eq caught, 'caught'

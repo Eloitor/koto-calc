@@ -1,4 +1,5 @@
 mod Alg;
+mod CF;
 mod FF;
 mod Ideal;
 mod Mat;
@@ -7,6 +8,9 @@ mod Poly;
 mod Q;
 mod Quat;
 mod ZZ;
+use algebraeon_rings::num_theory::{
+    JacobiSymbolError, LegendreSymbolError, jacobi_symbol, kronecker_symbol, legendre_symbol,
+};
 use koto_runtime::prelude::*;
 
 pub fn version_string() -> &'static str {
@@ -188,6 +192,73 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("FF", ff);
+
+    let mut cf = KMap::default();
+
+    cf.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| CF::CF::from_args(ctx.args())).into(),
+    );
+
+    cf.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("CF".into())).into(),
+    );
+
+    cf.add_fn("periodic", |ctx| match ctx.args() {
+        [KValue::List(initial), KValue::List(repeats)] => CF::CF::periodic(initial, repeats),
+        unexpected => unexpected_args("|List, List|", unexpected),
+    });
+
+    result.insert("CF", cf);
+
+    result.add_fn("legendre", |ctx| match ctx.args() {
+        [a, p] => {
+            let a = CF::integer_from_value(a)?;
+            let p = CF::natural_from_value(p)?;
+            match legendre_symbol(&a, &p) {
+                Ok(value) => Ok(KValue::Object(KObject::from(crate::ZZ::ZZ::from_integer(
+                    value.into(),
+                )))),
+                Err(LegendreSymbolError::BottomNotOddPrime) => {
+                    runtime_error!("legendre: the bottom argument must be an odd prime, got {}", p)
+                }
+            }
+        }
+        unexpected => unexpected_args("|a, p|", unexpected),
+    });
+
+    result.add_fn("jacobi", |ctx| match ctx.args() {
+        [a, n] => {
+            let a = CF::integer_from_value(a)?;
+            let n = CF::natural_from_value(n)?;
+            match jacobi_symbol(&a, &n) {
+                Ok(value) => Ok(KValue::Object(KObject::from(crate::ZZ::ZZ::from_integer(
+                    value.into(),
+                )))),
+                Err(JacobiSymbolError::BottomEven) => {
+                    runtime_error!("jacobi: the bottom argument must be odd, got {}", n)
+                }
+            }
+        }
+        unexpected => unexpected_args("|a, n|", unexpected),
+    });
+
+    result.add_fn("kronecker", |ctx| match ctx.args() {
+        [a, n] => {
+            let a = CF::integer_from_value(a)?;
+            let n = CF::integer_from_value(n)?;
+            let value = kronecker_symbol(&a, &n);
+            Ok(KValue::Object(KObject::from(crate::ZZ::ZZ::from_integer(
+                value.into(),
+            ))))
+        }
+        unexpected => unexpected_args("|a, n|", unexpected),
+    });
+
+    result.add_fn("eulers_constant", |_ctx| {
+        Ok(KValue::Object(KObject::from(CF::CF::eulers_constant())))
+    });
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {
