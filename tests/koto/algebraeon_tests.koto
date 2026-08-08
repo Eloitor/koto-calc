@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn
 
 @post_test = ||
   print 'ok'
@@ -539,6 +539,100 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg
   assert_eq caught, 'caught'
   caught = try
     sqrt2.refine(Q(-1, 2))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test ideal_tests = ||
+  write 'Testing Ideal/ZZn \t'
+
+  # Construccio: Ideal(6) = 6Z; Ideal(4, 6) = gcd(4, 6)Z = 2Z
+  assert_eq Ideal(6), Ideal(6)
+  assert_eq Ideal(4, 6), Ideal(2)
+  assert_eq Ideal(-4, 6), Ideal(2)       # signes ignorats (generador canonic >= 0)
+  assert_eq Ideal(0), Ideal(0)
+  assert_eq Ideal(4, 6).generator(), NN(2)
+  assert_eq Ideal(6).generator(), NN(6)
+
+  # contains (amb NN, ZZ i Number)
+  assert Ideal(6).contains(12)
+  assert Ideal(6).contains(NN(6))
+  assert Ideal(6).contains(ZZ(-12))
+  assert not Ideal(6).contains(5)
+  assert Ideal(0).contains(0)
+  assert not Ideal(0).contains(3)
+  assert Ideal(1).contains(17)            # ZZ sencer
+
+  # sum = gcd, intersect = lcm, product = producte
+  assert_eq Ideal(6).sum(Ideal(15)), Ideal(3)
+  assert_eq Ideal(6).intersect(Ideal(15)), Ideal(30)
+  assert_eq Ideal(6).product(Ideal(15)), Ideal(90)
+  assert_eq Ideal(4, 6).sum(Ideal(10)), Ideal(2)
+  assert_eq Ideal(4).intersect(Ideal(6)), Ideal(12)
+
+  # quotient d'ideals (I : J) = { x : xJ subset I }
+  assert_eq Ideal(6).quotient(Ideal(2)), Ideal(3)
+  assert_eq Ideal(6).quotient(Ideal(6)), Ideal(1)
+  assert_eq Ideal(6).quotient(Ideal(0)), Ideal(1)
+
+  # equals (i operador ==)
+  assert Ideal(4, 6).equals(Ideal(2))
+  assert not Ideal(4, 6).equals(Ideal(4))
+  assert Ideal(6) == Ideal(-6)
+
+  # Display: generador canonic + Z
+  assert_eq '{Ideal(6)}', '6Z'
+  assert_eq '{Ideal(4, 6)}', '2Z'
+  assert_eq '{Ideal(0)}', '0Z'
+
+  # ZZn: aritmetica modular
+  assert_eq ZZn(6).of(7) + ZZn(6).of(5), ZZn(6).of(0)   # 7 + 5 = 12 = 0 mod 6
+  assert_eq ZZn(6).of(7) - ZZn(6).of(5), ZZn(6).of(2)   # 7 - 5 = 2 mod 6
+  assert_eq ZZn(6).of(7) * ZZn(6).of(5), ZZn(6).of(5)   # 7 * 5 = 35 = 5 mod 6
+  assert_eq -ZZn(6).of(1), ZZn(6).of(5)                 # -1 = 5 mod 6
+  assert_eq ZZn(6).of(-1), ZZn(6).of(5)                 # representants canonics
+  assert_eq ZZn(7).of(7), ZZn(7).of(0)
+  assert ZZn(6).of(2) != ZZn(6).of(3)
+
+  # invers de 5 mod 7 = 3 (5 * 3 = 15 = 1 mod 7)
+  assert_eq ZZn(7).of(5).inverse(), ZZn(7).of(3)
+  assert_eq ZZn(7).of(3).inverse(), ZZn(7).of(5)
+  assert_eq ZZn(11).of(4).inverse(), ZZn(11).of(3)      # 4 * 3 = 12 = 1 mod 11
+  assert_eq ZZn(1).of(0).inverse(), ZZn(1).of(0)        # anell trivial: 0 = 1
+
+  # Display: [x] mod n
+  assert_eq '{ZZn(6).of(7)}', '[1] mod 6'
+  assert_eq '{ZZn(7).of(5)}', '[5] mod 7'
+
+  # Errors
+  caught = try
+    Ideal('a')
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Ideal(6).contains('a')
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    ZZn(0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    ZZn(-6)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    ZZn(6).of(2).inverse()      # 2 no es coprimer amb 6
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    ZZn(6).of(1) + ZZn(7).of(1) # moduls diferents
   catch e
     'caught'
   assert_eq caught, 'caught'

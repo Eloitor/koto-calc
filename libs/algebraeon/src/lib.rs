@@ -1,4 +1,5 @@
 mod Alg;
+mod Ideal;
 mod Mat;
 mod NN;
 mod Poly;
@@ -144,6 +145,34 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Alg", alg);
+
+    let mut ideal = KMap::default();
+
+    ideal.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| Ideal::Ideal::from_args(ctx.args())).into(),
+    );
+
+    ideal.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Ideal".into())).into(),
+    );
+
+    result.insert("Ideal", ideal);
+
+    let mut zzn = KMap::default();
+
+    zzn.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| Ideal::ZZn::from_args(ctx.args())).into(),
+    );
+
+    zzn.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("ZZn".into())).into(),
+    );
+
+    result.insert("ZZn", zzn);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {
