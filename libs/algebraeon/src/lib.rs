@@ -1,3 +1,4 @@
+mod Mat;
 mod NN;
 mod Q;
 mod ZZ;
@@ -76,6 +77,26 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Q", q);
+
+
+
+    let mut mat = KMap::default();
+
+    mat.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| match ctx.args() {
+            [list] => Ok(Mat::Mat::from_value(list).map(KObject::from)?.into()),
+            unexpected => unexpected_args("|List of lists|", unexpected),
+        })
+        .into(),
+    );
+
+    mat.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Mat".into())).into(),
+    );
+
+    result.insert("Mat", mat);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {

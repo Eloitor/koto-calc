@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q
+from algebraeon import NN, ZZ, Q, Mat
 
 @post_test = ||
   print 'ok'
@@ -171,6 +171,93 @@ from algebraeon import NN, ZZ, Q
   assert_eq caught, 'caught'
   caught = try
     Q(1, 2) / Q(0, 3)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test mat_tests = ||
+  write 'Testing Mat \t'
+
+  # Construccio: matriu per files, auto ZZ si tots enters
+  m = Mat([[1, 2], [3, 4]])
+  assert_eq m.rows(), NN(2)
+  assert_eq m.cols(), NN(2)
+  assert_eq m.at(0, 0), ZZ(1)
+  assert_eq m.at(0, 1), ZZ(2)
+  assert_eq m.at(1, 0), ZZ(3)
+  assert_eq m.at(1, 1), ZZ(4)
+  assert_eq Mat([[1, 2], [3, 4]]), Mat([[1, 2], [3, 4]])
+
+  # Amb fraccions -> Mat sobre Q
+  mq = Mat([[Q(1, 2), Q(1, 2)], [Q(1, 3), Q(2, 3)]])
+  assert_eq mq.rows(), NN(2)
+  assert_eq mq.cols(), NN(2)
+  assert_eq mq.at(0, 0), Q(1, 2)
+  assert_eq mq.at(1, 1), Q(2, 3)
+
+  # transpose
+  assert_eq m.transpose(), Mat([[1, 3], [2, 4]])
+  assert_eq m.transpose().transpose(), m
+
+  # mul (metode i operador *)
+  assert_eq m.mul(Mat([[5, 6], [7, 8]])), Mat([[19, 22], [43, 50]])
+  assert_eq m * Mat([[5, 6], [7, 8]]), Mat([[19, 22], [43, 50]])
+
+  # Suma / resta
+  assert_eq m + Mat([[1, 1], [1, 1]]), Mat([[2, 3], [4, 5]])
+  assert_eq m - Mat([[1, 1], [1, 1]]), Mat([[0, 1], [2, 3]])
+  assert_eq m + mq, Mat([[Q(3, 2), Q(5, 2)], [Q(10, 3), Q(14, 3)]])
+
+  # Multiplicacio per escalar
+  assert_eq m * 2, Mat([[2, 4], [6, 8]])
+  assert_eq m * Q(1, 2), Mat([[Q(1, 2), 1], [Q(3, 2), 2]])
+
+  # det
+  assert_eq m.det(), ZZ(-2)
+  assert_eq mq.det(), Q(1, 6)
+  assert_eq Mat([[1, 2, 3], [0, 1, 4], [5, 6, 0]]).det(), ZZ(1)
+
+  # inverse (sobre Q; ZZ promociona a Q)
+  inv = m.inverse()
+  assert_eq inv, Mat([[-2, 1], [Q(3, 2), Q(-1, 2)]])
+  assert_eq inv * m, Mat([[1, 0], [0, 1]])
+  assert_eq mq.inverse() * mq, Mat([[1, 0], [0, 1]])
+
+  # lll: reduccio LLL d'enters (novetat 0.0.16/0.0.17)
+  # Exemple classic 2D: base {(1,1), (1,2)} -> base reduida {(-1,0), (0,1)}
+  assert_eq Mat([[1, 1], [1, 2]]).lll(), Mat([[-1, 0], [0, 1]])
+  assert_eq Mat([[1, 2], [3, 4]]).lll(), Mat([[1, 0], [0, 2]])
+  # Exemple 3D
+  assert_eq Mat([[1, 1, 0], [1, 0, 1]]).lll(), Mat([[1, 1, 0], [0, -1, 1]])
+
+  # Display: files separades per , dins de [[...]] (format koto)
+  assert_eq '{Mat([[1, 2], [3, 4]])}', '[[1, 2], [3, 4]]'
+  assert_eq '{Mat([[Q(1, 2), 1], [3, 4]])}', '[[1/2, 1], [3, 4]]'
+
+  # Errors
+  caught = try
+    Mat([[1, 2], [3]])
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    m.at(5, 0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Mat([[1, 2, 3], [4, 5, 6]]).det()
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    Mat([[1, 2], [2, 4]]).inverse()
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    mq.lll()
   catch e
     'caught'
   assert_eq caught, 'caught'
