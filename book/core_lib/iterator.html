@@ -1,0 +1,1006 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>iterator - koto-calc</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A programmable calculator with the Koto language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-295677e8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-a681759e.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">koto-calc</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="iterator"><a class="header" href="#iterator">iterator</a></h1>
+<p>Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.</p>
+<h2 id="advance"><a class="header" href="#advance">advance</a></h2>
+<pre><code class="language-kototype">|Iterable, n: Number| -&gt; Number
+</code></pre>
+<p>Advances an iterator by calling <code>next</code> by <code>n</code> times,
+or until the end of the iterator is encountered.</p>
+<p>The number of remaining steps is returned, with <code>0</code> indicating that <code>n</code> steps were successfully advanced.</p>
+<p>If advancing the iterator causes an error to be thrown, then the error will be rethrown by <code>advance</code>.</p>
+<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<pre><code class="language-koto">i = (1..=10).iter()
+print! i.advance 5
+check! 0
+print! i.next().get()
+check! 6
+
+# The iterator has 4 elements left, so advance will have 1 remaining step
+print! i.advance 5
+check! 1
+</code></pre>
+<h3 id="see-also"><a class="header" href="#see-also">See Also</a></h3>
+<ul>
+<li><a href="#skip"><code>iterator.skip</code></a></li>
+</ul>
+<h2 id="all"><a class="header" href="#all">all</a></h2>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Bool
+</code></pre>
+<p>Checks the Iterable’s values against a test function.</p>
+<p>The test function should return <code>true</code> if the value passes the test, otherwise
+it should return <code>false</code>.</p>
+<p><code>all</code> will return <code>true</code> if <em>all</em> values pass the test, otherwise it will return
+<code>false</code>.</p>
+<p><code>all</code> stops running as soon as it finds a value that fails the test.</p>
+<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<pre><code class="language-koto">print! (1..9).all |x| x &gt; 0
+check! true
+
+print! ('', '', 'foo').all string.is_empty
+check! false
+
+print! [10, 20, 30]
+  .each |x| x / 10
+  .all |x| x &lt; 10
+check! true
+</code></pre>
+<h3 id="see-also-1"><a class="header" href="#see-also-1">See Also</a></h3>
+<ul>
+<li><a href="#any"><code>iterator.any</code></a></li>
+</ul>
+<h2 id="any"><a class="header" href="#any">any</a></h2>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Bool
+</code></pre>
+<p>Checks the Iterable’s values against a test function.</p>
+<p>The test function should return <code>true</code> if the value passes the test, otherwise
+it should return <code>false</code>.</p>
+<p><code>any</code> will return <code>true</code> if <em>any</em> of the values pass the test,
+otherwise it will return <code>false</code>.</p>
+<p><code>any</code> stops running as soon as it finds a passing test.</p>
+<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<pre><code class="language-koto">print! (1..9).any |x| x == 5
+check! true
+
+print! ('', '', 'foo').any string.is_empty
+check! true
+
+print! [10, 20, 30]
+  .each |x| x / 10
+  .any |x| x == 2
+check! true
+</code></pre>
+<h3 id="see-also-2"><a class="header" href="#see-also-2">See Also</a></h3>
+<ul>
+<li><a href="#all"><code>iterator.all</code></a></li>
+</ul>
+<h2 id="chain"><a class="header" href="#chain">chain</a></h2>
+<pre><code class="language-kototype">|first: Iterable, second: Iterable| -&gt; Iterator
+</code></pre>
+<p><code>chain</code> returns an iterator that iterates over the output of the first iterator,
+followed by the output of the second iterator.</p>
+<h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
+<pre><code class="language-koto">print! [1, 2]
+  .chain 'abc'
+  .to_tuple()
+check! (1, 2, 'a', 'b', 'c')
+</code></pre>
+<h2 id="chunks"><a class="header" href="#chunks">chunks</a></h2>
+<pre><code class="language-kototype">|Iterable, size: Number| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that splits up the input data into chunks of size <code>N</code>,
+where each chunk is provided as a Tuple.
+The final chunk may have fewer than <code>N</code> elements.</p>
+<h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
+<pre><code class="language-koto">print! 1..=10
+  .chunks 3
+  .to_list()
+check! [(1, 2, 3), (4, 5, 6), (7, 8, 9), (10)]
+</code></pre>
+<h2 id="consume"><a class="header" href="#consume">consume</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Null
+</code></pre>
+<p>Consumes the output of the iterator.</p>
+<pre><code class="language-kototype">|Iterable, |Any| -&gt; Any| -&gt; Null
+</code></pre>
+<p>Consumes the output of the iterator, calling the provided function with each
+iterator output value.</p>
+<h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
+<pre><code class="language-koto">result = []
+1..=10
+  .keep |n| n % 2 == 0
+  .each |n| result.push n
+  .consume()
+print! result
+check! [2, 4, 6, 8, 10]
+
+# Alternatively, calling consume with a function is equivalent to having an
+# `each` / `consume` chain
+result = []
+1..=10
+  .keep |n| n % 2 == 1
+  .consume |n| result.push n
+print! result
+check! [1, 3, 5, 7, 9]
+</code></pre>
+<h2 id="count"><a class="header" href="#count">count</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Number
+</code></pre>
+<p>Counts the number of items yielded from the iterator.</p>
+<h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
+<pre><code class="language-koto">print! (5..15).count()
+check! 10
+
+print! 0..100
+  .keep |x| x % 2 == 0
+  .count()
+check! 50
+</code></pre>
+<h2 id="cycle"><a class="header" href="#cycle">cycle</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Iterator
+</code></pre>
+<p>Takes an Iterable and returns a new iterator that endlessly repeats the
+iterable’s output.</p>
+<p>The iterable’s output gets cached, which may result in a large amount of memory
+being used if the cycle has a long length.</p>
+<h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
+<pre><code class="language-koto">print! (1, 2, 3)
+  .cycle()
+  .take 10
+  .to_list()
+check! [1, 2, 3, 1, 2, 3, 1, 2, 3, 1]
+</code></pre>
+<h2 id="each"><a class="header" href="#each">each</a></h2>
+<pre><code class="language-kototype">|Iterable, function: |Any| -&gt; Any| -&gt; Iterator
+</code></pre>
+<p>Creates a new iterator that yields the result of calling the provided <code>function</code>
+with each value from the input iterator.</p>
+<h3 id="example-8"><a class="header" href="#example-8">Example</a></h3>
+<pre><code class="language-koto">print! (2, 3, 4)
+  .each |x| x * 2
+  .to_list()
+check! [4, 6, 8]
+</code></pre>
+<h2 id="enumerate"><a class="header" href="#enumerate">enumerate</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that yields each value along with an associated index.</p>
+<h3 id="example-9"><a class="header" href="#example-9">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 'b', 'c').enumerate().to_list()
+check! [(0, 'a'), (1, 'b'), (2, 'c')]
+</code></pre>
+<h2 id="find"><a class="header" href="#find">find</a></h2>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Any?
+</code></pre>
+<p>Returns the first value in the iterable that passes the test function.</p>
+<p>The function is called for each value in the iterator, and should return either
+<code>true</code> if the value is a match, or <code>false</code> if it’s not.</p>
+<p>The first matching value will cause iteration to stop.</p>
+<p>If no match is found then <code>null</code> is returned.</p>
+<h3 id="example-10"><a class="header" href="#example-10">Example</a></h3>
+<pre><code class="language-koto">print! (10..20).find |x| x &gt; 14 and x &lt; 16
+check! 15
+
+print! (10..20).find |x| x &gt; 100
+check! null
+</code></pre>
+<h2 id="flatten"><a class="header" href="#flatten">flatten</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Iterator
+</code></pre>
+<p>Returns the output of the input iterator, with any nested iterable values
+flattened out.</p>
+<p>Note that only one level of flattening is performed, so any double-nested
+containers will still be present in the output.</p>
+<h3 id="example-11"><a class="header" href="#example-11">Example</a></h3>
+<pre><code class="language-koto">print! [(2, 4), [6, 8, (10, 12)]]
+  .flatten()
+  .to_list()
+check! [2, 4, 6, 8, (10, 12)]
+</code></pre>
+<h3 id="see-also-3"><a class="header" href="#see-also-3">See Also</a></h3>
+<ul>
+<li><a href="#find"><code>iterator.find</code></a></li>
+</ul>
+<h2 id="fold"><a class="header" href="#fold">fold</a></h2>
+<pre><code class="language-kototype">|
+  input: Iterable,
+  initial_value: Any,
+  accumulator: |accumulated: Any, next: Any| -&gt; Any
+| -&gt; Any
+</code></pre>
+<p>Returns the result of ‘folding’ the iterator’s values into an accumulator
+function.</p>
+<p>The function takes the accumulated value and the next iterator value,
+and then returns the result of folding the value into the accumulator.</p>
+<p>The first argument is an initial accumulated value that gets passed to the
+function along with the first value from the iterator.</p>
+<p>The result is then the final accumulated value.</p>
+<p>This operation is also known in other languages as <code>reduce</code>, <code>accumulate</code>,
+<code>inject</code>, <code>fold left</code>, along with other names.</p>
+<h3 id="example-12"><a class="header" href="#example-12">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 'b', 'c')
+  .fold [], |result, x|
+    result.push x
+    result.push '-'
+check! ['a', '-', 'b', '-', 'c', '-']
+</code></pre>
+<h3 id="see-also-4"><a class="header" href="#see-also-4">See Also</a></h3>
+<ul>
+<li><a href="#product"><code>iterator.product</code></a></li>
+<li><a href="#sum"><code>iterator.sum</code></a></li>
+</ul>
+<h2 id="generate"><a class="header" href="#generate">generate</a></h2>
+<pre><code class="language-kototype">|generator: || -&gt; Any| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that yields the result of repeatedly calling the <code>generator</code>
+function.</p>
+<p><em>Warning</em>: This version of <code>generate</code> will iterate endlessly, so consider using
+an adaptor like <a href="#take"><code>iterator.take</code></a> to produce an iterator that has an end.</p>
+<pre><code class="language-kototype">|n: Number, generator: || -&gt; Any| -&gt; Any
+</code></pre>
+<p>Creates an iterator that yields the result of calling the <code>generator</code>
+function <code>n</code> times.</p>
+<h3 id="example-13"><a class="header" href="#example-13">Example</a></h3>
+<pre><code class="language-koto">from iterator import generate
+
+state = {x: 0}
+f = || state.x += 1
+
+print! generate(f)
+  .take(5)
+  .to_list()
+check! [1, 2, 3, 4, 5]
+
+print! generate(f, 3).to_tuple()
+check! (6, 7, 8)
+</code></pre>
+<h3 id="see-also-5"><a class="header" href="#see-also-5">See Also</a></h3>
+<ul>
+<li><a href="#repeat"><code>iterator.repeat</code></a></li>
+</ul>
+<h2 id="intersperse"><a class="header" href="#intersperse">intersperse</a></h2>
+<pre><code class="language-kototype">|Iterable, value: Any| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that yields a copy of the provided value between each
+adjacent pair of output values.</p>
+<pre><code class="language-kototype">|Iterable, generator: || -&gt; Any| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that yields the result of calling the provided function
+between each adjacent pair of output values.</p>
+<h3 id="example-14"><a class="header" href="#example-14">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 'b', 'c').intersperse('-').to_string()
+check! a-b-c
+
+separators = (1, 2, 3).iter()
+print! ('a', 'b', 'c')
+  .intersperse || separators.next().get()
+  .to_tuple(),
+check! ('a', 1, 'b', 2, 'c')
+</code></pre>
+<h2 id="iter"><a class="header" href="#iter">iter</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that yields the provided iterable’s values.</p>
+<p>Iterable values will be automatically accepted by most iterator operations,
+so it’s usually not necessary to call <code>.iter()</code>, however it can be usefult
+sometimes to make a standalone iterator for manual iteration.</p>
+<p>Note that calling <code>.iter</code> with an <code>Iterator</code> will return the iterator without
+modification. If a copy of the iterator is needed then see <code>koto.copy</code> and
+<code>koto.deep_copy</code>.</p>
+<h3 id="example-15"><a class="header" href="#example-15">Example</a></h3>
+<pre><code class="language-koto">i = (1..10).iter()
+i.advance 5
+print! i.next().get()
+check! 6
+</code></pre>
+<h3 id="see-also-6"><a class="header" href="#see-also-6">See Also</a></h3>
+<ul>
+<li><a href="./koto.html#copy"><code>koto.copy</code></a></li>
+<li><a href="./koto.html#deep_copy"><code>koto.deep_copy</code></a></li>
+</ul>
+<h2 id="keep"><a class="header" href="#keep">keep</a></h2>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that keeps only the values that pass a test function.</p>
+<p>The function is called for each value in the iterator, and should return either
+<code>true</code> if the value should be kept in the iterator output, or <code>false</code> if it
+should be discarded.</p>
+<h3 id="example-16"><a class="header" href="#example-16">Example</a></h3>
+<pre><code class="language-koto">print! 0..10
+  .keep |x| x % 2 == 0
+  .to_tuple()
+check! (0, 2, 4, 6, 8)
+</code></pre>
+<h2 id="last"><a class="header" href="#last">last</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Any?
+</code></pre>
+<p>Consumes the iterator, returning the last yielded value.</p>
+<h3 id="example-17"><a class="header" href="#example-17">Example</a></h3>
+<pre><code class="language-koto">print! (1..100).take(5).last()
+check! 5
+
+print! (0..0).last()
+check! null
+</code></pre>
+<h2 id="max"><a class="header" href="#max">max</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Any
+</code></pre>
+<p>Returns the maximum value found in the iterable.</p>
+<pre><code class="language-kototype">|Iterable, key: |Any| -&gt; Any| -&gt; Any
+</code></pre>
+<p>Returns the maximum value found in the iterable, based on first calling a ‘key’
+function with the value, and then using the resulting keys for the comparisons.</p>
+<p>A <code>&lt;</code> ‘less than’ comparison is performed between each value and the maximum
+found so far, until all values in the iterator have been compared.</p>
+<h3 id="example-18"><a class="header" href="#example-18">Example</a></h3>
+<pre><code class="language-koto">print! (8, -3, 99, -1).max()
+check! 99
+</code></pre>
+<h3 id="see-also-7"><a class="header" href="#see-also-7">See Also</a></h3>
+<ul>
+<li><a href="#min"><code>iterator.min</code></a></li>
+<li><a href="#min-max"><code>iterator.min_max</code></a></li>
+</ul>
+<h2 id="min"><a class="header" href="#min">min</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Any
+</code></pre>
+<p>Returns the minimum value found in the iterable.</p>
+<pre><code class="language-kototype">|Iterable, key: |Any| -&gt; Any| -&gt; Any
+</code></pre>
+<p>Returns the minimum value found in the iterable, based on first calling a ‘key’
+function with the value, and then using the resulting keys for the comparisons.</p>
+<p>A <code>&lt;</code> ‘less than’ comparison is performed between each value and the minimum
+found so far, until all values in the iterator have been compared.</p>
+<h3 id="example-19"><a class="header" href="#example-19">Example</a></h3>
+<pre><code class="language-koto">print! (8, -3, 99, -1).min()
+check! -3
+</code></pre>
+<h3 id="see-also-8"><a class="header" href="#see-also-8">See Also</a></h3>
+<ul>
+<li><a href="#max"><code>iterator.max</code></a></li>
+<li><a href="#min-max"><code>iterator.min_max</code></a></li>
+</ul>
+<h2 id="min_max"><a class="header" href="#min_max">min_max</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; (Any, Any)
+</code></pre>
+<p>Returns the minimum and maximum values found in the iterable.</p>
+<pre><code class="language-kototype">|Iterable, key: |Any| -&gt; Any| -&gt; Any
+</code></pre>
+<p>Returns the minimum and maximum values found in the iterable, based on first
+calling a ‘key’ function with the value, and then using the resulting keys for
+the comparisons.</p>
+<p>A <code>&lt;</code> ‘less than’ comparison is performed between each value and both the
+minimum and maximum found so far, until all values in the iterator have been
+compared.</p>
+<h3 id="example-20"><a class="header" href="#example-20">Example</a></h3>
+<pre><code class="language-koto">print! (8, -3, 99, -1).min_max()
+check! (-3, 99)
+</code></pre>
+<h3 id="see-also-9"><a class="header" href="#see-also-9">See Also</a></h3>
+<ul>
+<li><a href="#max"><code>iterator.max</code></a></li>
+<li><a href="#min"><code>iterator.min</code></a></li>
+</ul>
+<h2 id="next"><a class="header" href="#next">next</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; IteratorOutput?
+</code></pre>
+<p>Returns the next value from the iterator wrapped in an
+<a href="#iteratoroutput"><code>IteratorOutput</code></a>,
+or <code>null</code> if the iterator has been exhausted.</p>
+<h3 id="example-21"><a class="header" href="#example-21">Example</a></h3>
+<pre><code class="language-koto">x = (1, null, 'x').iter()
+print! x.next()
+check! IteratorOutput(1)
+print! x.next()
+check! IteratorOutput(null)
+print! x.next()
+check! IteratorOutput(x)
+print! x.next()
+check! null
+
+# Call .get() to access the value from an IteratorOutput
+print! 'abc'.next().get()
+check! a
+</code></pre>
+<h3 id="see-also-10"><a class="header" href="#see-also-10">See Also</a></h3>
+<ul>
+<li><a href="#next-back"><code>iterator.next_back</code></a></li>
+</ul>
+<h2 id="next_back"><a class="header" href="#next_back">next_back</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; IteratorOutput?
+</code></pre>
+<p>Returns the next value from the end of the iterator wrapped in an
+<a href="#iteratoroutput"><code>IteratorOutput</code></a>,
+or <code>null</code> if the iterator has been exhausted.</p>
+<p>This only works with iterators that have a defined end, so attempting to call
+<code>next_back</code> on endless iterators like <a href="#generate"><code>iterator.generate</code></a> will
+result in an error.</p>
+<h3 id="example-22"><a class="header" href="#example-22">Example</a></h3>
+<pre><code class="language-koto">x = (1..=5).iter()
+print! x.next_back()
+check! IteratorOutput(5)
+print! x.next_back()
+check! IteratorOutput(4)
+
+# calls to next and next_back can be mixed together
+print! x.next()
+check! IteratorOutput(1)
+print! x.next_back()
+check! IteratorOutput(3)
+print! x.next_back()
+check! IteratorOutput(2)
+
+# 1 has already been produced by the iterator, so it's now exhausted
+print! x.next_back()
+check! null
+</code></pre>
+<h3 id="see-also-11"><a class="header" href="#see-also-11">See Also</a></h3>
+<ul>
+<li><a href="#next"><code>iterator.next</code></a></li>
+<li><a href="#reversed"><code>iterator.reversed</code></a></li>
+</ul>
+<h2 id="once"><a class="header" href="#once">once</a></h2>
+<pre><code class="language-kototype">|Any| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that yields the given value a single time.</p>
+<h3 id="example-23"><a class="header" href="#example-23">Example</a></h3>
+<pre><code class="language-koto">print! iterator.once(99)
+  .chain('abc')
+  .to_tuple()
+check! (99, 'a', 'b', 'c')
+</code></pre>
+<h3 id="see-also-12"><a class="header" href="#see-also-12">See Also</a></h3>
+<ul>
+<li><a href="#generate"><code>iterator.generate</code></a></li>
+<li><a href="#repeat"><code>iterator.repeat</code></a></li>
+</ul>
+<h2 id="peekable"><a class="header" href="#peekable">peekable</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Peekable
+</code></pre>
+<p>Wraps the given iterable value in a peekable iterator.</p>
+<h3 id="peekablepeek"><a class="header" href="#peekablepeek">Peekable.peek</a></h3>
+<p>Returns the next value from the iterator without advancing it.
+The peeked value is cached until the iterator is advanced.</p>
+<h4 id="example-24"><a class="header" href="#example-24">Example</a></h4>
+<pre><code class="language-koto">x = 'abc'.peekable()
+print! x.peek()
+check! IteratorOutput(a)
+print! x.peek()
+check! IteratorOutput(a)
+print! x.next()
+check! IteratorOutput(a)
+print! x.peek()
+check! IteratorOutput(b)
+print! x.next(), x.next()
+check! (IteratorOutput(b), IteratorOutput(c))
+print! x.peek()
+check! null
+</code></pre>
+<h4 id="see-also-13"><a class="header" href="#see-also-13">See Also</a></h4>
+<ul>
+<li><a href="#next"><code>iterator.next</code></a></li>
+</ul>
+<h3 id="peekablepeek_back"><a class="header" href="#peekablepeek_back">Peekable.peek_back</a></h3>
+<p>Returns the next value from the end of the iterator without advancing it.
+The peeked value is cached until the iterator is advanced.</p>
+<h4 id="example-25"><a class="header" href="#example-25">Example</a></h4>
+<pre><code class="language-koto">x = 'abc'.peekable()
+print! x.peek_back()
+check! IteratorOutput(c)
+print! x.next_back()
+check! IteratorOutput(c)
+print! x.peek()
+check! IteratorOutput(a)
+print! x.peek_back()
+check! IteratorOutput(b)
+print! x.next_back(), x.next_back()
+check! (IteratorOutput(b), IteratorOutput(a))
+print! x.peek_back()
+check! null
+</code></pre>
+<h4 id="see-also-14"><a class="header" href="#see-also-14">See Also</a></h4>
+<ul>
+<li><a href="#next-back"><code>iterator.next_back</code></a></li>
+</ul>
+<h2 id="position"><a class="header" href="#position">position</a></h2>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Any
+</code></pre>
+<p>Returns the position of the first value in the iterable that passes the test
+function.</p>
+<p>The function is called for each value in the iterator, and should return either
+<code>true</code> if the value is a match, or <code>false</code> if it’s not.</p>
+<p>The first matching value will cause iteration to stop, and the number of
+steps taken to reach the matched value is returned as the result.</p>
+<p>If no match is found then <code>null</code> is returned.</p>
+<h3 id="example-26"><a class="header" href="#example-26">Example</a></h3>
+<pre><code class="language-koto">print! (10..20).position |x| x == 15
+check! 5
+
+print! (10..20).position |x| x == 99
+check! null
+</code></pre>
+<h3 id="see-also-15"><a class="header" href="#see-also-15">See Also</a></h3>
+<ul>
+<li><a href="#find"><code>iterator.find</code></a></li>
+</ul>
+<h2 id="product"><a class="header" href="#product">product</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Any
+</code></pre>
+<p>Returns the result of multiplying each value in the iterable together, using <code>1</code>
+as the initial value.</p>
+<h3 id="example-27"><a class="header" href="#example-27">Example</a></h3>
+<pre><code class="language-koto"># Find the product of a sequence of numbers
+print! (2, 3, 4).product()
+check! 24
+
+my_type = |n|
+  n: n
+  @*: |other| my_type self.n * other.n
+  @display: || 'my_type({self.n})'
+
+# Find the sum of a sequence of my_type values
+print! (my_type(2), my_type(3)).product my_type(10)
+check! my_type(60)
+</code></pre>
+<h3 id="see-also-16"><a class="header" href="#see-also-16">See also</a></h3>
+<ul>
+<li><a href="#fold"><code>iterator.fold</code></a></li>
+<li><a href="#sum"><code>iterator.sum</code></a></li>
+</ul>
+<h2 id="repeat"><a class="header" href="#repeat">repeat</a></h2>
+<pre><code class="language-kototype">|value: Any| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that endlessly yields the provided <code>value</code>.</p>
+<p><em>Warning</em>: This version of <code>repeat</code> will iterate endlessly, so consider using
+an adaptor like <a href="#take"><code>iterator.take</code></a> to produce an iterator with an end.</p>
+<pre><code class="language-kototype">|value: Any, n: Number| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that yields <code>n</code> repeats of the provided <code>value</code>.</p>
+<h3 id="example-28"><a class="header" href="#example-28">Example</a></h3>
+<pre><code class="language-koto">from iterator import repeat
+
+print! repeat(42).take(5).to_list()
+check! [42, 42, 42, 42, 42]
+
+print! repeat('x', 3).to_tuple()
+check! ('x', 'x', 'x')
+</code></pre>
+<h3 id="see-also-17"><a class="header" href="#see-also-17">See Also</a></h3>
+<ul>
+<li><a href="#generate"><code>iterator.generate</code></a></li>
+<li><a href="#once"><code>iterator.once</code></a></li>
+</ul>
+<h2 id="reversed"><a class="header" href="#reversed">reversed</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Iterator
+</code></pre>
+<p>Reverses the order of the iterator’s output.</p>
+<p>This only works with iterators that have a defined end, so attempting to reverse
+endless iterators like <a href="#generate"><code>iterator.generate</code></a> will result in an error.</p>
+<h3 id="example-29"><a class="header" href="#example-29">Example</a></h3>
+<pre><code class="language-koto">print! 'Héllö'.reversed().to_tuple()
+check! ('ö', 'l', 'l', 'é', 'H')
+
+print! (1..=10).reversed().skip(5).to_tuple()
+check! (5, 4, 3, 2, 1)
+</code></pre>
+<h2 id="skip"><a class="header" href="#skip">skip</a></h2>
+<pre><code class="language-kototype">|Iterable, steps: Number| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that will skip over the given number of output steps.</p>
+<p>Note that skipping only occurs lazily when the iterator is consumed.
+To skip iterator output immediately see [<code>iterator.advance</code>].</p>
+<h3 id="example-30"><a class="header" href="#example-30">Example</a></h3>
+<pre><code class="language-koto">print! (100..200).skip(50).next().get()
+check! 150
+</code></pre>
+<h3 id="see-also-18"><a class="header" href="#see-also-18">See also</a></h3>
+<ul>
+<li><a href="#advance"><code>iterator.advance</code></a></li>
+<li><a href="#step"><code>iterator.step</code></a></li>
+<li><a href="#take"><code>iterator.take</code></a></li>
+</ul>
+<h2 id="step"><a class="header" href="#step">step</a></h2>
+<pre><code class="language-kototype">|Iterable, step_size: Number| -&gt; Iterator
+</code></pre>
+<p>Steps over the iterable’s output by the provided step size.</p>
+<h3 id="example-31"><a class="header" href="#example-31">Example</a></h3>
+<pre><code class="language-koto">print! (0..10).step(3).to_tuple()
+check! (0, 3, 6, 9)
+
+print! 'Héllö'.step(2).to_string()
+check! Hlö
+</code></pre>
+<h3 id="see-also-19"><a class="header" href="#see-also-19">See also</a></h3>
+<ul>
+<li><a href="#skip"><code>iterator.skip</code></a></li>
+</ul>
+<h2 id="sum"><a class="header" href="#sum">sum</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Any
+</code></pre>
+<p>Returns the result of adding each value in the iterable together, using <code>0</code> as
+the initial value.</p>
+<pre><code class="language-kototype">|Iterable, initial_value: Any| -&gt; Any
+</code></pre>
+<p>Returns the result of adding each value in the iterable together, using the
+provided initial value as the start of the operation.</p>
+<h3 id="example-32"><a class="header" href="#example-32">Example</a></h3>
+<pre><code class="language-koto"># Find the sum of a sequence of numbers
+print! (2, 3, 4).sum()
+check! 9
+
+my_type = |n|
+  n: n
+  @+: |other| my_type self.n + other.n
+  @display: || 'my_type({self.n})'
+
+# Find the sum of a sequence of my_type values
+print! (my_type(1), my_type(2)).sum my_type(100)
+check! my_type(103)
+</code></pre>
+<h3 id="see-also-20"><a class="header" href="#see-also-20">See also</a></h3>
+<ul>
+<li><a href="#fold"><code>iterator.fold</code></a></li>
+<li><a href="#product"><code>iterator.product</code></a></li>
+</ul>
+<h2 id="take"><a class="header" href="#take">take</a></h2>
+<pre><code class="language-kototype">|Iterable, count: Number| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that yields a number of values from the input before
+finishing.</p>
+<pre><code class="language-kototype">|Iterable, test: |Any| -&gt; Bool| -&gt; Iterator
+</code></pre>
+<p>Creates an iterator that yields values from the input while they pass a
+test function.</p>
+<p>The test function should return <code>true</code> if the iterator should continue to yield
+values, and <code>false</code> if the iterator should stop yielding values.</p>
+<h3 id="example-33"><a class="header" href="#example-33">Example</a></h3>
+<pre><code class="language-koto">print! (100..200).take(3).to_tuple()
+check! (100, 101, 102)
+
+print! 'hey!'.take(|c| c != '!').to_string()
+check! hey
+</code></pre>
+<h3 id="see-also-21"><a class="header" href="#see-also-21">See also</a></h3>
+<ul>
+<li><a href="#skip"><code>iterator.skip</code></a></li>
+</ul>
+<h2 id="to_list"><a class="header" href="#to_list">to_list</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; List
+</code></pre>
+<p>Consumes all values coming from the iterator and places them in a list.</p>
+<h3 id="example-34"><a class="header" href="#example-34">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 42, (-1, -2)).to_list()
+check! ['a', 42, (-1, -2)]
+</code></pre>
+<h3 id="see-also-22"><a class="header" href="#see-also-22">See also</a></h3>
+<ul>
+<li><a href="#to-map"><code>iterator.to_map</code></a></li>
+<li><a href="#to-string"><code>iterator.to_string</code></a></li>
+<li><a href="#to-tuple"><code>iterator.to_tuple</code></a></li>
+</ul>
+<h2 id="to_map"><a class="header" href="#to_map">to_map</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Map
+</code></pre>
+<p>Consumes all values coming from the iterator and places them in a map.</p>
+<p>If a value is a tuple, then the first element in the tuple will be inserted as
+the key for the map entry, and the second element will be inserted as the value.</p>
+<p>If the value is anything other than a tuple, then it will be inserted as the map
+key, with <code>null</code> as the entry’s value.</p>
+<h3 id="example-35"><a class="header" href="#example-35">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 'b', 'c').to_map()
+check! {a: null, b: null, c: null}
+
+print! ('a', 'bbb', 'cc')
+  .each |x| x, size x
+  .to_map()
+check! {a: 1, bbb: 3, cc: 2}
+</code></pre>
+<h3 id="see-also-23"><a class="header" href="#see-also-23">See also</a></h3>
+<ul>
+<li><a href="#to-list"><code>iterator.to_list</code></a></li>
+<li><a href="#to-string"><code>iterator.to_string</code></a></li>
+<li><a href="#to-tuple"><code>iterator.to_tuple</code></a></li>
+</ul>
+<h2 id="to_string"><a class="header" href="#to_string">to_string</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; String
+</code></pre>
+<p>Consumes all values coming from the iterator and produces a string containing
+the formatted values.</p>
+<h3 id="example-36"><a class="header" href="#example-36">Example</a></h3>
+<pre><code class="language-koto">print! ('x', 'y', 'z').to_string()
+check! xyz
+
+print! (1, 2, 3).intersperse('-').to_string()
+check! 1-2-3
+</code></pre>
+<h3 id="see-also-24"><a class="header" href="#see-also-24">See also</a></h3>
+<ul>
+<li><a href="#to-list"><code>iterator.to_list</code></a></li>
+<li><a href="#to-map"><code>iterator.to_map</code></a></li>
+<li><a href="#to-tuple"><code>iterator.to_tuple</code></a></li>
+</ul>
+<h2 id="to_tuple"><a class="header" href="#to_tuple">to_tuple</a></h2>
+<pre><code class="language-kototype">|Iterable| -&gt; Tuple
+</code></pre>
+<p>Consumes all values coming from the iterator and places them in a tuple.</p>
+<h3 id="example-37"><a class="header" href="#example-37">Example</a></h3>
+<pre><code class="language-koto">print! ('a', 42, (-1, -2)).to_tuple()
+check! ('a', 42, (-1, -2))
+</code></pre>
+<h3 id="see-also-25"><a class="header" href="#see-also-25">See also</a></h3>
+<ul>
+<li><a href="#to-list"><code>iterator.to_list</code></a></li>
+<li><a href="#to-map"><code>iterator.to_map</code></a></li>
+<li><a href="#to-string"><code>iterator.to_string</code></a></li>
+</ul>
+<h2 id="windows"><a class="header" href="#windows">windows</a></h2>
+<pre><code class="language-kototype">|Iterable, size: Number| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator that splits up the input data into overlapping windows of
+the specified <code>size</code>, where each window is provided as a Tuple.</p>
+<p>If the input has fewer elements than the window size, then no windows will be
+produced.</p>
+<h3 id="example-38"><a class="header" href="#example-38">Example</a></h3>
+<pre><code class="language-koto">print! 1..=5
+  .windows 3
+  .to_list(),
+check! [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+</code></pre>
+<h2 id="zip"><a class="header" href="#zip">zip</a></h2>
+<pre><code class="language-kototype">|first: Iterable, second: Iterable| -&gt; Iterator
+</code></pre>
+<p>Combines the values in two iterables into an iterator that yields
+corresponding pairs of values, one at a time from each input iterable.</p>
+<h3 id="example-39"><a class="header" href="#example-39">Example</a></h3>
+<pre><code class="language-koto">print! (1, 2, 3)
+  .zip ('a', 'b', 'c')
+  .to_list()
+check! [(1, 'a'), (2, 'b'), (3, 'c')]
+</code></pre>
+<h2 id="iteratoroutput"><a class="header" href="#iteratoroutput">IteratorOutput</a></h2>
+<p>A wrapper for a single item of iterator output.</p>
+<p>This exists to allow functions like <a href="#next"><code>iterator.next</code></a> to return <code>null</code> to
+indicate that the iterator has been exhausted,
+while also allowing <code>null</code> to appear in the iterator’s output.</p>
+<h2 id="iteratoroutputget"><a class="header" href="#iteratoroutputget">IteratorOutput.get</a></h2>
+<pre><code class="language-kototype">|IteratorOutput| -&gt; Any
+</code></pre>
+<p>Returns the wrapped iterator output value.</p>
+<h3 id="example-40"><a class="header" href="#example-40">Example</a></h3>
+<pre><code class="language-koto">print! x = 'abc'.next()
+check! IteratorOutput(a)
+print! x.get()
+check! a
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../core_lib/io.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../core_lib/koto.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../core_lib/io.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../core_lib/koto.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

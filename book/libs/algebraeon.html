@@ -1,0 +1,1510 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>algebraeon - koto-calc</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A programmable calculator with the Koto language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-295677e8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-a681759e.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">koto-calc</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="algebraeon"><a class="header" href="#algebraeon">algebraeon</a></h1>
+<p><a href="https://crates.io/crates/algebraeon">Algebraeon</a> support for Koto:
+arbitrary precision arithmetic, number theory, polynomials, and matrices.</p>
+<p>The module provides the types <a href="#nn"><code>NN</code></a> (natural numbers),
+<a href="#zz"><code>ZZ</code></a> (integers), <a href="#q"><code>Q</code></a> (rationals),
+<a href="#poly"><code>Poly</code></a> (univariate polynomials), <a href="#mat"><code>Mat</code></a> (matrices),
+<a href="#quat"><code>Quat</code></a> (Hamilton quaternions) and <a href="#alg"><code>Alg</code></a> (real algebraic
+numbers), plus the module-level functions <a href="#gcd"><code>gcd</code></a> and <a href="#lcm"><code>lcm</code></a>.</p>
+<h2 id="nn"><a class="header" href="#nn">NN</a></h2>
+<pre><code class="language-kototype">|| -&gt; Iterator
+|Number| -&gt; NN
+</code></pre>
+<p>Natural (non-negative integer) values with arbitrary precision.</p>
+<p>Called with no arguments, <code>NN()</code> returns an iterator over the natural numbers
+<code>0, 1, 2, ...</code>.</p>
+<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<pre><code class="language-koto">print! NN(5).factorial()
+check! 120
+
+print! NN(5) - NN(3)
+check! 2
+
+print! NN().take(4).to_list()
+check! [0, 1, 2, 3]
+</code></pre>
+<h2 id="nnbitcount"><a class="header" href="#nnbitcount">NN.bitcount</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; Number
+</code></pre>
+<p>Returns the number of bits needed to represent the value.</p>
+<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<pre><code class="language-koto">print! NN(5).bitcount()
+check! 3
+</code></pre>
+<h2 id="nnis_prime"><a class="header" href="#nnis_prime">NN.is_prime</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is prime.</p>
+<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<pre><code class="language-koto">print! NN(17).is_prime()
+check! true
+
+print! NN(12).is_prime()
+check! false
+</code></pre>
+<h2 id="nnis_squarefree"><a class="header" href="#nnis_squarefree">NN.is_squarefree</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value has no repeated prime factors.</p>
+<h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
+<pre><code class="language-koto">print! NN(10).is_squarefree()
+check! true
+
+print! NN(12).is_squarefree()
+check! false
+</code></pre>
+<h2 id="nnfactor"><a class="header" href="#nnfactor">NN.factor</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; [(NN, NN)]
+</code></pre>
+<p>Returns the prime factorization of the value as a list of
+<code>(prime, exponent)</code> tuples.</p>
+<h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
+<pre><code class="language-koto">print! NN(60).factor()
+check! [(2, 2), (3, 1), (5, 1)]
+</code></pre>
+<h2 id="nnfactorial"><a class="header" href="#nnfactorial">NN.factorial</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; NN
+</code></pre>
+<p>Returns the factorial of the value.</p>
+<h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
+<pre><code class="language-koto">print! NN(5).factorial()
+check! 120
+</code></pre>
+<h2 id="nndivisors"><a class="header" href="#nndivisors">NN.divisors</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; [NN]
+</code></pre>
+<p>Returns the value’s divisors in ascending order.</p>
+<h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
+<pre><code class="language-koto">print! NN(12).divisors()
+check! [1, 2, 3, 4, 6, 12]
+</code></pre>
+<h2 id="nneuler_totient"><a class="header" href="#nneuler_totient">NN.euler_totient</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; NN
+</code></pre>
+<p>Returns the value of <a href="https://en.wikipedia.org/wiki/Euler%27s_totient_function">Euler’s totient function</a>,
+the count of positive integers up to the value that are coprime to it.</p>
+<h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
+<pre><code class="language-koto">print! NN(10).euler_totient()
+check! 4
+</code></pre>
+<h2 id="nnis_square"><a class="header" href="#nnis_square">NN.is_square</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is a perfect square.</p>
+<h3 id="example-8"><a class="header" href="#example-8">Example</a></h3>
+<pre><code class="language-koto">print! NN(16).is_square()
+check! true
+
+print! NN(18).is_square()
+check! false
+</code></pre>
+<h2 id="nnsqrt_floor"><a class="header" href="#nnsqrt_floor">NN.sqrt_floor</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; NN
+</code></pre>
+<p>Returns the floor of the square root of the value.</p>
+<h3 id="example-9"><a class="header" href="#example-9">Example</a></h3>
+<pre><code class="language-koto">print! NN(17).sqrt_floor()
+check! 4
+</code></pre>
+<h2 id="nnsqrt_ceil"><a class="header" href="#nnsqrt_ceil">NN.sqrt_ceil</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; NN
+</code></pre>
+<p>Returns the ceiling of the square root of the value.</p>
+<h3 id="example-10"><a class="header" href="#example-10">Example</a></h3>
+<pre><code class="language-koto">print! NN(17).sqrt_ceil()
+check! 5
+</code></pre>
+<h2 id="nnis_power_test"><a class="header" href="#nnis_power_test">NN.is_power_test</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; (Bool, NN?, NN?)
+</code></pre>
+<p>Returns <code>(true, base, exponent)</code> if the value can be written as <code>base^exponent</code>
+with <code>exponent &gt; 1</code>, otherwise <code>(false, null, null)</code>.</p>
+<h3 id="example-11"><a class="header" href="#example-11">Example</a></h3>
+<pre><code class="language-koto">print! NN(8).is_power_test()
+check! (true, 2, 3)
+
+print! NN(6).is_power_test()
+check! (false, null, null)
+</code></pre>
+<h2 id="nnprimality_test"><a class="header" href="#nnprimality_test">NN.primality_test</a></h2>
+<pre><code class="language-kototype">|NN| -&gt; String
+</code></pre>
+<p>Returns <code>'prime'</code> or <code>'composite'</code> (both <code>0</code> and <code>1</code> are reported as
+<code>'composite'</code>).</p>
+<h3 id="example-12"><a class="header" href="#example-12">Example</a></h3>
+<pre><code class="language-koto">print! NN(17).primality_test()
+check! prime
+
+print! NN(12).primality_test()
+check! composite
+</code></pre>
+<h2 id="nnprimes"><a class="header" href="#nnprimes">NN.primes</a></h2>
+<pre><code class="language-kototype">|| -&gt; Iterator
+</code></pre>
+<p>Returns an iterator over the prime numbers.</p>
+<h3 id="example-13"><a class="header" href="#example-13">Example</a></h3>
+<pre><code class="language-koto">print! NN.primes().take(6).to_list()
+check! [2, 3, 5, 7, 11, 13]
+</code></pre>
+<h2 id="zz"><a class="header" href="#zz">ZZ</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; ZZ
+</code></pre>
+<p>Integer values with arbitrary precision.</p>
+<p><code>ZZ</code> supports arithmetic (<code>+ - *</code>), comparisons, and assignment operators
+(<code>+= -= *=</code>) with other <code>ZZ</code> values, <code>NN</code> values, and plain numbers.</p>
+<h3 id="example-14"><a class="header" href="#example-14">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(5) + ZZ(-3)
+check! 2
+
+print! ZZ(4) * ZZ(-2)
+check! -8
+
+print! ZZ(5) + NN(3)
+check! 8
+</code></pre>
+<h2 id="zzabs"><a class="header" href="#zzabs">ZZ.abs</a></h2>
+<pre><code class="language-kototype">|ZZ| -&gt; NN
+</code></pre>
+<p>Returns the absolute value of the integer as an <code>NN</code>.</p>
+<h3 id="example-15"><a class="header" href="#example-15">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-9).abs()
+check! 9
+</code></pre>
+<h2 id="zzis_irreducible"><a class="header" href="#zzis_irreducible">ZZ.is_irreducible</a></h2>
+<pre><code class="language-kototype">|ZZ| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is irreducible (i.e. a prime, up to sign).</p>
+<h3 id="example-16"><a class="header" href="#example-16">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(7).is_irreducible()
+check! true
+
+print! ZZ(9).is_irreducible()
+check! false
+</code></pre>
+<h2 id="zzis_square"><a class="header" href="#zzis_square">ZZ.is_square</a></h2>
+<pre><code class="language-kototype">|ZZ| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is a perfect square.</p>
+<h3 id="example-17"><a class="header" href="#example-17">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(9).is_square()
+check! true
+
+print! ZZ(10).is_square()
+check! false
+</code></pre>
+<h2 id="zzfactor"><a class="header" href="#zzfactor">ZZ.factor</a></h2>
+<pre><code class="language-kototype">|ZZ| -&gt; [(ZZ, NN)]
+</code></pre>
+<p>Returns the prime factorization of the value as a list of
+<code>(prime, exponent)</code> tuples. The sign is ignored.</p>
+<h3 id="example-18"><a class="header" href="#example-18">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-12).factor()
+check! [(2, 2), (3, 1)]
+</code></pre>
+<h2 id="zzdivmod"><a class="header" href="#zzdivmod">ZZ.divmod</a></h2>
+<pre><code class="language-kototype">|ZZ, ZZ| -&gt; (ZZ, ZZ)
+</code></pre>
+<p>Returns the quotient and remainder of a floor division, with a
+non-negative remainder.</p>
+<h3 id="example-19"><a class="header" href="#example-19">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-7).divmod(ZZ(3))
+check! (-3, 2)
+</code></pre>
+<h2 id="zzdiv_floor"><a class="header" href="#zzdiv_floor">ZZ.div_floor</a></h2>
+<pre><code class="language-kototype">|ZZ, ZZ| -&gt; ZZ
+</code></pre>
+<p>Returns the quotient of a floor division.</p>
+<h3 id="example-20"><a class="header" href="#example-20">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-7).div_floor(ZZ(3))
+check! -3
+
+print! ZZ(-13).div_floor(ZZ(5))
+check! -3
+</code></pre>
+<h2 id="zzmod"><a class="header" href="#zzmod">ZZ.mod</a></h2>
+<pre><code class="language-kototype">|ZZ, ZZ| -&gt; ZZ
+</code></pre>
+<p>Returns the non-negative remainder of a floor division, coherent with
+<a href="#zz-div-floor"><code>div_floor</code></a>.</p>
+<h3 id="example-21"><a class="header" href="#example-21">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-7).mod(ZZ(3))
+check! 2
+
+print! ZZ(-13).mod(ZZ(5))
+check! 2
+</code></pre>
+<h2 id="q"><a class="header" href="#q">Q</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; Q
+|Number, Number| -&gt; Q
+</code></pre>
+<p>Rational numbers, stored as reduced fractions <code>num / den</code>.</p>
+<p>The denominator must be non-zero. A single argument is treated as a whole
+number. <code>Q</code> supports arithmetic (<code>+ - * /</code>), comparisons, and assignment
+operators (<code>+= -= *= /=</code>) with other <code>Q</code> values, <code>NN</code> values, <code>ZZ</code> values and
+plain numbers.</p>
+<p>The display form is the reduced fraction <code>num/den</code>, or just <code>num</code> when the
+denominator is <code>1</code>.</p>
+<h3 id="example-22"><a class="header" href="#example-22">Example</a></h3>
+<pre><code class="language-koto">print! Q(6, 4)
+check! 3/2
+
+print! Q(1, 2) + Q(1, 3)
+check! 5/6
+
+print! Q(1, 2) / Q(3, 4)
+check! 2/3
+
+print! Q(0.5)
+check! 1/2
+
+print! Q(3)
+check! 3
+</code></pre>
+<h2 id="qnum"><a class="header" href="#qnum">Q.num</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; ZZ
+</code></pre>
+<p>Returns the numerator of the reduced fraction.</p>
+<h3 id="example-23"><a class="header" href="#example-23">Example</a></h3>
+<pre><code class="language-koto">print! Q(3, 2).num()
+check! 3
+
+print! Q(-3, 2).num()
+check! -3
+</code></pre>
+<h2 id="qden"><a class="header" href="#qden">Q.den</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; NN
+</code></pre>
+<p>Returns the denominator of the reduced fraction.</p>
+<h3 id="example-24"><a class="header" href="#example-24">Example</a></h3>
+<pre><code class="language-koto">print! Q(3, 2).den()
+check! 2
+</code></pre>
+<h2 id="qis_integer"><a class="header" href="#qis_integer">Q.is_integer</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is a whole number.</p>
+<h3 id="example-25"><a class="header" href="#example-25">Example</a></h3>
+<pre><code class="language-koto">print! Q(4, 2).is_integer()
+check! true
+
+print! Q(3, 2).is_integer()
+check! false
+</code></pre>
+<h2 id="qis_square"><a class="header" href="#qis_square">Q.is_square</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; Bool
+</code></pre>
+<p>Returns <code>true</code> if the value is a perfect square.</p>
+<h3 id="example-26"><a class="header" href="#example-26">Example</a></h3>
+<pre><code class="language-koto">print! Q(4, 9).is_square()
+check! true
+
+print! Q(2, 3).is_square()
+check! false
+</code></pre>
+<h2 id="qsqrt_if_square"><a class="header" href="#qsqrt_if_square">Q.sqrt_if_square</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; Q?
+</code></pre>
+<p>Returns the square root of the value if it is a perfect square,
+otherwise <code>null</code>.</p>
+<h3 id="example-27"><a class="header" href="#example-27">Example</a></h3>
+<pre><code class="language-koto">print! Q(4, 9).sqrt_if_square()
+check! 2/3
+
+print! Q(2, 3).sqrt_if_square()
+check! null
+</code></pre>
+<h2 id="qheight"><a class="header" href="#qheight">Q.height</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; NN
+</code></pre>
+<p>Returns the height of the value: <code>max(|num|, den)</code> of the reduced fraction.</p>
+<h3 id="example-28"><a class="header" href="#example-28">Example</a></h3>
+<pre><code class="language-koto">print! Q(3, 2).height()
+check! 3
+
+print! Q(-2, 5).height()
+check! 5
+</code></pre>
+<h2 id="qto_float"><a class="header" href="#qto_float">Q.to_float</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; Number
+</code></pre>
+<p>Converts the value to a floating point number.</p>
+<h3 id="example-29"><a class="header" href="#example-29">Example</a></h3>
+<pre><code class="language-koto">print! Q(3, 2).to_float()
+check! 1.5
+</code></pre>
+<h2 id="qto_zz"><a class="header" href="#qto_zz">Q.to_zz</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; ZZ
+</code></pre>
+<p>Converts the value to a <code>ZZ</code> (the value must be a whole number).</p>
+<h3 id="example-30"><a class="header" href="#example-30">Example</a></h3>
+<pre><code class="language-koto">print! Q(3).to_zz()
+check! 3
+
+print! Q(4, 2).to_zz()
+check! 2
+</code></pre>
+<h2 id="qto_nn"><a class="header" href="#qto_nn">Q.to_nn</a></h2>
+<pre><code class="language-kototype">|Q| -&gt; NN
+</code></pre>
+<p>Converts the value to an <code>NN</code> (the value must be a non-negative whole number).</p>
+<h3 id="example-31"><a class="header" href="#example-31">Example</a></h3>
+<pre><code class="language-koto">print! Q(4, 2).to_nn()
+check! 2
+
+print! Q(0).to_nn()
+check! 0
+</code></pre>
+<h2 id="poly"><a class="header" href="#poly">Poly</a></h2>
+<pre><code class="language-kototype">|List| -&gt; Poly
+</code></pre>
+<p>Univariate polynomials over <code>ZZ</code> or <code>Q</code>.</p>
+<p>The constructor takes a list of coefficients in ascending order, with the
+first element being the constant term: <code>Poly([6, -5, 1])</code> represents
+<code>6 - 5x + x^2</code>.</p>
+<p>The coefficients are stored as <code>ZZ</code> when all of them are integers, and
+promoted to <code>Q</code> when any of them is a fraction. Arithmetic (<code>+ - *</code>) works
+with other polynomials and with <code>NN</code>/<code>ZZ</code>/<code>Q</code> scalars, promoting <code>ZZ</code> to <code>Q</code>
+when needed.</p>
+<p>The display form shows the terms in ascending order of degree, e.g.
+<code>6 - 5x + x^2</code>.</p>
+<h3 id="example-32"><a class="header" href="#example-32">Example</a></h3>
+<pre><code class="language-koto">a = Poly([6, -5, 1])
+print! a
+check! 6 - 5x + x^2
+
+print! a + Poly([1, 1])
+check! 7 - 4x + x^2
+
+print! a * Q(1, 2)
+check! 3 - (5/2)x + (1/2)x^2
+</code></pre>
+<h2 id="polydegree"><a class="header" href="#polydegree">Poly.degree</a></h2>
+<pre><code class="language-kototype">|Poly| -&gt; NN
+</code></pre>
+<p>Returns the degree of the polynomial (the zero polynomial has degree <code>0</code>).</p>
+<h3 id="example-33"><a class="header" href="#example-33">Example</a></h3>
+<pre><code class="language-koto">print! Poly([6, -5, 1]).degree()
+check! 2
+
+print! Poly([7]).degree()
+check! 0
+</code></pre>
+<h2 id="polycoeffs"><a class="header" href="#polycoeffs">Poly.coeffs</a></h2>
+<pre><code class="language-kototype">|Poly| -&gt; [ZZ] | [Q]
+</code></pre>
+<p>Returns the coefficients in ascending order, starting with the constant term.</p>
+<h3 id="example-34"><a class="header" href="#example-34">Example</a></h3>
+<pre><code class="language-koto">print! Poly([6, -5, 1]).coeffs()
+check! [6, -5, 1]
+
+print! Poly([3, Q(-5, 2), Q(1, 2)]).coeffs()
+check! [3, -5/2, 1/2]
+</code></pre>
+<h2 id="polyeval"><a class="header" href="#polyeval">Poly.eval</a></h2>
+<pre><code class="language-kototype">|Poly, x: Number| -&gt; ZZ | Q
+</code></pre>
+<p>Evaluates the polynomial at <code>x</code> (which may be a <code>Number</code>, <code>NN</code>, <code>ZZ</code> or <code>Q</code>).</p>
+<h3 id="example-35"><a class="header" href="#example-35">Example</a></h3>
+<pre><code class="language-koto">a = Poly([6, -5, 1])
+print! a.eval(2)
+check! 0
+
+print! a.eval(Q(1, 2))
+check! 15/4
+</code></pre>
+<h2 id="polyderivative"><a class="header" href="#polyderivative">Poly.derivative</a></h2>
+<pre><code class="language-kototype">|Poly| -&gt; Poly
+</code></pre>
+<p>Returns the derivative of the polynomial.</p>
+<h3 id="example-36"><a class="header" href="#example-36">Example</a></h3>
+<pre><code class="language-koto">print! Poly([6, -5, 1]).derivative()
+check! -5 + 2x
+
+print! Poly([5]).derivative()
+check! 0
+</code></pre>
+<h2 id="polygcd"><a class="header" href="#polygcd">Poly.gcd</a></h2>
+<pre><code class="language-kototype">|Poly, Poly| -&gt; Poly
+</code></pre>
+<p>Returns the monic greatest common divisor of two polynomials,
+promoting to <code>Q</code> if needed.</p>
+<h3 id="example-37"><a class="header" href="#example-37">Example</a></h3>
+<pre><code class="language-koto">print! Poly([6, -5, 1]).gcd(Poly([2, -3, 1]))
+check! -2 + x
+</code></pre>
+<h2 id="polyfactor"><a class="header" href="#polyfactor">Poly.factor</a></h2>
+<pre><code class="language-kototype">|Poly| -&gt; [(Poly, NN)]
+</code></pre>
+<p>Returns the irreducible factorization of the polynomial as a list of
+<code>(factor, exponent)</code> tuples.</p>
+<h3 id="example-38"><a class="header" href="#example-38">Example</a></h3>
+<pre><code class="language-koto">print! Poly([6, -5, 1]).factor()
+check! [(-2 + x, 1), (-3 + x, 1)]
+
+print! Poly([1, 0, 1]).factor()
+check! [(1 + x^2, 1)]
+</code></pre>
+<h2 id="mat"><a class="header" href="#mat">Mat</a></h2>
+<pre><code class="language-kototype">|List of lists| -&gt; Mat
+</code></pre>
+<p>Matrices over <code>ZZ</code> or <code>Q</code>, given row by row: <code>Mat([[1, 2], [3, 4]])</code> is the
+<code>2x2</code> matrix with rows <code>[1, 2]</code> and <code>[3, 4]</code>.</p>
+<p>The entries are stored as <code>ZZ</code> when all of them are integers, and promoted
+to <code>Q</code> when any of them is a fraction. Arithmetic (<code>+ - *</code>) works with other
+matrices and with <code>NN</code>/<code>ZZ</code>/<code>Q</code> scalars.</p>
+<p>The display form is a list of rows, e.g. <code>[[1, 2], [3, 4]]</code>.</p>
+<h3 id="example-39"><a class="header" href="#example-39">Example</a></h3>
+<pre><code class="language-koto">m = Mat([[1, 2], [3, 4]])
+print! m
+check! [[1, 2], [3, 4]]
+
+print! m * Mat([[5, 6], [7, 8]])
+check! [[19, 22], [43, 50]]
+
+print! m.det()
+check! -2
+</code></pre>
+<h2 id="matrows"><a class="header" href="#matrows">Mat.rows</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; NN
+</code></pre>
+<p>Returns the number of rows.</p>
+<h3 id="example-40"><a class="header" href="#example-40">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 2], [3, 4]]).rows()
+check! 2
+</code></pre>
+<h2 id="matcols"><a class="header" href="#matcols">Mat.cols</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; NN
+</code></pre>
+<p>Returns the number of columns.</p>
+<h3 id="example-41"><a class="header" href="#example-41">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 2], [3, 4]]).cols()
+check! 2
+</code></pre>
+<h2 id="matat"><a class="header" href="#matat">Mat.at</a></h2>
+<pre><code class="language-kototype">|Mat, row: Number, col: Number| -&gt; ZZ | Q
+</code></pre>
+<p>Returns the entry at the given row and column (zero-based).</p>
+<h3 id="example-42"><a class="header" href="#example-42">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 2], [3, 4]]).at(1, 0)
+check! 3
+</code></pre>
+<h2 id="mattranspose"><a class="header" href="#mattranspose">Mat.transpose</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; Mat
+</code></pre>
+<p>Returns the transposed matrix.</p>
+<h3 id="example-43"><a class="header" href="#example-43">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 2], [3, 4]]).transpose()
+check! [[1, 3], [2, 4]]
+</code></pre>
+<h2 id="matmul"><a class="header" href="#matmul">Mat.mul</a></h2>
+<pre><code class="language-kototype">|Mat, Mat| -&gt; Mat
+</code></pre>
+<p>Returns the matrix product (also available as the <code>*</code> operator).</p>
+<h3 id="example-44"><a class="header" href="#example-44">Example</a></h3>
+<pre><code class="language-koto">m = Mat([[1, 2], [3, 4]])
+print! m.mul(Mat([[5, 6], [7, 8]]))
+check! [[19, 22], [43, 50]]
+</code></pre>
+<h2 id="matdet"><a class="header" href="#matdet">Mat.det</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; ZZ | Q
+</code></pre>
+<p>Returns the determinant (only defined for square matrices).</p>
+<h3 id="example-45"><a class="header" href="#example-45">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 2], [3, 4]]).det()
+check! -2
+</code></pre>
+<h2 id="matinverse"><a class="header" href="#matinverse">Mat.inverse</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; Mat
+</code></pre>
+<p>Returns the inverse of the matrix over <code>Q</code> (a <code>ZZ</code> matrix is promoted to
+<code>Q</code>). An error is thrown if the matrix is singular.</p>
+<h3 id="example-46"><a class="header" href="#example-46">Example</a></h3>
+<pre><code class="language-koto">m = Mat([[1, 2], [3, 4]])
+print! m.inverse()
+check! [[-2, 1], [3/2, -1/2]]
+
+print! m.inverse() * m
+check! [[1, 0], [0, 1]]
+</code></pre>
+<h2 id="matlll"><a class="header" href="#matlll">Mat.lll</a></h2>
+<pre><code class="language-kototype">|Mat| -&gt; Mat
+</code></pre>
+<p>Returns the <a href="https://en.wikipedia.org/wiki/Lenstra%E2%80%93Lenstra%E2%80%93Lov%C3%A1sz_lattice_basis_reduction_algorithm">LLL-reduced</a>
+basis of the lattice generated by the rows of an integer matrix.
+An error is thrown if the matrix contains fractions.</p>
+<h3 id="example-47"><a class="header" href="#example-47">Example</a></h3>
+<pre><code class="language-koto">print! Mat([[1, 1], [1, 2]]).lll()
+check! [[-1, 0], [0, 1]]
+</code></pre>
+<h2 id="gcd"><a class="header" href="#gcd">gcd</a></h2>
+<pre><code class="language-kototype">|NN, NN| -&gt; NN
+</code></pre>
+<p>Returns the greatest common divisor of two natural numbers.</p>
+<h3 id="example-48"><a class="header" href="#example-48">Example</a></h3>
+<pre><code class="language-koto">print! gcd(NN(12), NN(18))
+check! 6
+</code></pre>
+<h2 id="lcm"><a class="header" href="#lcm">lcm</a></h2>
+<pre><code class="language-kototype">|NN, NN| -&gt; NN
+</code></pre>
+<p>Returns the least common multiple of two natural numbers.</p>
+<h3 id="example-49"><a class="header" href="#example-49">Example</a></h3>
+<pre><code class="language-koto">print! lcm(NN(4), NN(6))
+check! 12
+</code></pre>
+<h2 id="quat"><a class="header" href="#quat">Quat</a></h2>
+<pre><code class="language-kototype">|Number, Number, Number, Number| -&gt; Quat
+</code></pre>
+<p><a href="https://en.wikipedia.org/wiki/Quaternion">Hamilton quaternions</a> over <code>Q</code>,
+constructed from four coefficients <code>a + bi + cj + dk</code> (each
+<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code> argument is promoted to <code>Q</code>).</p>
+<p>Multiplication is the Hamilton product, defined by
+<code>i^2 = j^2 = k^2 = ijk = -1</code> with <code>i*j = k</code>, <code>j*k = i</code> and <code>k*i = j</code> (the
+cross terms anti-commute: <code>j*i = -k</code>, …), so multiplication is not
+commutative. The product is computed directly on the coefficients: the
+wrapper works around a bug in algebraeon 0.0.17 (upstream issue #244) that
+produced wrong signs in the <code>i</code>/<code>j</code> cross terms of
+<code>QuaternionAlgebraStructure::mul</code>.</p>
+<p><code>Quat</code> supports arithmetic (<code>+ - *</code>) with other <code>Quat</code> values and with
+scalars (<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code>, on either side), negation, and equality
+(<code>==</code>, <code>!=</code>).</p>
+<p>The display form is e.g. <code>1 + 2i - 3j + (1/2)k</code>: zero terms are omitted,
+the coefficient <code>1</code> is dropped on <code>i</code>/<code>j</code>/<code>k</code>, and fractional coefficients
+are parenthesized.</p>
+<h3 id="example-50"><a class="header" href="#example-50">Example</a></h3>
+<pre><code class="language-koto">q = Quat(1, 2, 3, 4)
+print! q
+check! 1 + 2i + 3j + 4k
+
+print! q + Quat(1, -2, -3, -4)
+check! 2
+
+print! q * 2
+check! 2 + 4i + 6j + 8k
+
+print! 1 - q
+check! -2i - 3j - 4k
+
+print! Quat(1, 2, 0, 0) * Quat(3, 4, 0, 0)
+check! -5 + 10i
+
+# Hamilton rules: i*j = k, j*i = -k, i*i = -1
+i = Quat(0, 1, 0, 0)
+j = Quat(0, 0, 1, 0)
+k = Quat(0, 0, 0, 1)
+print! i * j
+check! k
+
+print! j * i
+check! -k
+
+print! i * i
+check! -1
+
+# Associativity: (i*j)*k = -1
+print! (i * j) * k
+check! -1
+</code></pre>
+<h2 id="quatconjugate"><a class="header" href="#quatconjugate">Quat.conjugate</a></h2>
+<pre><code class="language-kototype">|Quat| -&gt; Quat
+</code></pre>
+<p>Returns the conjugate <code>a - bi - cj - dk</code>.</p>
+<h3 id="example-51"><a class="header" href="#example-51">Example</a></h3>
+<pre><code class="language-koto">print! Quat(1, 2, 3, 4).conjugate()
+check! 1 - 2i - 3j - 4k
+
+print! Quat(1, 2, 3, 4).conjugate().conjugate()
+check! 1 + 2i + 3j + 4k
+</code></pre>
+<h2 id="quatnorm"><a class="header" href="#quatnorm">Quat.norm</a></h2>
+<pre><code class="language-kototype">|Quat| -&gt; Q
+</code></pre>
+<p>Returns the reduced norm <code>a^2 + b^2 + c^2 + d^2</code>.</p>
+<h3 id="example-52"><a class="header" href="#example-52">Example</a></h3>
+<pre><code class="language-koto">print! Quat(1, 2, 3, 4).norm()
+check! 30
+
+print! Quat(3, -4, 0, 0).norm()
+check! 25
+</code></pre>
+<h2 id="quattrace"><a class="header" href="#quattrace">Quat.trace</a></h2>
+<pre><code class="language-kototype">|Quat| -&gt; Q
+</code></pre>
+<p>Returns the reduced trace <code>2a</code>.</p>
+<h3 id="example-53"><a class="header" href="#example-53">Example</a></h3>
+<pre><code class="language-koto">print! Quat(1, 2, 3, 4).trace()
+check! 2
+
+print! Quat(3, -4, 0, 0).trace()
+check! 6
+</code></pre>
+<h2 id="quatcoeffs"><a class="header" href="#quatcoeffs">Quat.coeffs</a></h2>
+<pre><code class="language-kototype">|Quat| -&gt; (Q, Q, Q, Q)
+</code></pre>
+<p>Returns the four coefficients as a tuple <code>(a, b, c, d)</code>.</p>
+<h3 id="example-54"><a class="header" href="#example-54">Example</a></h3>
+<pre><code class="language-koto">print! Quat(1, 2, 3, 4).coeffs()
+check! (1, 2, 3, 4)
+
+print! Quat(Q(1, 2), 0, 0, 0).coeffs()
+check! (1/2, 0, 0, 0)
+</code></pre>
+<h2 id="quatto_float"><a class="header" href="#quatto_float">Quat.to_float</a></h2>
+<pre><code class="language-kototype">|Quat| -&gt; (Number, Number, Number, Number)
+</code></pre>
+<p>Converts the four coefficients to floating point numbers.</p>
+<h3 id="example-55"><a class="header" href="#example-55">Example</a></h3>
+<pre><code class="language-koto">print! Quat(1, 2, 3, 4).to_float()
+check! (1.0, 2.0, 3.0, 4.0)
+</code></pre>
+<h2 id="alg"><a class="header" href="#alg">Alg</a></h2>
+<pre><code class="language-kototype">|Poly | List| -&gt; [Alg]
+</code></pre>
+<p>Real algebraic numbers: exact real roots of polynomials. The constructor
+takes a <code>Poly</code> (over <code>ZZ</code> or <code>Q</code>) or a coefficient list (as in
+<code>Poly([...])</code>), and returns the <strong>list of isolated real roots in increasing
+order</strong>, with multiplicity. Polynomials of degree <code>0</code> (including the zero
+polynomial) and polynomials without real roots give an empty list.</p>
+<p>Each <code>Alg</code> value is a root with an isolating interval, so comparisons are
+exact: <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code> and <code>==</code> work between two <code>Alg</code> values and
+between an <code>Alg</code> and a scalar (<code>Q</code>/<code>NN</code>/<code>ZZ</code>/<code>Number</code>, compared exactly as
+a rational). Arithmetic between algebraic numbers is not exposed.</p>
+<p>The display form is a decimal approximation with 9 significant decimals
+(e.g. <code>1.414213562</code>), or the exact reduced fraction for rational values
+(e.g. <code>6</code>).</p>
+<h3 id="example-56"><a class="header" href="#example-56">Example</a></h3>
+<pre><code class="language-koto">roots = Alg(Poly([-2, 0, 1]))  # roots of x^2 - 2
+print! roots
+check! [-1.414213562, 1.414213562]
+
+print! size(roots)
+check! 2
+
+print! roots[0] &lt; roots[1]
+check! true
+
+print! Alg(Poly([1, -2, 1]))  # (x - 1)^2, multiplicity kept
+check! [1, 1]
+
+print! Alg(Poly([1, 0, 1]))  # x^2 + 1 has no real roots
+check! []
+
+print! Alg([-2, 0, 1])  # coefficient list form
+check! [-1.414213562, 1.414213562]
+</code></pre>
+<h2 id="algcmp"><a class="header" href="#algcmp">Alg.cmp</a></h2>
+<pre><code class="language-kototype">|Alg, Alg | Number| -&gt; Number
+</code></pre>
+<p>Exact comparison: <code>-1</code> if smaller, <code>0</code> if equal, <code>1</code> if greater. The
+argument may be another <code>Alg</code> or a scalar (<code>Number</code>/<code>NN</code>/<code>ZZ</code>/<code>Q</code>),
+compared exactly as a rational.</p>
+<h3 id="example-57"><a class="header" href="#example-57">Example</a></h3>
+<pre><code class="language-koto">roots = Alg(Poly([-2, 0, 1]))
+print! roots[0].cmp(roots[1])
+check! -1
+
+sqrt2 = roots[1]
+print! sqrt2.cmp(Q(141, 100))  # sqrt(2) &gt; 141/100
+check! 1
+</code></pre>
+<h2 id="algaccuracy"><a class="header" href="#algaccuracy">Alg.accuracy</a></h2>
+<pre><code class="language-kototype">|Alg| -&gt; Q
+</code></pre>
+<p>Returns the width of the isolating interval (an exact rational). Rational
+values have accuracy <code>0</code>.</p>
+<h3 id="example-58"><a class="header" href="#example-58">Example</a></h3>
+<pre><code class="language-koto">print! Alg(Poly([-2, 0, 1]))[0].accuracy() &gt; Q(0)
+check! true
+
+print! Alg(Poly([-6, 1]))[0].accuracy()  # rational root
+check! 0
+</code></pre>
+<h2 id="algrefine"><a class="header" href="#algrefine">Alg.refine</a></h2>
+<pre><code class="language-kototype">|Alg, accuracy: Q | Number| -&gt; Alg
+</code></pre>
+<p>Returns a new <code>Alg</code> whose isolating interval has been refined to the
+requested (positive) accuracy. Rational values are returned unchanged.</p>
+<h3 id="example-59"><a class="header" href="#example-59">Example</a></h3>
+<pre><code class="language-koto">sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+r = sqrt2.refine(Q(1, 1000))
+print! r.accuracy() &lt; Q(1, 1000)
+check! true
+
+print! r.cmp(sqrt2)
+check! 0
+</code></pre>
+<h2 id="algmin_poly"><a class="header" href="#algmin_poly">Alg.min_poly</a></h2>
+<pre><code class="language-kototype">|Alg| -&gt; Poly
+</code></pre>
+<p>Returns the minimal polynomial of the algebraic number (a <code>Poly</code> over <code>Q</code>).
+For a rational value <code>n/d</code> it is <code>d*x - n</code>.</p>
+<h3 id="example-60"><a class="header" href="#example-60">Example</a></h3>
+<pre><code class="language-koto">sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+print! sqrt2.min_poly()
+check! -2 + x^2
+
+print! Alg(Poly([-6, 1]))[0].min_poly()
+check! -6 + x
+</code></pre>
+<h2 id="algto_float"><a class="header" href="#algto_float">Alg.to_float</a></h2>
+<pre><code class="language-kototype">|Alg| -&gt; Number
+</code></pre>
+<p>Returns a floating point approximation; the isolating interval is refined
+to accuracy <code>10^-15</code> before converting the midpoint.</p>
+<h3 id="example-61"><a class="header" href="#example-61">Example</a></h3>
+<pre><code class="language-koto">sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+print! sqrt2.to_float()
+check! 1.4142135623730951
+
+print! Alg(Poly([-6, 1]))[0].to_float()
+check! 6.0
+</code></pre>
+<h2 id="ideal"><a class="header" href="#ideal">Ideal</a></h2>
+<pre><code class="language-kototype">|Number, ...| -&gt; Ideal
+</code></pre>
+<p>Ideals of <code>ZZ</code> are principal. <code>Ideal(a, b, ...)</code> is the ideal generated by
+its integer arguments; its canonical non-negative generator is displayed with
+suffix <code>Z</code>. Thus <code>Ideal(4, 6)</code> is <code>2Z</code>.</p>
+<h3 id="example-62"><a class="header" href="#example-62">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(4, 6)
+check! 2Z
+
+print! Ideal(6).generator()
+check! 6
+
+print! Ideal(6).contains(12)
+check! true
+
+print! Ideal(6).contains(5)
+check! false
+</code></pre>
+<h2 id="idealcontains"><a class="header" href="#idealcontains">Ideal.contains</a></h2>
+<pre><code class="language-kototype">|Ideal, Number| -&gt; Bool
+</code></pre>
+<p>Tests whether an integer belongs to the ideal. <code>NN</code> and <code>ZZ</code> values are also
+accepted.</p>
+<h3 id="example-63"><a class="header" href="#example-63">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(6).contains(ZZ(-12))
+check! true
+
+print! Ideal(0).contains(3)
+check! false
+</code></pre>
+<h2 id="idealgenerator"><a class="header" href="#idealgenerator">Ideal.generator</a></h2>
+<pre><code class="language-kototype">|Ideal| -&gt; NN
+</code></pre>
+<p>Returns the canonical non-negative generator.</p>
+<h3 id="example-64"><a class="header" href="#example-64">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(-4, 6).generator()
+check! 2
+</code></pre>
+<h2 id="idealsum"><a class="header" href="#idealsum">Ideal.sum</a></h2>
+<pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
+</code></pre>
+<p>Returns the sum of two ideals. In <code>ZZ</code>, this is the ideal generated by the
+greatest common divisor of their generators.</p>
+<h3 id="example-65"><a class="header" href="#example-65">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(6).sum(Ideal(15))
+check! 3Z
+</code></pre>
+<h2 id="idealintersect"><a class="header" href="#idealintersect">Ideal.intersect</a></h2>
+<pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
+</code></pre>
+<p>Returns the intersection of two ideals. In <code>ZZ</code>, its generator is the least
+common multiple of the two generators.</p>
+<h3 id="example-66"><a class="header" href="#example-66">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(6).intersect(Ideal(15))
+check! 30Z
+</code></pre>
+<h2 id="idealproduct"><a class="header" href="#idealproduct">Ideal.product</a></h2>
+<pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
+</code></pre>
+<p>Returns the product of two ideals.</p>
+<h3 id="example-67"><a class="header" href="#example-67">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(6).product(Ideal(15))
+check! 90Z
+</code></pre>
+<h2 id="idealquotient"><a class="header" href="#idealquotient">Ideal.quotient</a></h2>
+<pre><code class="language-kototype">|Ideal, Ideal| -&gt; Ideal
+</code></pre>
+<p>Returns the ideal quotient <code>(I : J) = {x in ZZ : xJ subset I}</code>.</p>
+<h3 id="example-68"><a class="header" href="#example-68">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(6).quotient(Ideal(2))
+check! 3Z
+</code></pre>
+<h2 id="idealequals"><a class="header" href="#idealequals">Ideal.equals</a></h2>
+<pre><code class="language-kototype">|Ideal, Ideal| -&gt; Bool
+</code></pre>
+<p>Tests equality of ideals by comparing their canonical generators. The <code>==</code>
+operator can be used as well.</p>
+<h3 id="example-69"><a class="header" href="#example-69">Example</a></h3>
+<pre><code class="language-koto">print! Ideal(4, 6).equals(Ideal(2))
+check! true
+
+print! Ideal(6) == Ideal(-6)
+check! true
+</code></pre>
+<h2 id="zzn"><a class="header" href="#zzn">ZZn</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; ZZn
+</code></pre>
+<p>The ring <code>ZZn(n)</code> is the ring of integers modulo a positive modulus <code>n</code>.
+Call <code>.of(x)</code> to create the residue class of an integer. Classes from the same
+ring support <code>+</code>, <code>-</code>, <code>*</code> and unary <code>-</code>; their display is <code>[x] mod n</code> with a
+canonical representative.</p>
+<h3 id="example-70"><a class="header" href="#example-70">Example</a></h3>
+<pre><code class="language-koto">print! ZZn(6)
+check! ZZn
+
+print! ZZn(6).of(7) + ZZn(6).of(5)
+check! [0] mod 6
+
+print! -ZZn(6).of(1)
+check! [5] mod 6
+</code></pre>
+<h2 id="zznof"><a class="header" href="#zznof">ZZn.of</a></h2>
+<pre><code class="language-kototype">|ZZn, Number| -&gt; ZZnElement
+</code></pre>
+<p>Creates a residue class, reducing the argument modulo the ring modulus.
+<code>NN</code> and <code>ZZ</code> values are accepted too.</p>
+<h3 id="example-71"><a class="header" href="#example-71">Example</a></h3>
+<pre><code class="language-koto">print! ZZn(7).of(-1)
+check! [6] mod 7
+
+print! ZZn(6).of(7) * ZZn(6).of(5)
+check! [5] mod 6
+</code></pre>
+<h2 id="zznelementinverse"><a class="header" href="#zznelementinverse">ZZnElement.inverse</a></h2>
+<pre><code class="language-kototype">|ZZnElement| -&gt; ZZnElement
+</code></pre>
+<p>Returns a multiplicative inverse. It errors when the residue is not coprime
+to the modulus.</p>
+<h3 id="example-72"><a class="header" href="#example-72">Example</a></h3>
+<pre><code class="language-koto">print! ZZn(7).of(5).inverse()
+check! [3] mod 7
+</code></pre>
+<h2 id="ff"><a class="header" href="#ff">FF</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; FF
+|Number, Number| -&gt; FF
+</code></pre>
+<p>Finite fields are written <code>GF(p)</code> or <code>GF(p^k)</code>, where <code>p</code> is prime. <code>FF(p)</code>
+constructs the prime field, while <code>FF(p, k)</code> constructs the extension field
+using the Conway polynomial from Algebraeon’s database. Elements are made
+with <code>.of(x)</code>.</p>
+<h3 id="example-73"><a class="header" href="#example-73">Example</a></h3>
+<pre><code class="language-koto">print! FF(7)
+check! GF(7)
+
+print! FF(7).char(), FF(7).degree()
+check! (7, 1)
+
+print! FF(2, 2)
+check! GF(2^2)
+</code></pre>
+<h2 id="ffof"><a class="header" href="#ffof">FF.of</a></h2>
+<pre><code class="language-kototype">|FF, Number| -&gt; FFElement
+|FF, List| -&gt; FFElement
+</code></pre>
+<p>For <code>GF(p)</code>, <code>.of(x)</code> reduces an integer modulo <code>p</code>. For <code>GF(p^k)</code>, a list
+contains coefficients in ascending degree order, <code>[c0, c1, ...]</code>, and is
+reduced modulo the Conway polynomial.</p>
+<h3 id="example-74"><a class="header" href="#example-74">Example</a></h3>
+<pre><code class="language-koto">print! FF(7).of(-1)
+check! 6
+
+x = FF(2, 2).of([0, 1])
+print! x * x
+check! x + 1
+
+print! x.coeffs()
+check! [0, 1]
+</code></pre>
+<h2 id="ffelementinverse"><a class="header" href="#ffelementinverse">FFElement.inverse</a></h2>
+<pre><code class="language-kototype">|FFElement| -&gt; FFElement
+</code></pre>
+<p>Returns the multiplicative inverse of a non-zero finite-field element.</p>
+<h3 id="example-75"><a class="header" href="#example-75">Example</a></h3>
+<pre><code class="language-koto">print! FF(7).of(3).inverse()
+check! 5
+</code></pre>
+<h2 id="ffelementorder"><a class="header" href="#ffelementorder">FFElement.order</a></h2>
+<pre><code class="language-kototype">|FFElement| -&gt; NN
+</code></pre>
+<p>Returns the multiplicative order of a non-zero element.</p>
+<h3 id="example-76"><a class="header" href="#example-76">Example</a></h3>
+<pre><code class="language-koto">print! FF(7).of(3).order()
+check! 6
+</code></pre>
+<h2 id="ffelementpow"><a class="header" href="#ffelementpow">FFElement.pow</a></h2>
+<pre><code class="language-kototype">|FFElement, Number| -&gt; FFElement
+</code></pre>
+<p>Raises an element to an integer power. Negative powers use the
+multiplicative inverse.</p>
+<h3 id="example-77"><a class="header" href="#example-77">Example</a></h3>
+<pre><code class="language-koto">print! FF(7).of(2).pow(-1)
+check! 4
+
+print! FF(2, 2).of([0, 1]).pow(3)
+check! 1
+</code></pre>
+<h2 id="cf"><a class="header" href="#cf">CF</a></h2>
+<pre><code class="language-kototype">|List| -&gt; CF
+</code></pre>
+<p>A simple continued fraction. <code>CF([a0, a1, ...])</code> is finite and coefficients
+after the first must be positive. Its display uses <code>[a0, a1, ...]</code>.</p>
+<h3 id="example-78"><a class="header" href="#example-78">Example</a></h3>
+<pre><code class="language-koto">print! CF([3, 7])
+check! [3, 7]
+
+print! CF([3, 7]).value()
+check! 22/7
+
+print! CF([3, 7]).convergent(1)
+check! 22/7
+</code></pre>
+<h2 id="cfperiodic"><a class="header" href="#cfperiodic">CF.periodic</a></h2>
+<pre><code class="language-kototype">|List, List| -&gt; CF
+</code></pre>
+<p>Constructs an infinite periodic continued fraction from its initial and
+repeating parts. For example, <code>[1; 2, 2, ...]</code> represents the continued
+fraction expansion of the square root of 2.</p>
+<h3 id="example-79"><a class="header" href="#example-79">Example</a></h3>
+<pre><code class="language-koto">s2 = CF.periodic([1], [2])
+print! s2
+check! [1; 2]
+
+print! s2.convergent(3)
+check! 17/12
+</code></pre>
+<h2 id="cfvalue"><a class="header" href="#cfvalue">CF.value</a></h2>
+<pre><code class="language-kototype">|CF| -&gt; Q
+</code></pre>
+<p>Returns the exact rational value of a finite continued fraction. It is not
+defined for periodic or infinite continued fractions.</p>
+<h3 id="example-80"><a class="header" href="#example-80">Example</a></h3>
+<pre><code class="language-koto">print! CF([3, 7]).value()
+check! 22/7
+</code></pre>
+<h2 id="cfconvergent"><a class="header" href="#cfconvergent">CF.convergent</a></h2>
+<pre><code class="language-kototype">|CF, NN| -&gt; Q
+</code></pre>
+<p>Returns the convergent at index <code>n</code>, starting at index zero. Convergents also
+work for periodic and infinite continued fractions.</p>
+<h3 id="example-81"><a class="header" href="#example-81">Example</a></h3>
+<pre><code class="language-koto">print! CF.periodic([1], [2]).convergent(4)
+check! 41/29
+</code></pre>
+<h2 id="cftake"><a class="header" href="#cftake">CF.take</a></h2>
+<pre><code class="language-kototype">|CF, NN| -&gt; [ZZ]
+</code></pre>
+<p>Returns the first <code>n</code> coefficients as a list of <code>ZZ</code> values. A finite
+continued fraction stops when its coefficients run out.</p>
+<h3 id="example-82"><a class="header" href="#example-82">Example</a></h3>
+<pre><code class="language-koto">print! CF([3, 7]).take(4)
+check! [3, 7]
+</code></pre>
+<h2 id="cfto_float"><a class="header" href="#cfto_float">CF.to_float</a></h2>
+<pre><code class="language-kototype">|CF| -&gt; Number
+</code></pre>
+<p>Returns a floating-point approximation. Finite fractions are evaluated
+exactly before conversion; infinite fractions use a convergent.</p>
+<h3 id="example-83"><a class="header" href="#example-83">Example</a></h3>
+<pre><code class="language-koto">print! CF([3, 7]).to_float()
+check! 3.142857142857143
+</code></pre>
+<h2 id="perm"><a class="header" href="#perm">Perm</a></h2>
+<pre><code class="language-kototype">|List| -&gt; Perm
+</code></pre>
+<p>A permutation is given by its list of images, indexed from zero. For example,
+<code>Perm([1, 2, 0])</code> maps <code>0 -&gt; 1</code>, <code>1 -&gt; 2</code> and <code>2 -&gt; 0</code>. Composition <code>p * q</code>
+applies <code>q</code> first and then <code>p</code>.</p>
+<h3 id="example-84"><a class="header" href="#example-84">Example</a></h3>
+<pre><code class="language-koto">p = Perm([1, 2, 0])
+q = Perm([0, 2, 1])
+print! p
+check! [1, 2, 0]
+
+print! p * q
+check! [1, 0]
+
+print! p.inverse()
+check! [2, 0, 1]
+</code></pre>
+<h2 id="permcompose"><a class="header" href="#permcompose">Perm.compose</a></h2>
+<pre><code class="language-kototype">|Perm, Perm| -&gt; Perm
+</code></pre>
+<p>Composes two permutations with the same convention as <code>*</code>: the argument is
+applied first.</p>
+<h3 id="example-85"><a class="header" href="#example-85">Example</a></h3>
+<pre><code class="language-koto">print! Perm([1, 2, 0]).compose(Perm([0, 2, 1]))
+check! [1, 0]
+</code></pre>
+<h2 id="perminverse"><a class="header" href="#perminverse">Perm.inverse</a></h2>
+<pre><code class="language-kototype">|Perm| -&gt; Perm
+</code></pre>
+<p>Returns the inverse permutation.</p>
+<h3 id="example-86"><a class="header" href="#example-86">Example</a></h3>
+<pre><code class="language-koto">p = Perm([1, 2, 0])
+print! p.compose(p.inverse())
+check! []
+</code></pre>
+<h2 id="permsign"><a class="header" href="#permsign">Perm.sign</a></h2>
+<pre><code class="language-kototype">|Perm| -&gt; Number
+</code></pre>
+<p>Returns <code>1</code> for an even permutation and <code>-1</code> for an odd permutation.</p>
+<h3 id="example-87"><a class="header" href="#example-87">Example</a></h3>
+<pre><code class="language-koto">print! Perm([0, 2, 1]).sign()
+check! -1
+
+print! Perm([1, 2, 0]).sign()
+check! 1
+</code></pre>
+<h2 id="permcycles"><a class="header" href="#permcycles">Perm.cycles</a></h2>
+<pre><code class="language-kototype">|Perm| -&gt; [[Number]]
+</code></pre>
+<p>Returns the disjoint cycles. Fixed points are omitted.</p>
+<h3 id="example-88"><a class="header" href="#example-88">Example</a></h3>
+<pre><code class="language-koto">print! Perm([2, 0, 1, 4, 3]).cycles()
+check! [[0, 2, 1], [3, 4]]
+</code></pre>
+<h2 id="permcycle_shape"><a class="header" href="#permcycle_shape">Perm.cycle_shape</a></h2>
+<pre><code class="language-kototype">|Perm| -&gt; [Number]
+</code></pre>
+<p>Returns the sorted lengths of the non-trivial disjoint cycles.</p>
+<h3 id="example-89"><a class="header" href="#example-89">Example</a></h3>
+<pre><code class="language-koto">print! Perm([2, 0, 1, 4, 3]).cycle_shape()
+check! [2, 3]
+</code></pre>
+<h2 id="permcall"><a class="header" href="#permcall">Perm.call</a></h2>
+<pre><code class="language-kototype">|Perm, Number| -&gt; Number
+</code></pre>
+<p>Returns the image of an index under the permutation.</p>
+<h3 id="example-90"><a class="header" href="#example-90">Example</a></h3>
+<pre><code class="language-koto">p = Perm([1, 2, 0])
+print! p.call(2)
+check! 0
+</code></pre>
+<h2 id="permall"><a class="header" href="#permall">Perm.all</a></h2>
+<pre><code class="language-kototype">|Number| -&gt; [Perm]
+</code></pre>
+<p>Returns all permutations in <code>S_n</code>.</p>
+<h3 id="example-91"><a class="header" href="#example-91">Example</a></h3>
+<pre><code class="language-koto">print! size(Perm.all(3))
+check! 6
+</code></pre>
+<h2 id="group"><a class="header" href="#group">Group</a></h2>
+<pre><code class="language-kototype">|| -&gt; Group
+</code></pre>
+<p><code>Group</code> provides finite groups represented by multiplication tables. The
+constructors are <code>cyclic(n)</code>, <code>dihedral(n)</code>, <code>symmetric(n)</code>,
+<code>alternating(n)</code>, <code>klein4()</code>, <code>quaternion()</code> and <code>trivial()</code>.</p>
+<h3 id="example-92"><a class="header" href="#example-92">Example</a></h3>
+<pre><code class="language-koto">print! Group.cyclic(4)
+check! C4 (size 4)
+
+print! Group.symmetric(3)
+check! S3 (size 6)
+</code></pre>
+<h2 id="groupsize"><a class="header" href="#groupsize">Group.size</a></h2>
+<pre><code class="language-kototype">|Group| -&gt; Number
+</code></pre>
+<p>Returns the number of elements in the group.</p>
+<h3 id="example-93"><a class="header" href="#example-93">Example</a></h3>
+<pre><code class="language-koto">print! Group.dihedral(3).size()
+check! 6
+</code></pre>
+<h2 id="grouporder"><a class="header" href="#grouporder">Group.order</a></h2>
+<pre><code class="language-kototype">|Group, Number| -&gt; Number
+</code></pre>
+<p>Returns the order of the element at the given table index. The identity is
+index <code>0</code>.</p>
+<h3 id="example-94"><a class="header" href="#example-94">Example</a></h3>
+<pre><code class="language-koto">print! Group.cyclic(4).order(1)
+check! 4
+
+print! Group.cyclic(4).order(2)
+check! 2
+</code></pre>
+<h2 id="groupis_abelian"><a class="header" href="#groupis_abelian">Group.is_abelian</a></h2>
+<pre><code class="language-kototype">|Group| -&gt; Bool
+</code></pre>
+<p>Returns whether the group operation is commutative.</p>
+<h3 id="example-95"><a class="header" href="#example-95">Example</a></h3>
+<pre><code class="language-koto">print! Group.cyclic(4).is_abelian()
+check! true
+
+print! Group.dihedral(3).is_abelian()
+check! false
+</code></pre>
+<h2 id="groupconjugacy_classes"><a class="header" href="#groupconjugacy_classes">Group.conjugacy_classes</a></h2>
+<pre><code class="language-kototype">|Group| -&gt; [[Number]]
+</code></pre>
+<p>Returns the conjugacy classes as sorted lists of element indices.</p>
+<h3 id="example-96"><a class="header" href="#example-96">Example</a></h3>
+<pre><code class="language-koto">print! Group.dihedral(3).conjugacy_classes()
+check! [[0], [1, 2, 4], [3, 5]]
+</code></pre>
+<h2 id="complexalg"><a class="header" href="#complexalg">ComplexAlg</a></h2>
+<pre><code class="language-kototype">|Poly | List| -&gt; [ComplexAlg]
+|Number| -&gt; ComplexAlg
+|Number, Number| -&gt; ComplexAlg
+</code></pre>
+<p>Complex algebraic numbers are exact roots of polynomials. With a <code>Poly</code> or a
+coefficient list, <code>ComplexAlg(...)</code> returns all complex roots with
+multiplicity. With one scalar it constructs a rational real value; with two
+scalars <code>ComplexAlg(a, b)</code> constructs <code>a + b*i</code>. The imaginary unit is
+<code>ComplexAlg.i()</code>.</p>
+<h3 id="example-97"><a class="header" href="#example-97">Example</a></h3>
+<pre><code class="language-koto">i = ComplexAlg.i()
+print! i
+check! i
+
+print! i * i
+check! -1
+
+print! size(ComplexAlg(Poly([1, 0, 1])))
+check! 2
+</code></pre>
+<h2 id="complexalgreal"><a class="header" href="#complexalgreal">ComplexAlg.real</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; Alg
+</code></pre>
+<p>Returns the exact real part as an <code>Alg</code> value.</p>
+<h3 id="example-98"><a class="header" href="#example-98">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg(Q(1), Q(2)).real()
+check! 1
+</code></pre>
+<h2 id="complexalgimag"><a class="header" href="#complexalgimag">ComplexAlg.imag</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; Alg
+</code></pre>
+<p>Returns the exact imaginary part as an <code>Alg</code> value.</p>
+<h3 id="example-99"><a class="header" href="#example-99">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg(Q(1), Q(2)).imag()
+check! 2
+</code></pre>
+<h2 id="complexalgconjugate"><a class="header" href="#complexalgconjugate">ComplexAlg.conjugate</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; ComplexAlg
+</code></pre>
+<p>Returns the complex conjugate.</p>
+<h3 id="example-100"><a class="header" href="#example-100">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg(Q(1), Q(2)).conjugate()
+check! 1 - 2i
+</code></pre>
+<h2 id="complexalgmin_poly"><a class="header" href="#complexalgmin_poly">ComplexAlg.min_poly</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; Poly
+</code></pre>
+<p>Returns the minimal polynomial over <code>Q</code>.</p>
+<h3 id="example-101"><a class="header" href="#example-101">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg(Q(1), Q(2)).min_poly()
+check! 5 - 2x + x^2
+</code></pre>
+<h2 id="complexalgdegree"><a class="header" href="#complexalgdegree">ComplexAlg.degree</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; NN
+</code></pre>
+<p>Returns the degree of the minimal polynomial.</p>
+<h3 id="example-102"><a class="header" href="#example-102">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg.i().degree()
+check! 2
+</code></pre>
+<h2 id="complexalgto_float"><a class="header" href="#complexalgto_float">ComplexAlg.to_float</a></h2>
+<pre><code class="language-kototype">|ComplexAlg| -&gt; [Number, Number]
+</code></pre>
+<p>Returns a floating-point approximation as <code>[real, imag]</code>.</p>
+<h3 id="example-103"><a class="header" href="#example-103">Example</a></h3>
+<pre><code class="language-koto">print! ComplexAlg(Q(1), Q(2)).to_float()
+check! [1.0, 2.0]
+</code></pre>
+<h2 id="legendre"><a class="header" href="#legendre">legendre</a></h2>
+<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+</code></pre>
+<p>Returns the Legendre symbol <code>(a / p)</code> as <code>-1</code>, <code>0</code> or <code>1</code>. The bottom
+argument must be an odd prime.</p>
+<h3 id="example-104"><a class="header" href="#example-104">Example</a></h3>
+<pre><code class="language-koto">print! legendre(2, 7)
+check! 1
+
+print! legendre(3, 7)
+check! -1
+</code></pre>
+<h2 id="jacobi"><a class="header" href="#jacobi">jacobi</a></h2>
+<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+</code></pre>
+<p>Returns the Jacobi symbol <code>(a / n)</code> for an odd positive <code>n</code>; <code>n</code> need not be
+prime.</p>
+<h3 id="example-105"><a class="header" href="#example-105">Example</a></h3>
+<pre><code class="language-koto">print! jacobi(2, 9)
+check! 1
+
+print! jacobi(3, 9)
+check! 0
+</code></pre>
+<h2 id="kronecker"><a class="header" href="#kronecker">kronecker</a></h2>
+<pre><code class="language-kototype">|Number, Number| -&gt; ZZ
+</code></pre>
+<p>Returns the Kronecker symbol <code>(a / n)</code>, extending the Jacobi symbol to even,
+negative and zero bottom arguments.</p>
+<h3 id="example-106"><a class="header" href="#example-106">Example</a></h3>
+<pre><code class="language-koto">print! kronecker(2, 8)
+check! 0
+
+print! kronecker(3, 8)
+check! -1
+</code></pre>
+<h2 id="eulers_constant"><a class="header" href="#eulers_constant">eulers_constant</a></h2>
+<pre><code class="language-kototype">|| -&gt; CF
+</code></pre>
+<p>Returns the infinite continued fraction for Euler’s number <code>e</code>:
+<code>[2; 1, 2, 1, 1, 4, ...]</code>.</p>
+<h3 id="example-107"><a class="header" href="#example-107">Example</a></h3>
+<pre><code class="language-koto">e_cf = eulers_constant()
+print! e_cf.take(9)
+check! [2, 1, 2, 1, 1, 4, 1, 1, 6]
+
+print! e_cf.convergent(5)
+check! 87/32
+</code></pre>
+<h2 id="zzideal"><a class="header" href="#zzideal">ZZ.ideal</a></h2>
+<pre><code class="language-kototype">|ZZ| -&gt; Ideal
+</code></pre>
+<p>Returns the principal ideal generated by the integer. The generator is
+canonicalized, so negative integers produce the same ideal as their absolute
+values.</p>
+<h3 id="example-108"><a class="header" href="#example-108">Example</a></h3>
+<pre><code class="language-koto">print! ZZ(-6).ideal()
+check! 6Z
+
+print! ZZ(0).ideal()
+check! 0Z
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../core_lib/tuple.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../libs/color.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../core_lib/tuple.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../libs/color.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

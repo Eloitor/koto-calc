@@ -1,0 +1,479 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>color - koto-calc</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A programmable calculator with the Koto language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-295677e8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-a681759e.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">koto-calc</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="color"><a class="header" href="#color">color</a></h1>
+<p>Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.</p>
+<p>Utilities for working with color in Koto.</p>
+<p>At the core of the library is the <a href="#color-1"><code>Color</code></a> type, with various initializers
+available.</p>
+<p>For convenience, the color module itself is callable as a shorthand for some standard initializers:</p>
+<pre><code class="language-kototype">|String| -&gt; Color
+</code></pre>
+<p>Equivalent to calling <a href="#named"><code>color.named</code></a>, or <a href="#hex"><code>color.hex</code></a> if no matching name is found.</p>
+<pre><code class="language-kototype">|Number| -&gt; Color
+</code></pre>
+<p>Equivalent to calling <a href="#hex"><code>color.hex</code></a> with a number.</p>
+<pre><code class="language-kototype">|r: Number, g: Number, b: Number| -&gt; Color
+</code></pre>
+<pre><code class="language-kototype">|r: Number, g: Number, b: Number, a: Number| -&gt; Color
+</code></pre>
+<p>Equivalent to calling <a href="#rgb"><code>color.rgb</code></a>.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-koto">print! color 'red'
+check! Color(RGB, r: 1, g: 0, b: 0, a: 1)
+
+print! color '#00ffff'
+check! Color(RGB, r: 0, g: 1, b: 1, a: 1)
+
+print! color 0xff00ff
+check! Color(RGB, r: 1, g: 0, b: 1, a: 1)
+
+print! color 0, 0.5, 1, 0.5
+check! Color(RGB, r: 0, g: 0.5, b: 1, a: 0.5)
+</code></pre>
+<h2 id="hex"><a class="header" href="#hex">hex</a></h2>
+<pre><code class="language-kototype">|String| -&gt; Color
+</code></pre>
+<p>Creates a color from the given <a href="https://en.wikipedia.org/wiki/Web_colors#Hex_triplet">hex triplet</a> string, e.g. <code>'#7fee80'</code>.</p>
+<p>The <code>#</code> prefix is optional, and the 3 digit shorthand version (e.g. <code>'#7e8'</code>) can also be used.</p>
+<p>If the string can’t be parsed as a hex triplet then <code>null</code> will be returned.</p>
+<pre><code class="language-kototype">|String| -&gt; Color
+</code></pre>
+<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<pre><code class="language-koto">print! color.hex '#ff00ff'
+check! Color(RGB, r: 1, g: 0, b: 1, a: 1)
+
+print! color.hex 'f0f'
+check! Color(RGB, r: 1, g: 0, b: 1, a: 1)
+
+print! color.hex 0x00ff00
+check! Color(RGB, r: 0, g: 1, b: 0, a: 1)
+</code></pre>
+<h2 id="hsl"><a class="header" href="#hsl">hsl</a></h2>
+<pre><code class="language-kototype">|h: Number, s: Number, l: Number| -&gt; Color
+</code></pre>
+<pre><code class="language-kototype">|h: Number, s: Number, l: Number, a: Number| -&gt; Color
+</code></pre>
+<p>Returns a color produced from <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">hue, saturation, lightness</a>,
+and optional alpha components.</p>
+<p>The hue component is specified in degrees.</p>
+<p>The saturation, lightness, and alpha components are specified as numbers between <code>0</code>
+and <code>1</code>.</p>
+<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<pre><code class="language-koto">print! color.hsl 180, 1, 0.25
+check! Color(HSL, h: 180, s: 1, l: 0.25, a: 1)
+</code></pre>
+<h2 id="hsv"><a class="header" href="#hsv">hsv</a></h2>
+<pre><code class="language-kototype">|h: Number, s: Number, v: Number| -&gt; Color
+</code></pre>
+<pre><code class="language-kototype">|h: Number, s: Number, v: Number, a: Number| -&gt; Color
+</code></pre>
+<p>Returns a color produced from <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">hue, saturation, value</a>,
+and optional alpha components.</p>
+<p>The hue component is specified in degrees.</p>
+<p>The saturation, value, and alpha components are specified as numbers between <code>0</code> and <code>1</code>.</p>
+<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<pre><code class="language-koto">print! color.hsv 90, 0.5, 1
+check! Color(HSV, h: 90, s: 0.5, v: 1, a: 1)
+</code></pre>
+<h2 id="named"><a class="header" href="#named">named</a></h2>
+<pre><code class="language-kototype">|name: String| -&gt; Color?
+</code></pre>
+<p>Returns a color corresponding to one of the named colors listed in the
+<a href="https://www.w3.org/TR/SVG11/types.html#ColorKeywords">SVG color keywords</a> specification.</p>
+<p>If no name is found then <code>null</code> will be returned.</p>
+<h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
+<pre><code class="language-koto">print! color.named 'yellow'
+check! Color(RGB, r: 1, g: 1, b: 0, a: 1)
+</code></pre>
+<h2 id="oklab"><a class="header" href="#oklab">oklab</a></h2>
+<pre><code class="language-kototype">|l: Number, a: Number, b: Number| -&gt; Color
+</code></pre>
+<pre><code class="language-kototype">|l: Number, a: Number, b: Number, alpha: Number| -&gt; Color
+</code></pre>
+<p>Returns a color produced from lightness, <code>a</code>, <code>b</code>,
+and optional alpha components, using the <a href="https://en.wikipedia.org/wiki/Oklab_color_space">Oklab</a> color space.</p>
+<p>The lightness and alpha components are specified as numbers between <code>0</code> and <code>1</code>.</p>
+<p>The <code>a</code> (green/red) and <code>b</code> (blue/yellow) components are numbers with values typically between <code>-0.4</code> and <code>0.4</code>.</p>
+<h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
+<pre><code class="language-koto">print! color.oklab 0.5, 0.1, -0.2
+check! Color(Oklab, l: 0.5, a: 0.1, b: -0.2, a: 1)
+</code></pre>
+<h2 id="oklch"><a class="header" href="#oklch">oklch</a></h2>
+<pre><code class="language-kototype">|l: Number, c: Number, h: Number| -&gt; Color
+</code></pre>
+<pre><code class="language-kototype">|l: Number, c: Number, h: Number, a: Number| -&gt; Color
+</code></pre>
+<p>Returns a color produced from lightness, chroma, hue,
+and optional alpha components, using the <a href="https://en.wikipedia.org/wiki/Oklab_color_space">Oklab</a> color space.</p>
+<p>The lightness and alpha components are specified as numbers between <code>0</code> and <code>1</code>.</p>
+<p>The hue component is specified in degrees.</p>
+<p>The chroma component is a number between <code>0</code> and a maximum that depends on the
+hue and lightness components.</p>
+<h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
+<pre><code class="language-koto">print! color.oklch 0.6, 0.1, 180
+check! Color(Oklch, l: 0.6, c: 0.1, h: 180, a: 1)
+</code></pre>
+<h2 id="rgb"><a class="header" href="#rgb">rgb</a></h2>
+<pre><code class="language-kototype">|r: Number, g: Number, b: Number| -&gt; Color
+</code></pre>
+<p>Returns a color produced from <a href="https://en.wikipedia.org/wiki/RGB_color_model">red, green, blue</a>,
+and optional alpha components, using the <a href="https://en.wikipedia.org/wiki/SRGB">sRGB</a> color space.</p>
+<p>The color components are specified as numbers between <code>0</code> and <code>1</code>.</p>
+<h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
+<pre><code class="language-koto">print! color.rgb 0.5, 0.1, 0.9
+check! Color(RGB, r: 0.5, g: 0.1, b: 0.9, a: 1)
+
+print! color.rgb 0.2, 0.4, 0.3, 0.5
+check! Color(RGB, r: 0.2, g: 0.4, b: 0.3, a: 0.5)
+</code></pre>
+<h2 id="color-1"><a class="header" href="#color-1">Color</a></h2>
+<p>The <code>color</code> module’s core color type.</p>
+<p>The color may belong to various different color spaces,
+with the space’s components available via iteration or indexing.</p>
+<p>The color’s <code>alpha</code> value is always present as the color’s fourth component.</p>
+<p>The color space’s components can be modified via index, and the <code>alpha</code>
+component can also be modified via <a href="#color-set-alpha"><code>.set_alpha</code></a>.</p>
+<h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
+<pre><code class="language-koto">r, g, b = color 'yellow'
+print! r, g, b
+check! (1.0, 1.0, 0.0)
+
+h, s, v, a = color.hsv 90, 0.5, 0.25
+print! h, s, v, a
+check! (90.0, 0.5, 0.25, 1.0)
+
+print! color('red')[0]
+check! 1.0
+
+print! c = color.oklch 0.5, 0.1, 180
+check! Color(Oklch, l: 0.5, c: 0.1, h: 180, a: 1)
+c[0] = 0.25 # Set the lightness component to 0.25
+c[1] = 0.1 # Set the chroma component to 0.1
+print c
+check! Color(Oklch, l: 0.25, c: 0.1, h: 180, a: 1)
+</code></pre>
+<h2 id="coloralpha"><a class="header" href="#coloralpha">Color.alpha</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Number
+</code></pre>
+<p>Returns the color’s alpha value.</p>
+<h3 id="example-8"><a class="header" href="#example-8">Example</a></h3>
+<pre><code class="language-koto">c = color 'red'
+
+print! c.alpha()
+check! 1.0
+
+c[3] = 0.5
+print! c.alpha()
+check! 0.5
+</code></pre>
+<h2 id="colorset_alpha"><a class="header" href="#colorset_alpha">Color.set_alpha</a></h2>
+<pre><code class="language-kototype">|Color, alpha: Number| -&gt; Color
+</code></pre>
+<p>Sets the color’s alpha component to the given value, and returns the color.</p>
+<h3 id="example-9"><a class="header" href="#example-9">Example</a></h3>
+<pre><code class="language-koto">c = color 'red'
+
+print! c.set_alpha(0.25).alpha()
+check! 0.25
+</code></pre>
+<h2 id="colormix"><a class="header" href="#colormix">Color.mix</a></h2>
+<pre><code class="language-kototype">|a: Color, b: Color| -&gt; Color
+</code></pre>
+<p>Returns a new color representing an even mix of the two input colors.</p>
+<p>An error is thrown if the colors do not belong to the same color space.</p>
+<pre><code class="language-kototype">|a: Color, b: Color, weight: Number| -&gt; Color
+</code></pre>
+<p>Returns a new color representing a weighted mix of the two input colors.</p>
+<p>The <code>weight</code> argument is a number between <code>0</code> and <code>1</code>, with values closer to
+<code>0</code> producing results closer to the first color, and values closer to <code>1</code>
+producing results closer to the second color.</p>
+<p>An error is thrown if the colors do not belong to the same color space.</p>
+<h3 id="example-10"><a class="header" href="#example-10">Example</a></h3>
+<pre><code class="language-koto">a, b = color('red'), color('blue')
+print! a.mix b
+check! Color(RGB, r: 0.5, g: 0, b: 0.5, a: 1)
+
+print! a.mix b, 0.25
+check! Color(RGB, r: 0.75, g: 0, b: 0.25, a: 1)
+</code></pre>
+<h2 id="colorto_hsl"><a class="header" href="#colorto_hsl">Color.to_hsl</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Color
+</code></pre>
+<p>Returns a new color with the input converted into the <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">HSL</a> color space.</p>
+<h3 id="example-11"><a class="header" href="#example-11">Example</a></h3>
+<pre><code class="language-koto">print! color('blue').to_hsl()
+check! Color(HSL, h: 240, s: 1, l: 0.5, a: 1)
+</code></pre>
+<h2 id="colorto_hsv"><a class="header" href="#colorto_hsv">Color.to_hsv</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Color
+</code></pre>
+<p>Returns a new color with the input converted into the <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">HSV</a> color space.</p>
+<h3 id="example-12"><a class="header" href="#example-12">Example</a></h3>
+<pre><code class="language-koto">print! color('blue').to_hsv()
+check! Color(HSV, h: 240, s: 1, v: 1, a: 1)
+</code></pre>
+<h2 id="colorto_oklab"><a class="header" href="#colorto_oklab">Color.to_oklab</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Color
+</code></pre>
+<p>Returns a new color with the input converted into the <a href="https://en.wikipedia.org/wiki/Oklab_color_space">Oklab</a> color space.</p>
+<h3 id="example-13"><a class="header" href="#example-13">Example</a></h3>
+<pre><code class="language-koto">l, a, b = color('blue').to_oklab()
+allowed_error = 1e-3
+assert_near l, 0.452, allowed_error
+assert_near a, -0.033, allowed_error
+assert_near b, -0.312, allowed_error
+</code></pre>
+<h2 id="colorto_oklch"><a class="header" href="#colorto_oklch">Color.to_oklch</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Color
+</code></pre>
+<p>Returns a new color with the input converted into the <a href="https://en.wikipedia.org/wiki/Oklab_color_space">Oklch</a> color space.</p>
+<h3 id="example-14"><a class="header" href="#example-14">Example</a></h3>
+<pre><code class="language-koto">l, c, h = color('blue').to_oklch()
+allowed_error = 1e-3
+assert_near l, 0.452, allowed_error
+assert_near c, 0.313, allowed_error
+assert_near h, 264.052, allowed_error
+</code></pre>
+<h2 id="colorto_rgb"><a class="header" href="#colorto_rgb">Color.to_rgb</a></h2>
+<pre><code class="language-kototype">|Color| -&gt; Color
+</code></pre>
+<p>Returns a new color with the input converted into the <a href="https://en.wikipedia.org/wiki/Oklab_color_space">sRGB</a> color space.</p>
+<h3 id="example-15"><a class="header" href="#example-15">Example</a></h3>
+<pre><code class="language-koto">l, c, h = color('blue').to_oklch()
+allowed_error = 1e-3
+assert_near l, 0.452, allowed_error
+assert_near c, 0.313, allowed_error
+assert_near h, 264.052, allowed_error
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../libs/algebraeon.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../libs/geometry.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../libs/algebraeon.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../libs/geometry.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
