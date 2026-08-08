@@ -38,11 +38,13 @@ import subprocess
 import sys
 import tempfile
 
-# Blocs d'algebraeon.md usen NN/ZZ/Q/Poly/Mat/Quat/Alg/gcd/lcm com a globals
+# Blocs d'algebraeon.md usen els tipus i funcions d'Algebraeon com a globals
 # sense import; la resta de docs s'auto-importen o usen el mòdul qualificat.
 IMPORT_PREFIX = {
     "algebraeon.md": (
-        "from algebraeon import NN, ZZ, Q, Poly, Mat, Quat, Alg, gcd, lcm\n"
+        "from algebraeon import NN, ZZ, Q, Poly, Mat, Quat, Alg, "
+        "Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, "
+        "gcd, lcm, legendre, jacobi, kronecker, eulers_constant\n"
     ),
 }
 
