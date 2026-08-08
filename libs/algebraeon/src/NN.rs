@@ -1,7 +1,10 @@
 use koto_runtime::{IsIterable, KIteratorOutput, KotoVm, Result, derive::*, prelude::*};
 
 use algebraeon::nzq::Natural;
+use algebraeon::nzq::combinatorics::{stirling_number1_signed, stirling_number2};
 use algebraeon::nzq::primes;
+use algebraeon::nzq::traits::Abs;
+use crate::Perm::usize_from_value;
 use algebraeon::rings::natural::factorization::primes::{PrimalityTestResult, primality_test};
 use algebraeon::rings::natural::functions::{IsPowerTestResult, is_power_test};
 use algebraeon_rings::structure::{MetaFactoringMonoid, MetaFactoringMonoidNaturalExponent, UniqueFactorizationMonoidSignature};
@@ -148,6 +151,53 @@ impl NN {
             PrimalityTestResult::Zero
             | PrimalityTestResult::One
             | PrimalityTestResult::Composite => KValue::from("composite"),
+        }
+    }
+
+    /// Stirling number of the first kind (unsigned): NN(4).stirling1(NN(2)) = NN(11).
+    /// Errors if k > n.
+    #[koto_method]
+    pub fn stirling1(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [k] => {
+                let k = usize_from_value(k)?;
+                let n: usize = self
+                    .0
+                    .clone()
+                    .try_into()
+                    .map_err(|_| koto_runtime::Error::from("number too large"))?;
+                if k > n {
+                    return runtime_error!("NN.stirling1: k must be <= n (got k={}, n={})", k, n);
+                }
+                let s = stirling_number1_signed(n, k)
+                    .map_err(|_| koto_runtime::Error::from("invalid Stirling input"))?
+                    .abs();
+                Ok(KValue::Object(KObject::from(NN(s))))
+            }
+            unexpected => unexpected_args("|NN|", unexpected),
+        }
+    }
+
+    /// Stirling number of the second kind: NN(5).stirling2(NN(2)) = NN(15).
+    /// Errors if k > n.
+    #[koto_method]
+    pub fn stirling2(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [k] => {
+                let k = usize_from_value(k)?;
+                let n: usize = self
+                    .0
+                    .clone()
+                    .try_into()
+                    .map_err(|_| koto_runtime::Error::from("number too large"))?;
+                if k > n {
+                    return runtime_error!("NN.stirling2: k must be <= n (got k={}, n={})", k, n);
+                }
+                let s = stirling_number2(n, k)
+                    .map_err(|_| koto_runtime::Error::from("invalid Stirling input"))?;
+                Ok(KValue::Object(KObject::from(NN(s))))
+            }
+            unexpected => unexpected_args("|NN|", unexpected),
         }
     }
 

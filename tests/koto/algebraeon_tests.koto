@@ -1506,5 +1506,43 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm
   assert e2.is_symmetric([x, y, z])
 
 
+@test stirling_tests = ||
+  write 'Testing Stirling \t'
+
+  # Stirling numbers of the second kind
+  assert_eq NN(5).stirling2(NN(2)), NN(15)
+  assert_eq NN(7).stirling2(NN(3)), NN(301)
+  assert_eq NN(3).stirling2(NN(2)), NN(3)
+  assert_eq NN(1).stirling2(NN(1)), NN(1)
+
+  # Stirling numbers of the first kind, unsigned, on NN
+  assert_eq NN(4).stirling1(NN(2)), NN(11)
+  assert_eq NN(5).stirling1(NN(2)), NN(50)
+  assert_eq NN(3).stirling1(NN(2)), NN(3)
+
+  # Stirling numbers of the first kind, signed, on ZZ
+  assert_eq ZZ(4).stirling1_signed(NN(2)), ZZ(11)
+  assert_eq ZZ(5).stirling1_signed(NN(2)), ZZ(-50)
+  assert_eq ZZ(3).stirling1_signed(NN(2)), ZZ(-3)
+  assert_eq ZZ(5).stirling1_signed(NN(1)), ZZ(24)
+
+  # k > n is an error on every method
+  caught = try
+    NN(5).stirling2(NN(6))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    NN(4).stirling1(NN(5))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    ZZ(4).stirling1_signed(NN(5))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
 @main = ||
   print 'Algebraeon Koto tests passed'
