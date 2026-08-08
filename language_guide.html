@@ -1,0 +1,2381 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Language Guide - koto-calc</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A programmable calculator with the Koto language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-8880774b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-a681759e.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">koto-calc</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p>Derived from the Koto Language Guide (MIT, github.com/koto-lang/koto), maintained for koto-calc.</p>
+<p>See the neighboring <a href="./README.html">readme</a> for an explanation of the
+<code>print!</code> and <code>check!</code> commands used in the following example.</p>
+<hr>
+<h1 id="the-koto-language-guide"><a class="header" href="#the-koto-language-guide">The Koto Language Guide</a></h1>
+<h2 id="language-basics"><a class="header" href="#language-basics">Language Basics</a></h2>
+<p>Koto programs contain a series of expressions that are evaluated in
+top-to-bottom order by Koto’s runtime.</p>
+<p>As an example, this simple script prints a friendly greeting.</p>
+<pre><code class="language-koto skip_run">name = 'World'
+print 'Hello, {name}!'
+</code></pre>
+<h3 id="comments"><a class="header" href="#comments">Comments</a></h3>
+<p>Single-line comments start with a <code>#</code>.</p>
+<pre><code class="language-koto"># This is a comment, everything until the end of the line is ignored.
+</code></pre>
+<p>Multi-line comments start with <code>#-</code> and end with <code>-#</code>.</p>
+<pre><code class="language-koto">#-
+This is a
+multi-line
+comment.
+-#
+</code></pre>
+<h3 id="numbers-and-arithmetic"><a class="header" href="#numbers-and-arithmetic">Numbers and Arithmetic</a></h3>
+<p>Numbers and arithmetic are expressed in a familiar way.</p>
+<pre><code class="language-koto">print! 1
+check! 1
+
+print! 1 + 1
+check! 2
+
+print! -1 - 10
+check! -11
+
+print! 3 * 4
+check! 12
+
+print! 9 / 2
+check! 4.5
+
+print! 12.5 % 5
+check! 2.5
+</code></pre>
+<p>Underscores can be used as separators to aid readability in long numbers.</p>
+<pre><code class="language-koto">print! 1_000_000
+check! 1000000
+</code></pre>
+<h4 id="parentheses"><a class="header" href="#parentheses">Parentheses</a></h4>
+<p>Arithmetic operations follow the
+<a href="https://en.wikipedia.org/wiki/Order_of_operations#Conventional_order">conventional order of precedence</a>.
+Parentheses can be used to group expressions as needed.</p>
+<pre><code class="language-koto"># Without parentheses, multiplication is performed before addition
+print! 1 + 2 * 3 + 4
+check! 11
+# With parentheses, the additions are performed first
+print! (1 + 2) * (3 + 4)
+check! 21
+</code></pre>
+<h4 id="non-decimal-numbers"><a class="header" href="#non-decimal-numbers">Non-decimal Numbers</a></h4>
+<p>Numbers can be expressed with non-decimal bases.</p>
+<pre><code class="language-koto"># Hexadecimal numbers begin with 0x
+print! 0xcafe
+check! 51966
+
+# Octal numbers begin with 0o
+print! 0o7060
+check! 3632
+
+# Binary numbers begin with 0b
+print! 0b1001
+check! 9
+</code></pre>
+<h3 id="booleans"><a class="header" href="#booleans">Booleans</a></h3>
+<p>Booleans are declared with the <code>true</code> and <code>false</code> keywords, and combined using
+the <code>and</code> and <code>or</code> operators.</p>
+<pre><code class="language-koto">print! true and false
+check! false
+
+print! true or false
+check! true
+</code></pre>
+<p>Booleans can be negated with the <code>not</code> operator.</p>
+<pre><code class="language-koto">print! not true
+check! false
+
+print! not false
+check! true
+</code></pre>
+<p>Values can be compared for equality with the <code>==</code> and <code>!=</code> operators.</p>
+<pre><code class="language-koto">print! 1 + 1 == 2
+check! true
+
+print! 99 != 100
+check! true
+</code></pre>
+<h3 id="null"><a class="header" href="#null">Null</a></h3>
+<p>The <code>null</code> keyword is used to declare a value of type <code>Null</code>,
+which indicates the absence of a value.</p>
+<pre><code class="language-koto">print! null
+check! null
+</code></pre>
+<h4 id="truthiness"><a class="header" href="#truthiness">Truthiness</a></h4>
+<p>In boolean contexts (such as logical operations), <code>null</code> is treated as being
+equivalent to <code>false</code>. Every other value in Koto evaluates as <code>true</code>.</p>
+<pre><code class="language-koto">print! not null
+check! true
+
+print! null or 42
+check! 42
+</code></pre>
+<h3 id="assigning-variables"><a class="header" href="#assigning-variables">Assigning Variables</a></h3>
+<p>Values are assigned to named identifiers with <code>=</code>, and can be freely reassigned.
+Named values like this are known as <em>variables</em>.</p>
+<pre><code class="language-koto"># Assign the value `42` to `x`
+x = 42
+print! x
+check! 42
+
+# Replace the existing value of `x`
+x = true
+print! x
+check! true
+</code></pre>
+<p>The result of an assignment is the value that’s being assigned, so chained assignments are possible.</p>
+<pre><code class="language-koto">print! x = 1
+check! 1
+
+print! a = b = 100
+check! 100
+print! a + b
+check! 200
+</code></pre>
+<p><a href="https://en.wikipedia.org/wiki/Augmented_assignment">Compound assignment</a> operators are also available.
+For example, <code>x *= y</code> is a simpler way of writing <code>x = x * y</code>.</p>
+<pre><code class="language-koto">a = 100
+print! a += 11
+check! 111
+print! a
+check! 111
+
+print! a *= 10
+check! 1110
+print! a
+check! 1110
+</code></pre>
+<h3 id="debug"><a class="header" href="#debug">Debug</a></h3>
+<p>The <code>debug</code> keyword allows you to quickly display a value while working on a
+program.</p>
+<p>It prints the result of an expression, prefixed with its line number and the
+original expression as a string.</p>
+<pre><code class="language-koto">x = 10 + 20
+debug x / 10
+check! [2] x / 10: 3.0
+</code></pre>
+<p>When using <code>debug</code>, the displayed value is also the result of the expression,
+which can be useful if you want to quickly get feedback during development.</p>
+<pre><code class="language-koto">x = debug 2 + 2
+check! [1] 2 + 2: 4
+print! x
+check! 4
+</code></pre>
+<h3 id="semicolons"><a class="header" href="#semicolons">Semicolons</a></h3>
+<p>Expressions are typically placed on separate lines,
+but if necessary they can be separated with semicolons.</p>
+<pre><code class="language-koto">a = 1; b = 2; c = a + b
+print! c
+check! 3
+</code></pre>
+<h2 id="lists"><a class="header" href="#lists">Lists</a></h2>
+<p>Lists in Koto are created with <code>[]</code> square brackets and can contain a mix of
+different value types.</p>
+<p>Access list elements by <em>index</em> using square brackets, starting from <code>0</code>.</p>
+<pre><code class="language-koto">x = [99, null, true]
+print! x[0]
+check! 99
+print! x[1]
+check! null
+
+x[2] = false
+print! x[2]
+check! false
+</code></pre>
+<p>Once a list has been created, its underlying data is shared between other
+instances of the same list.
+Changes to one instance of the list are reflected in the other.</p>
+<pre><code class="language-koto"># Assign a list to x
+x = [10, 20, 30]
+
+# Assign another instance of the list to y
+y = x
+
+# Modify the list through y
+y[1] = 99
+
+# The change to y is also reflected in x
+print! x
+check! [10, 99, 30]
+</code></pre>
+<p>If no value is given between commas then <code>null</code> is added to the list at that position.</p>
+<pre><code class="language-koto">print! [10, , 30, , 50]
+check! [10, null, 30, null, 50]
+</code></pre>
+<h3 id="joining-lists"><a class="header" href="#joining-lists">Joining Lists</a></h3>
+<p>The <code>+</code> operator allows lists to be joined together, creating a new list that
+contains their concatenated elements.</p>
+<pre><code class="language-koto">a = [98, 99, 100]
+b = a + [1, 2, 3]
+print! b
+check! [98, 99, 100, 1, 2, 3]
+</code></pre>
+<h2 id="tuples"><a class="header" href="#tuples">Tuples</a></h2>
+<p>Tuples in Koto are similar to lists,
+but are designed for sequences of values that have a fixed structure.</p>
+<p>Unlike lists, tuples can’t be resized after creation,
+and values that are contained in the tuple can’t be replaced.</p>
+<p>Tuples are declared with a series of expressions separated by commas.</p>
+<pre><code class="language-koto">x = 100, true, -1
+print! x
+check! (100, true, -1)
+</code></pre>
+<p>Parentheses can be used for grouping to avoid ambiguity.</p>
+<pre><code class="language-koto">print! (1, 2, 3), (4, 5, 6)
+check! ((1, 2, 3), (4, 5, 6))
+</code></pre>
+<p>You can access tuple elements by index using square brackets, starting from <code>0</code>.</p>
+<pre><code class="language-koto">print! x = false, 10
+check! (false, 10)
+print! x[0]
+check! false
+print! x[1]
+check! 10
+
+print! y = true, 20
+check! (true, 20)
+print! x, y
+check! ((false, 10), (true, 20))
+</code></pre>
+<p>If no value is given between commas then <code>null</code> is added to the tuple at that position.</p>
+<pre><code class="language-koto">x = 10, , 20, , 30
+print! x
+check! (10, null, 20, null, 30)
+</code></pre>
+<h3 id="empty-and-single-element-tuples"><a class="header" href="#empty-and-single-element-tuples">Empty and Single Element Tuples</a></h3>
+<p>An empty tuple (a tuple that contains zero elements) is created using empty parentheses.</p>
+<pre><code class="language-koto">x = ()
+print! x
+check! ()
+</code></pre>
+<p>To create a tuple that contains a single element, then a trailing comma must be included.</p>
+<pre><code class="language-koto"># An expression inside parentheses simply resolves to the result of the expression
+print! (1 + 2)
+check! 3
+
+# To place the result of the expression in a tuple, use a trailing comma
+print! (1 + 2,)
+check! (3)
+
+# Single element tuples can also be created without parentheses
+x = 1 + 2,
+print! x
+check! (3)
+</code></pre>
+<h3 id="joining-tuples"><a class="header" href="#joining-tuples">Joining Tuples</a></h3>
+<p>The <code>+</code> operator allows tuples to be joined together,
+creating a new tuple containing their concatenated elements.</p>
+<pre><code class="language-koto">a = 1, 2, 3
+b = a + (4, 5, 6)
+print! b
+check! (1, 2, 3, 4, 5, 6)
+</code></pre>
+<h3 id="tuple-mutability"><a class="header" href="#tuple-mutability">Tuple Mutability</a></h3>
+<p>While tuples have a fixed structure and its contained elements can’t be
+replaced, <a href="https://en.wikipedia.org/wiki/Immutable_object"><em>mutable</em></a> value types (like <a href="#lists">lists</a>) can be
+modified while they’re contained in tuples.</p>
+<pre><code class="language-koto"># A Tuple containing two lists
+x = ([1, 2, 3], [4, 5, 6])
+
+# Modify the second list in the tuple
+x[1][0] = 99
+print! x
+check! ([1, 2, 3], [99, 5, 6])
+</code></pre>
+<h2 id="strings"><a class="header" href="#strings">Strings</a></h2>
+<p>Strings in Koto contain a sequence of <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> encoded characters,
+and can be declared using <code>'</code> or <code>"</code> quotes.</p>
+<pre><code class="language-koto">print! 'Hello, World!'
+check! Hello, World!
+
+print! "Welcome to Koto 👋"
+check! Welcome to Koto 👋
+</code></pre>
+<p>Strings can start on one line and finish on another.</p>
+<pre><code class="language-koto">print! 'This is a string
+that spans
+several lines.'
+check! This is a string
+check! that spans
+check! several lines.
+</code></pre>
+<p>Strings can be joined together with the <code>+</code> operator.</p>
+<pre><code class="language-koto">print! 'a' + 'Bc' + 'Def'
+check! aBcDef
+</code></pre>
+<h3 id="string-interpolation"><a class="header" href="#string-interpolation">String Interpolation</a></h3>
+<p>Variables can be easily included in a string by surrounding them with <code>{}</code> curly
+braces.</p>
+<pre><code class="language-koto">xyz = 123
+print! 'The value of xyz is {xyz}'
+check! The value of xyz is 123
+</code></pre>
+<p>Including variables in a string this way is known as <em>string interpolation</em>.</p>
+<p>Simple expressions can also be interpolated using the same syntax.</p>
+<pre><code class="language-koto">print! '2 plus 3 is {2 + 3}.'
+check! 2 plus 3 is 5.
+</code></pre>
+<h3 id="string-escape-codes"><a class="header" href="#string-escape-codes">String Escape Codes</a></h3>
+<p>Strings can contain the following escape codes to define special characters,
+all of which start with a <code>\</code>.</p>
+<ul>
+<li><code>\n</code>: Newline</li>
+<li><code>\r</code>: Carriage Return</li>
+<li><code>\t</code>: Tab</li>
+<li><code>\'</code>: Single quote</li>
+<li><code>\"</code>: Double quote</li>
+<li><code>\\</code>: Backslash</li>
+<li><code>\{</code>: Interpolation start</li>
+<li><code>\u{NNNNNN}</code>: Unicode character
+<ul>
+<li>Up to 6 hexadecimal digits can be included within the <code>{}</code> braces.
+The maximum value is <code>\u{10ffff}</code>.</li>
+</ul>
+</li>
+<li><code>\xNN</code>: ASCII character
+<ul>
+<li>Exactly 2 hexadecimal digits follow the <code>\x</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-koto">print! '\{\'\"}'
+check! {'"}
+print! 'Hi \u{1F44B}'
+check! Hi 👋
+</code></pre>
+<h3 id="string-indexing"><a class="header" href="#string-indexing">String Indexing</a></h3>
+<p>Individual <em>bytes</em> of a string can be accessed via indexing with <code>[]</code> braces.</p>
+<pre><code class="language-koto">print! 'abcdef'[3]
+check! d
+print! 'xyz'[1..]
+check! yz
+</code></pre>
+<p>Care must be taken when using indexing with strings that could contain
+non-<a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> data.
+If the indexed bytes would produce invalid UTF-8 data then an
+error will be thrown. To access Unicode characters see <a href="./core_lib/string.html#chars"><code>string.chars</code></a>.</p>
+<h3 id="continuing-a-long-line"><a class="header" href="#continuing-a-long-line">Continuing a Long Line</a></h3>
+<p>The end of a line can be escaped with a <code>\</code>, which will skip the
+newline and any leading whitespace on the next line.</p>
+<pre><code class="language-koto">foo = "This string \
+       doesn't contain \
+       newlines."
+print! foo
+check! This string doesn't contain newlines.
+</code></pre>
+<h3 id="single-or-double-quotes"><a class="header" href="#single-or-double-quotes">Single or Double Quotes</a></h3>
+<p>Both single <code>'</code> and double <code>"</code> quotes are valid for defining strings in Koto
+and have the same meaning.</p>
+<p>A practical reason to choose one over the other is that the alternate
+quote type can be used in a string without needing to use escape characters.</p>
+<pre><code class="language-koto">print 'This string has to escape its \'single quotes\'.'
+check! This string has to escape its 'single quotes'.
+
+print "This string contains unescaped 'single quotes'."
+check! This string contains unescaped 'single quotes'.
+</code></pre>
+<h3 id="raw-strings"><a class="header" href="#raw-strings">Raw Strings</a></h3>
+<p>When a string contains a lot of special characters, it can be preferable to use
+a <em>raw string</em>.</p>
+<p>Raw strings ignore escape characters and interpolated expressions,
+providing the raw contents of the string between its <em>delimiters</em>.</p>
+<p>Raw strings use single or double quotes as the delimiter, prefixed with an <code>r</code>.</p>
+<pre><code class="language-koto">print r'This string contains special characters: {foo}\n\t.'
+check! This string contains special characters: {foo}\n\t.
+</code></pre>
+<p>For more complex string contents, the delimiter can be extended using up to 255
+<code>#</code> characters after the <code>r</code> prefix,</p>
+<pre><code class="language-koto">print r#'This string contains "both" 'quote' types.'#
+check! This string contains "both" 'quote' types.
+
+print r##'This string also includes a '#' symbol.'##
+check! This string also includes a '#' symbol.
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<p>Functions in Koto are created using a pair of vertical bars (<code>||</code>),
+with the function’s <em>arguments</em> listed between the bars.
+The <em>body</em> of the function follows the vertical bars.</p>
+<pre><code class="language-koto">hi = || 'Hello!'
+add = |x, y| x + y
+</code></pre>
+<p>Functions are <em>called</em> with arguments contained in <code>()</code> parentheses.
+The body of the function is evaluated and the result is returned to the caller.</p>
+<pre><code class="language-koto">hi = || 'Hello!'
+print! hi()
+check! Hello!
+
+add = |x, y| x + y
+print! add(50, 5)
+check! 55
+</code></pre>
+<p>A function’s body can be an indented block, where the last
+expression in the body is evaluated as the function’s result.</p>
+<pre><code class="language-koto">f = |x, y, z|
+  x *= 100
+  y *= 10
+  x + y + z
+print! f(2, 3, 4)
+check! 234
+</code></pre>
+<h3 id="optional-call-parentheses"><a class="header" href="#optional-call-parentheses">Optional Call Parentheses</a></h3>
+<p>The parentheses for arguments when calling a function are optional and can be
+omitted in simple expressions.</p>
+<pre><code class="language-koto">square = |x| x * x
+print! square 8
+check! 64
+
+add = |x, y| x + y
+print! add 2, 3
+check! 5
+
+# Equivalent to square(add(2, 3))
+print! square add 2, 3
+check! 25
+</code></pre>
+<p>Something to watch out for is that whitespace is important in Koto, and because
+of optional parentheses, <code>f(1, 2)</code> is <em>not the same</em> as <code>f (1, 2)</code>. The former
+is parsed as a call to <code>f</code> with two arguments, whereas the latter is a call to
+<code>f</code> with a tuple as the single argument.</p>
+<h3 id="return"><a class="header" href="#return">Return</a></h3>
+<p>When the function should be exited early, the <code>return</code> keyword can be used.</p>
+<pre><code class="language-koto">f = |n|
+  return 42
+  # This expression won't be reached
+  n * n
+print! f -1
+check! 42
+</code></pre>
+<p>If a value isn’t provided to <code>return</code>, then the returned value is <code>null</code>.</p>
+<pre><code class="language-koto">f = |n|
+  return
+  n * n
+print! f 123
+check! null
+</code></pre>
+<h3 id="function-piping"><a class="header" href="#function-piping">Function Piping</a></h3>
+<p>The arrow operator (<code>-&gt;</code>) can be used to pass the result of one function to
+another, working from left to right. This is known as <em>function piping</em>,
+and can aid readability when working with a long chain of function calls.</p>
+<pre><code class="language-koto">add = |x, y| x + y
+multiply = |x, y| x * y
+square = |x| x * x
+
+# Chained function calls can be a bit hard to follow for the reader.
+print! x = multiply 2, square add 1, 3
+check! 32
+
+# Parentheses don't help all that much...
+print! x = multiply(2, square(add(1, 3)))
+check! 32
+
+# Piping allows for a left-to-right flow of results.
+print! x = add(1, 3) -&gt; square -&gt; multiply 2
+check! 32
+
+# Call chains can also be broken across lines.
+print! x = add 1, 3
+  -&gt; square
+  -&gt; multiply 2
+check! 32
+</code></pre>
+<h2 id="maps"><a class="header" href="#maps">Maps</a></h2>
+<p><em>Maps</em> in Koto are <a href="https://en.wikipedia.org/wiki/Associative_array">associative containers</a> that contain a series of
+<em>entries</em> with <em>keys</em> that correspond to associated <em>values</em>.</p>
+<p>The <code>.</code> dot operator returns the value associated with a particular key.</p>
+<p>Maps can be created using <em>inline syntax</em> with <code>{}</code> braces:</p>
+<pre><code class="language-koto">m = {apples: 42, oranges: 99, lemons: 63}
+
+# Get the value associated with the `oranges` key
+print! m.oranges
+check! 99
+</code></pre>
+<p>…Or using <em>block syntax</em> with indented entries:</p>
+<pre><code class="language-koto">m =
+  apples: 42
+  oranges: 99
+  lemons: 63
+print! m.apples
+check! 42
+</code></pre>
+<p>Once a map has been created, its underlying data is shared between other
+instances of the same map. Changes to one instance are reflected in the other.</p>
+<pre><code class="language-koto"># Create a map and assign it to `a`.
+a = {foo: 99}
+print! a.foo
+check! 99
+
+# Assign a new instance of the map to `z`.
+z = a
+
+# Modifying the data via `z` is reflected in `a`.
+z.foo = 'Hi!'
+print! a.foo
+check! Hi!
+</code></pre>
+<h3 id="entry-order"><a class="header" href="#entry-order">Entry Order</a></h3>
+<p>A map’s entries are maintained in a consistent order,
+representing the sequence in which its entries were added.</p>
+<p>You can access map entries by index using square brackets, starting from <code>0</code>.</p>
+<p>The entry is returned as a tuple containing the key and its associated value.</p>
+<pre><code class="language-koto">m = {apples: 42, oranges: 99, lemons: 63}
+print! m[1]
+check! ('oranges', 99)
+</code></pre>
+<p>Entries can also be replaced by assigning a key/value tuple to the entry’s index.</p>
+<pre><code class="language-koto">m = {apples: 42, oranges: 99, lemons: 63}
+m[1] = ('pears', 123)
+print! m
+check! {apples: 42, pears: 123, lemons: 63}
+</code></pre>
+<h3 id="shorthand-values"><a class="header" href="#shorthand-values">Shorthand Values</a></h3>
+<p>When creating maps with inline syntax, Koto supports a shorthand notation that
+simplifies adding existing values to the map.</p>
+<p>If a value isn’t provided for a key, then Koto will look for a value
+that matches the key’s name, and if one is found then it will be used as that
+entry’s value.</p>
+<pre><code class="language-koto">hi, bye = 'hi!', 'bye!'
+print! m = {hi, x: 42, bye}
+check! {hi: 'hi!', x: 42, bye: 'bye!'}
+</code></pre>
+<h3 id="maps-and-self"><a class="header" href="#maps-and-self">Maps and Self</a></h3>
+<p>Maps can store any type of value, including functions,
+which provides a convenient way to group functions together.</p>
+<pre><code class="language-koto">m =
+  hello: |name| 'Hello, {name}!'
+  bye: |name| 'Bye, {name}!'
+
+print! m.hello 'World'
+check! Hello, World!
+print! m.bye 'Friend'
+check! Bye, Friend!
+</code></pre>
+<p><code>self</code> is a special identifier that refers to the instance of the container in
+which the function is contained.</p>
+<p>In maps, <code>self</code> allows functions to access and modify data from the map,
+enabling object-like behaviour.</p>
+<pre><code class="language-koto">m =
+  name: 'World'
+  say_hello: || 'Hello, {self.name}!'
+
+print! m.say_hello()
+check! Hello, World!
+
+m.name = 'Friend'
+print! m.say_hello()
+check! Hello, Friend!
+</code></pre>
+<h3 id="joining-maps"><a class="header" href="#joining-maps">Joining Maps</a></h3>
+<p>The <code>+</code> operator allows maps to be joined together, creating a new map that
+combines their entries.</p>
+<pre><code class="language-koto">a = {red: 100, blue: 150}
+b = {green: 200, blue: 99}
+c = a + b
+print! c
+check! {red: 100, blue: 99, green: 200}
+</code></pre>
+<h3 id="quoted-map-keys"><a class="header" href="#quoted-map-keys">Quoted Map Keys</a></h3>
+<p>Map keys are usually defined and accessed without quotes, but they are stored in
+the map as strings. Quotes can be used if a key needs to be defined that would be
+otherwise be disallowed by Koto syntax rules
+(e.g. a keyword, or using characters that aren’t allowed in an identifier).
+Quoted keys also allow key names to be generated dynamically by using string
+interpolation.</p>
+<pre><code class="language-koto">x = 99
+m =
+  'true': 42
+  'key{x}': x
+print! m.'true'
+check! 42
+print! m.key99
+check! 99
+</code></pre>
+<h3 id="map-key-types"><a class="header" href="#map-key-types">Map Key Types</a></h3>
+<p>Map keys are typically strings, but any <a href="https://en.wikipedia.org/wiki/Immutable_object"><em>immutable</em></a> value can be
+used as a map key by using the <a href="./core_lib/map.html#insert"><code>map.insert</code></a> and <a href="./core_lib/map.html#get"><code>map.get</code></a>
+functions.</p>
+<p>The immutable value types in Koto are <a href="#strings">strings</a>, <a href="#numbers_and_arithmetic">numbers</a>,
+<a href="#booleans">booleans</a>, <a href="#ranges">ranges</a>, and <a href="#null"><code>null</code></a>.
+<a href="#tuples">Tuples</a> are also considered to be immutable when their contained
+elements are all immutable.</p>
+<pre><code class="language-koto">m = {}
+
+m.insert 0, 'zero'
+print! m.get 0
+check! zero
+
+m.insert (1, 2, 3), 'xxx'
+print! m.get (1, 2, 3)
+check! xxx
+</code></pre>
+<h2 id="core-library"><a class="header" href="#core-library">Core Library</a></h2>
+<p>The <a href="./core_lib"><em>Core Library</em></a> provides a collection of fundamental functions
+and values for working with the Koto language, organized within <em>modules</em>.</p>
+<pre><code class="language-koto"># Convert a string to lowercase
+print! string.to_lowercase 'HELLO'
+check! hello
+
+# Return the first element of a list
+print! list.first [99, -1, 3]
+check! 99
+</code></pre>
+<p>Values in Koto automatically have access to their corresponding core modules
+via <code>.</code> access.</p>
+<pre><code class="language-koto">print! 'xyz'.to_uppercase()
+check! XYZ
+
+print! ['abc', 123].first()
+check! abc
+
+print! (7 / 2).round()
+check! 4
+
+print! {apples: 42, pears: 99}.contains_key 'apples'
+check! true
+</code></pre>
+<p>The <a href="./core_lib">documentation</a> for the Core library (along with this guide) is
+available in the <code>help</code> command of the <a href="./cli.html">Koto CLI</a>.</p>
+<h3 id="prelude"><a class="header" href="#prelude">Prelude</a></h3>
+<p>Koto’s <em>prelude</em> is a collection of core library items that are automatically
+made available in a Koto script without the need for first calling <a href="#import"><code>import</code></a>.</p>
+<p>The modules that make up the core library are all included by default in the
+prelude. The following functions are also added to the prelude by default:</p>
+<ul>
+<li><a href="./core_lib/io.html#print"><code>io.print</code></a></li>
+<li><a href="./core_lib/koto.html#copy"><code>koto.copy</code></a></li>
+<li><a href="./core_lib/koto.html#size"><code>koto.size</code></a></li>
+<li><a href="./core_lib/koto.html#type"><code>koto.type</code></a></li>
+<li><a href="./core_lib/test.html#assert"><code>test.assert</code></a></li>
+<li><a href="./core_lib/test.html#assert_eq"><code>test.assert_eq</code></a></li>
+<li><a href="./core_lib/test.html#assert_ne"><code>test.assert_ne</code></a></li>
+<li><a href="./core_lib/test.html#assert_near"><code>test.assert_near</code></a></li>
+</ul>
+<pre><code class="language-koto">print 'io.print is available without needing to be imported'
+check! io.print is available without needing to be imported
+</code></pre>
+<h2 id="conditional-expressions"><a class="header" href="#conditional-expressions">Conditional Expressions</a></h2>
+<p>Koto includes several ways of producing values that depend on <em>conditions</em>.</p>
+<h3 id="if"><a class="header" href="#if"><code>if</code></a></h3>
+<p><code>if</code> expressions come in two flavors; single-line:</p>
+<pre><code class="language-koto">x = 99
+if x % 2 == 0 then print 'even' else print 'odd'
+check! odd
+</code></pre>
+<p>…And multi-line using indented blocks:</p>
+<pre><code class="language-koto">x = 24
+if x &lt; 0
+  print 'negative'
+else if x &gt; 24
+  print 'no way!'
+else
+  print 'ok'
+check! ok
+</code></pre>
+<p>The result of an <code>if</code> expression is the final expression in the branch that gets
+executed.</p>
+<pre><code class="language-koto">x = if 1 + 1 == 2 then 3 else -1
+print! x
+check! 3
+
+# Assign the result of the if expression to foo
+foo = if x &gt; 0
+  y = x * 10
+  y + 3
+else
+  y = x * 100
+  y * y
+
+print! foo
+check! 33
+</code></pre>
+<h3 id="switch"><a class="header" href="#switch"><code>switch</code></a></h3>
+<p><code>switch</code> expressions can be used as a cleaner alternative to
+<code>if</code>/<code>else if</code>/<code>else</code> cascades.</p>
+<pre><code class="language-koto">fib = |n|
+  switch
+    n &lt;= 0 then 0
+    n == 1 then 1
+    else (fib n - 1) + (fib n - 2)
+
+print! fib 7
+check! 13
+</code></pre>
+<h3 id="match"><a class="header" href="#match"><code>match</code></a></h3>
+<p><code>match</code> expressions can be used to match a value against a series of patterns,
+with the matched pattern causing a specific branch of code to be executed.</p>
+<p>Patterns can be literals or identifiers. An identifier will accept any value,
+so they’re often used with <code>if</code> conditions to refine the match.</p>
+<pre><code class="language-koto">print! match 40 + 2
+  0 then 'zero'
+  1 then 'one'
+  x if x &lt; 10 then 'less than 10: {x}'
+  x if x &lt; 50 then 'less than 50: {x}'
+  x then 'other: {x}'
+check! less than 50: 42
+</code></pre>
+<p>The <code>_</code> wildcard match can be used to match against any value
+(when the matched value itself can be ignored),
+and <code>else</code> can be used for fallback branches.</p>
+<pre><code class="language-koto">fizz_buzz = |n|
+  match n % 3, n % 5
+    0, 0 then "Fizz Buzz"
+    0, _ then "Fizz"
+    _, 0 then "Buzz"
+    else n
+
+print! (10, 11, 12, 13, 14, 15)
+  .each |n| fizz_buzz n
+  .to_tuple()
+check! ('Buzz', 11, 'Fizz', 13, 14, 'Fizz Buzz')
+</code></pre>
+<p>List and tuple entries can be matched against by using parentheses,
+with <code>...</code> available for capturing the rest of the sequence.</p>
+<pre><code class="language-koto">print! match ['a', 'b', 'c'].extend [1, 2, 3]
+  ('a', 'b') then
+    "A list containing 'a' and 'b'"
+  (1, ...) then
+    "Starts with '1'"
+  (..., 'y', last) then
+    "Ends with 'y' followed by '{last}'"
+  ('a', x, others...) then
+    "Starts with 'a', followed by '{x}', then {size others} others"
+  unmatched then "other: {unmatched}"
+check! Starts with 'a', followed by 'b', then 4 others
+</code></pre>
+<h3 id="optional-chaining"><a class="header" href="#optional-chaining">Optional Chaining</a></h3>
+<p>The <code>?</code> operator can be used to short-circuit expression chains where <code>null</code>
+might be encountered as an intermediate value. The <code>?</code> checks the current value
+in the expression chain and if <code>null</code> is found then the chain is short-circuited
+with <code>null</code> given as the expression’s result.</p>
+<p>This makes it easier to check for <code>null</code> when you want to avoid runtime errors.</p>
+<pre><code class="language-koto">info = {town: 'Hamburg', country: 'Germany'}
+
+# `info` contains a value for 'town', which is then passed to to_uppercase():
+print! info.get('town')?.to_uppercase()
+check! HAMBURG
+
+# `info` doesn't contain a value for 'state',
+# so the `?` operator short-circuits the expression, resulting in `null`:
+print! info.get('state')?.to_uppercase()
+check! null
+
+# Without the `?` operator an intermediate step is necessary:
+country = info.get('country')
+print! if country then country.to_uppercase()
+check! GERMANY
+</code></pre>
+<p>Multiple <code>?</code> checks can be performed in an expression chain:</p>
+<pre><code class="language-koto">get_data = || {nested: {maybe_string: null}}
+print! get_data()?
+  .get('nested')?
+  .get('maybe_string')?
+  .to_uppercase()
+check! null
+</code></pre>
+<h2 id="loops"><a class="header" href="#loops">Loops</a></h2>
+<p>Koto includes several ways of evaluating expressions repeatedly in a loop.</p>
+<h3 id="for"><a class="header" href="#for"><code>for</code></a></h3>
+<p><code>for</code> loops are repeated for each element in a sequence,
+such as a list or tuple.</p>
+<pre><code class="language-koto">for n in [10, 20, 30]
+  print n
+check! 10
+check! 20
+check! 30
+</code></pre>
+<h3 id="while"><a class="header" href="#while"><code>while</code></a></h3>
+<p><code>while</code> loops continue to repeat <em>while</em> a condition is true.</p>
+<pre><code class="language-koto">x = 0
+while x &lt; 5
+  x += 1
+print! x
+check! 5
+</code></pre>
+<h3 id="until"><a class="header" href="#until"><code>until</code></a></h3>
+<p><code>until</code> loops continue to repeat <em>until</em> a condition is true.</p>
+<pre><code class="language-koto">z = [1, 2, 3]
+until z.is_empty()
+  # Remove the last element of the list
+  print z.pop()
+check! 3
+check! 2
+check! 1
+</code></pre>
+<h3 id="continue"><a class="header" href="#continue"><code>continue</code></a></h3>
+<p><code>continue</code> skips the remaining part of a loop’s body and proceeds with the next repetition of the loop.</p>
+<pre><code class="language-koto">for n in (-2, -1, 1, 2)
+  # Skip over any values less than 0
+  if n &lt; 0
+    continue
+  print n
+check! 1
+check! 2
+</code></pre>
+<h3 id="break"><a class="header" href="#break"><code>break</code></a></h3>
+<p>Loops can be terminated with the <code>break</code> keyword.</p>
+<pre><code class="language-koto">x = 0
+while x &lt; 100000
+  if x &gt;= 3
+    # Break out of the loop when x is greater or equal to 3
+    break
+  x += 1
+print! x
+check! 3
+</code></pre>
+<p>A value can be provided to <code>break</code>, which is then used as the result of the loop.</p>
+<pre><code class="language-koto">x = 0
+y = while x &lt; 100000
+  if x &gt;= 3
+    # Break out of the loop, providing x + 100 as the loop's result
+    break x + 100
+  x += 1
+print! y
+check! 103
+</code></pre>
+<h3 id="loop"><a class="header" href="#loop"><code>loop</code></a></h3>
+<p><code>loop</code> creates a loop that will repeat indefinitely.</p>
+<pre><code class="language-koto">x = 0
+y = loop
+  x += 1
+  # Stop looping when x is greater than 4
+  if x &gt; 4
+    break x * x
+print! y
+check! 25
+</code></pre>
+<h2 id="iterators"><a class="header" href="#iterators">Iterators</a></h2>
+<p>The elements of a sequence can be accessed sequentially with an <em>iterator</em>,
+created using the <code>.iter()</code> function.</p>
+<p>An iterator yields values via <a href="./core_lib/iterator.html#next"><code>.next()</code></a> until the end of the sequence is
+reached, when <code>null</code> is returned.</p>
+<pre><code class="language-koto">i = [10, 20].iter()
+
+print! i.next()
+check! IteratorOutput(10)
+print! i.next()
+check! IteratorOutput(20)
+print! i.next()
+check! null
+</code></pre>
+<h3 id="iterator-generators"><a class="header" href="#iterator-generators">Iterator Generators</a></h3>
+<p>The <a href="./core_lib/iterator.html"><code>iterator</code></a> module contains iterator <em>generators</em> like
+<a href="./core_lib/iterator.html#once"><code>once</code></a> and <a href="./core_lib/iterator.html#repeat"><code>repeat</code></a> that generate output values
+<a href="https://en.wikipedia.org/wiki/Lazy_evaluation"><em>lazily</em></a> during iteration.</p>
+<pre><code class="language-koto"># Create an iterator that repeats ! twice
+i = iterator.repeat('!', 2)
+print! i.next()
+check! IteratorOutput(!)
+print! i.next()
+check! IteratorOutput(!)
+print! i.next()
+check! null
+</code></pre>
+<h3 id="iterator-adaptors"><a class="header" href="#iterator-adaptors">Iterator Adaptors</a></h3>
+<p>The output of an iterator can be modified using <em>adaptors</em> from the
+<a href="./core_lib/iterator.html"><code>iterator</code></a> module.</p>
+<p>The <code>iterator</code> module is available to any value which is declared to be <em>iterable</em>
+(which includes Koto’s containers like lists and strings),
+so it’s not necessary to call <code>.iter()</code> before using an adaptor.</p>
+<pre><code class="language-koto"># Create an iterator that outputs any value in the list above 3
+x = [1, 2, 3, 4, 5].keep |n| n &gt; 3
+
+print! x.next()
+check! IteratorOutput(4)
+print! x.next()
+check! IteratorOutput(5)
+print! x.next()
+check! null
+</code></pre>
+<h3 id="using-iterators-with-for"><a class="header" href="#using-iterators-with-for">Using iterators with <code>for</code></a></h3>
+<p><code>for</code> loops accept any iterable value as input, including adapted iterators.</p>
+<pre><code class="language-koto">for x in 'abacad'.keep |c| c != 'a'
+  print x
+check! b
+check! c
+check! d
+</code></pre>
+<h3 id="iterator-chains"><a class="header" href="#iterator-chains">Iterator Chains</a></h3>
+<p>Any iterator can be passed into an adaptor, including other adaptors,
+creating <em>iterator chains</em> that act as data processing pipelines.</p>
+<pre><code class="language-koto">i = (1, 2, 3, 4, 5)
+  .skip 1
+  .each |n| n * 10
+  .keep |n| n &lt;= 40
+  .intersperse '--'
+
+for x in i
+  print x
+check! 20
+check! --
+check! 30
+check! --
+check! 40
+</code></pre>
+<h3 id="iterator-consumers"><a class="header" href="#iterator-consumers">Iterator Consumers</a></h3>
+<p>Iterators can also be <em>consumed</em> using functions like
+<a href="./core_lib/iterator.html#to_list"><code>.to_list()</code></a> and <a href="./core_lib/iterator.html#to_tuple"><code>.to_tuple()</code></a>,
+allowing the output of an iterator to be easily captured in a container.</p>
+<pre><code class="language-koto">print! [1, 2, 3]
+  .each |n| n * 2
+  .to_tuple()
+check! (2, 4, 6)
+
+print! (1, 2, 3, 4)
+  .keep |n| n % 2 == 0
+  .each |n| n * 11
+  .to_list()
+check! [22, 44]
+</code></pre>
+<p>Iterator consumers are also available for creating <a href="./core_lib/iterator.html#to_string">strings</a> and <a href="./core_lib/iterator.html#to_map">maps</a>,
+as well as operations like <a href="./core_lib/iterator.html#count">counting the number of values</a> yielded from an
+iterator, or getting the <a href="./core_lib/iterator.html#sum">total sum</a> of an iterator’s output.</p>
+<h2 id="value-unpacking"><a class="header" href="#value-unpacking">Value Unpacking</a></h2>
+<p>Multiple assignments can be performed in a single expression by separating the
+variable names with commas.</p>
+<pre><code class="language-koto">a, b = 10, 20
+print! a, b
+check! (10, 20)
+</code></pre>
+<p>If there’s a single value being assigned, and the value is iterable,
+then it gets <em>unpacked</em> into the target variables.</p>
+<pre><code class="language-koto">my_tuple = 1, 2
+x, y = my_tuple
+print! y, x
+check! (2, 1)
+</code></pre>
+<p>Unpacking works with any iterable value, including adapted iterators.</p>
+<pre><code class="language-koto">a, b, c = [1, 2, 3, 4, 5]
+print! a, b, c
+check! (1, 2, 3)
+
+x, y, z = 'a-b-c'.split '-'
+print! x, y, z
+check! ('a', 'b', 'c')
+</code></pre>
+<p>If the value being unpacked doesn’t contain enough values for the assignment,
+then <code>null</code> is assigned to any remaining variables.</p>
+<pre><code class="language-koto">a, b, c = [-1, -2]
+print! a, b, c
+check! (-1, -2, null)
+
+x, y, z = 42
+print! x, y, z
+check! (42, null, null)
+</code></pre>
+<p>Unpacking can also be used in <code>for</code> loops, which is particularly useful when
+looping over the contents of a map.</p>
+<pre><code class="language-koto">my_map = {foo: 42, bar: 99}
+for key, value in my_map
+  print key, value
+check! ('foo', 42)
+check! ('bar', 99)
+</code></pre>
+<h3 id="ignoring-unpacked-values"><a class="header" href="#ignoring-unpacked-values">Ignoring Unpacked Values</a></h3>
+<p><code>_</code> can be used as a placeholder for unpacked values that aren’t needed elsewhere
+in the code and can be ignored.</p>
+<p>If you would like to add a name to the ignored value as a reminder,
+then the name can be appended to <code>_</code>. Ignored values (any variables starting with
+<code>_</code>) can be written to, but can’t be accessed.</p>
+<pre><code class="language-koto">a, _, c = 10..20
+print! a, c
+check! (10, 12)
+
+_first, second = 'xyz'
+print! second
+check! y
+</code></pre>
+<h2 id="generators"><a class="header" href="#generators">Generators</a></h2>
+<p>Generators are iterators that are made by calling <em>generator functions</em>,
+which are any functions that contain a <code>yield</code> expression.</p>
+<p>The generator is paused each time <code>yield</code> is encountered,
+waiting for the caller to continue execution.</p>
+<pre><code class="language-koto">my_first_generator = ||
+  yield 1
+  yield 2
+
+x = my_first_generator()
+print! x.next()
+check! IteratorOutput(1)
+print! x.next()
+check! IteratorOutput(2)
+print! x.next()
+check! null
+</code></pre>
+<p>Generator functions can accept arguments like any other function,
+and each time they’re called a new generator is created.</p>
+<p>As with any other iterable value, the <a href="./core_lib/iterator.html"><code>iterator</code></a> module’s functions
+are made available to generators.</p>
+<pre><code class="language-koto">make_generator = |x|
+  for y in (1, 2, 3)
+    yield x + y
+
+print! make_generator(0).to_tuple()
+check! (1, 2, 3)
+print! make_generator(10)
+  .keep |n| n % 2 == 1
+  .to_list()
+check! [11, 13]
+</code></pre>
+<h3 id="custom-iterator-adaptors"><a class="header" href="#custom-iterator-adaptors">Custom Iterator Adaptors</a></h3>
+<p>Generators can also serve as <em>iterator adaptors</em> by modifying the output of
+another iterator.</p>
+<p>Inserting a generator into the <a href="./core_lib/iterator.html"><code>iterator</code></a> module makes it available
+in any iterator chain.</p>
+<pre><code class="language-koto"># Make an iterator adaptor that yields every
+# other value from the adapted iterator
+iterator.every_other = |iter = null|
+  n = 0
+  # If the iterator to be adapted is provided as an argument then use it,
+  # otherwise defer to `self`, which is set by the runtime when the
+  # generator is used in an iterator chain.
+  for output in iter or self
+    # If n is even, then yield a value
+    if n % 2 == 0
+      yield output
+    n += 1
+
+# The adaptor can be called directly...
+print! iterator.every_other('abcdef').to_string()
+check! ace
+
+# ...or anywhere in an iterator chain
+print! (1, 2, 3, 4, 5)
+  .each |n| n * 10
+  .every_other()
+  .to_list()
+check! [10, 30, 50]
+</code></pre>
+<h2 id="ranges"><a class="header" href="#ranges">Ranges</a></h2>
+<p>Ranges of integers can be created with <code>..</code> or <code>..=</code>.</p>
+<p><code>..</code> creates a <em>non-inclusive</em> range,
+which defines a range up to but <em>not including</em> the end of the range.</p>
+<pre><code class="language-koto"># Create a range from 10 to 20, not including 20
+print! r = 10..20
+check! 10..20
+print! r.start()
+check! 10
+print! r.end()
+check! 20
+print! r.contains 20
+check! false
+</code></pre>
+<p><code>..=</code> creates an <em>inclusive</em> range, which includes the end of the range.</p>
+<pre><code class="language-koto"># Create a range from 10 to 20, including 20
+print! r = 10..=20
+check! 10..=20
+print! r.contains 20
+check! true
+</code></pre>
+<p>If a value is missing from either side of the range operator then an <em>unbounded</em>
+range is created.</p>
+<pre><code class="language-koto"># Create an unbounded range starting from 10
+r = 10..
+print! r.start()
+check! 10
+print! r.end()
+check! null
+
+# Create an unbounded range up to and including 100
+r = ..=100
+print! r.start()
+check! null
+print! r.end()
+check! 100
+</code></pre>
+<p><em>Bounded</em> ranges are declared as iterable,
+so they can be used in for loops and with the <a href="./core_lib/iterator.html"><code>iterator</code></a> module.</p>
+<pre><code class="language-koto">for x in 1..=3
+  print x
+check! 1
+check! 2
+check! 3
+
+print! (0..5).to_list()
+check! [0, 1, 2, 3, 4]
+</code></pre>
+<h3 id="slices"><a class="header" href="#slices">Slices</a></h3>
+<p>Ranges can be used to create a <em>slice</em> of a container’s data.</p>
+<pre><code class="language-koto">x = (10, 20, 30, 40, 50)
+print! x[1..=3]
+check! (20, 30, 40)
+</code></pre>
+<p>For immutable containers like tuples and strings,
+slices share the original value’s data, with no copies being made.</p>
+<p>For mutable containers like lists, creating a slice makes a copy of the sliced
+portion of the underlying data.</p>
+<pre><code class="language-koto">x = 'abcdef'
+# No copies are made when a string is sliced
+print! y = x[3..6]
+check! def
+
+a = [1, 2, 3]
+# When a list is sliced, the sliced elements get copied into a new list
+print! b = a[0..2]
+check! [1, 2]
+print! b[0] = 42
+check! 42
+print! a[0]
+check! 1
+</code></pre>
+<p>When creating a slice with an unbounded range,
+if the start of the range if omitted then the slice starts from the beginning of the container.
+If the end of the range is omitted, then the slice includes all remaining elements in the container.</p>
+<pre><code class="language-koto">z = 'Hëllø'.to_tuple()
+print! z[..2]
+check! ('H', 'ë')
+print! z[2..]
+check! ('l', 'l', 'ø')
+</code></pre>
+<h2 id="type-checks"><a class="header" href="#type-checks">Type Checks</a></h2>
+<p>Koto is a primarily a dynamically typed language, however in more complex programs
+you might find it beneficial to add <em>type checks</em>.</p>
+<p>These checks can help in catching errors earlier, and can also act as
+documentation for the reader.</p>
+<p>One way to add type checks to your program is to use the
+<a href="./core_lib/koto.html#type"><code>type</code></a> function, which returns a value’s type as a string.</p>
+<pre><code class="language-koto">x = 123
+assert_eq (type x), 'Number'
+</code></pre>
+<p>Checking types this way is rather verbose, so Koto offers <em>type hints</em> as a more
+ergonomic alternative.</p>
+<h3 id="let"><a class="header" href="#let"><code>let</code></a></h3>
+<p>You can declare variables with type hints using a <code>let</code> expression.</p>
+<p>If a value is assigned that doesn’t match the declared type then an error will
+be thrown.</p>
+<pre><code class="language-koto">let x: String = 'hello'
+print! x
+check! hello
+
+let a: Number, _, c: Bool = 123, x, true
+print! a, c
+check! (123, true)
+</code></pre>
+<h3 id="for-arguments"><a class="header" href="#for-arguments"><code>for</code> arguments</a></h3>
+<p>Type hints can also be added to <code>for</code> loop arguments.
+The type will be checked on each iteration of the loop.</p>
+<pre><code class="language-koto">for i: Number, s: String in 'abc'.enumerate()
+  print i, s
+check! (0, 'a')
+check! (1, 'b')
+check! (2, 'c')
+</code></pre>
+<h3 id="functions-1"><a class="header" href="#functions-1">Functions</a></h3>
+<p>Function arguments can also be given type hints, and the type of the
+return value can be checked with the <code>-&gt;</code> operator.</p>
+<pre><code class="language-koto">f = |s: String| -&gt; Tuple
+  s.to_tuple()
+print! f 'abc'
+check! ('a', 'b', 'c')
+</code></pre>
+<p>For <a href="#generators">generator functions</a>, the <code>-&gt;</code> type hint is used to check
+the generator’s <code>yield</code> expressions.</p>
+<pre><code class="language-koto">g = || -&gt; Number
+  yield 1
+  yield 2
+  yield 3
+print! g().to_tuple()
+check! (1, 2, 3)
+</code></pre>
+<h3 id="match-patterns"><a class="header" href="#match-patterns"><code>match</code> patterns</a></h3>
+<p>Type hints can be used in <code>match</code> patterns to check the type of the a value.
+Rather than throwing an error, if a type check fails then the next
+match pattern will be attempted.</p>
+<pre><code class="language-koto">print! match 'abc'
+  x: Tuple then x
+  x: String then x.to_tuple()
+check! ('a', 'b', 'c')
+</code></pre>
+<h3 id="optional-values"><a class="header" href="#optional-values">Optional Values</a></h3>
+<p>Sometimes a value can either be of a particular type, or otherwise it should <code>null</code>.</p>
+<p>These kinds of values are referred to as <a href="https://en.wikipedia.org/wiki/Option_type"><em>optional</em></a>,
+and are useful for functions or expressions that return either a valid value, or nothing at all.</p>
+<p>Optional value types are expressed by appending <code>?</code> to the type hint.</p>
+<pre><code class="language-koto">m = {foo: 'hi!'}
+
+print! let foo: String? = m.get('foo')?.to_uppercase()
+check! HI!
+
+print! let bar: String? = m.get('bar')?.to_uppercase()
+check! null
+</code></pre>
+<h3 id="special-types"><a class="header" href="#special-types">Special Types</a></h3>
+<h4 id="any"><a class="header" href="#any"><code>Any</code></a></h4>
+<p>The <code>Any</code> type hint will result in a successful check with any value.</p>
+<pre><code class="language-koto">print! let x: Any = 'hello'
+check! hello
+</code></pre>
+<h4 id="callable"><a class="header" href="#callable"><code>Callable</code></a></h4>
+<p>The <code>Callable</code> type hint will accept functions, or any object that can behave
+like a function.</p>
+<pre><code class="language-koto">let say_hello: Callable = || 'hello'
+print! say_hello()
+check! hello
+</code></pre>
+<h4 id="indexable"><a class="header" href="#indexable"><code>Indexable</code></a></h4>
+<p>The <code>Indexable</code> type hint will accept any value that supports <code>[]</code> indexing.</p>
+<pre><code class="language-koto">add_first_two = |x: Indexable| x[0] + x[1]
+print! add_first_two (100, 99, -1)
+check! 199
+</code></pre>
+<h4 id="iterable"><a class="header" href="#iterable"><code>Iterable</code></a></h4>
+<p>The <code>Iterable</code> type hint is useful when any iterable value can be accepted.</p>
+<pre><code class="language-koto">let a: Iterable, b: Iterable = [1, 2], 3..=5
+print! a.chain(b).to_tuple()
+check! (1, 2, 3, 4, 5)
+</code></pre>
+<h2 id="string-formatting"><a class="header" href="#string-formatting">String Formatting</a></h2>
+<p>Interpolated string expressions can be formatted using formatting options
+similar to <a href="https://doc.rust-lang.org/std/fmt/#formatting-parameters">Rust’s</a>.</p>
+<p>Inside an interpolated expression, options are provided after a <code>:</code> separator.</p>
+<pre><code class="language-koto">print! '{number.pi:𝜋^8.2}'
+check! 𝜋𝜋3.14𝜋𝜋
+</code></pre>
+<h3 id="minimum-width-and-alignment"><a class="header" href="#minimum-width-and-alignment">Minimum Width and Alignment</a></h3>
+<p>A minimum width can be specified, ensuring that the formatted value takes up at
+least that many characters.</p>
+<pre><code class="language-koto">foo = "abcd"
+print! '_{foo:8}_'
+check! _abcd    _
+</code></pre>
+<p>The minimum width can be prefixed with an alignment modifier:</p>
+<ul>
+<li><code>&lt;</code> - left-aligned</li>
+<li><code>^</code> - centered</li>
+<li><code>&gt;</code> - right-aligned</li>
+</ul>
+<pre><code class="language-koto">foo = "abcd"
+print! '_{foo:^8}_'
+check! _  abcd  _
+</code></pre>
+<p>All values are left-aligned if an alignment modifier isn’t specified,
+except for numbers which are right-aligned by default.</p>
+<pre><code class="language-koto">x = 1.2
+print! '_{x:8}_'
+check! _     1.2_
+</code></pre>
+<p>The alignment modifier can be prefixed with a character which will be used to
+fill any empty space in the formatted string (the default character being <code> </code>).</p>
+<pre><code class="language-koto">x = 1.2
+print! '_{x:~&lt;8}_'
+check! _1.2~~~~~_
+</code></pre>
+<p>For numbers, the minimum width can be prefixed with <code>0</code>, which will pad the
+number to the specified width with zeroes.</p>
+<pre><code class="language-koto">x = 1.2
+print! '{x:06}'
+check! 0001.2
+</code></pre>
+<h3 id="maximum-width--precision"><a class="header" href="#maximum-width--precision">Maximum Width / Precision</a></h3>
+<p>A maximum width for the interpolated expression can be specified following a
+<code>.</code> character.</p>
+<pre><code class="language-koto">foo = "abcd"
+print! '{foo:_^8.2}'
+check! ___ab___
+</code></pre>
+<p>For numbers, the maximum width acts as a ‘precision’ value, or in other words,
+the number of decimal places that will be rendered for the number.</p>
+<pre><code class="language-koto">x = 1 / 3
+print! '{x:.4}'
+check! 0.3333
+</code></pre>
+<h3 id="representation"><a class="header" href="#representation">Representation</a></h3>
+<p>Values can be formatted with alternative representations, with representations chosen with a character at the end of the format options.</p>
+<ul>
+<li><code>?</code> - The value will be formatted with additional debug information when available.</li>
+</ul>
+<p>The following representations are only supported for numbers:</p>
+<ul>
+<li><code>e</code> - exponential (lower-case)</li>
+<li><code>E</code> - exponential (upper-case)</li>
+</ul>
+<p>The following representations are only supported for integers:</p>
+<ul>
+<li><code>b</code> - binary</li>
+<li><code>o</code> - octal</li>
+<li><code>x</code> - hexadecimal (lower-case)</li>
+<li><code>X</code> - hexadecimal (upper-case)</li>
+</ul>
+<pre><code class="language-koto">z = 60
+print! '{z:?}'
+check! 60
+print! '{z:x}'
+check! 3c
+print! '0x{z:X}'
+check! 0x3C
+print! '{z:o}'
+check! 74
+print! '0b{z:08b}'
+check! 0b00111100
+print! '{z * 1000:e}'
+check! 6e4
+print! '{z * 1_000_000:E}'
+check! 6E7
+</code></pre>
+<h2 id="advanced-functions"><a class="header" href="#advanced-functions">Advanced Functions</a></h2>
+<p>Functions in Koto have some advanced features that are worth exploring.</p>
+<h3 id="captured-variables"><a class="header" href="#captured-variables">Captured Variables</a></h3>
+<p>When a variable is accessed in a function that wasn’t declared locally,
+then it gets <em>captured</em> by copying it into the function.</p>
+<pre><code class="language-koto">x = 1
+
+my_function = |n|
+  # x is assigned outside the function,
+  # so it gets captured when the function is created.
+  n + x
+
+# Reassigning x here doesn't modify the value
+# of x that was captured when my_function was created.
+x = 100
+
+print! my_function 2
+check! 3
+</code></pre>
+<p>This behavior is different to many other languages,
+where captures are often taken by <em>reference</em> rather than by <em>copy</em>.</p>
+<p>It’s also worth noting that captured variables will have the same starting value
+each time the function is called.</p>
+<pre><code class="language-koto">x = 99
+f = ||
+  # Modifying x only happens with a local copy during a function call.
+  # The value of x at the start of the call matches when the value it had when
+  # it was captured.
+  x += 1
+
+print! f(), f(), f()
+check! (100, 100, 100)
+</code></pre>
+<p>To modify captured values, use a container (like a map) to hold on to mutable
+data.</p>
+<pre><code class="language-koto">data = {x: 99}
+
+f = ||
+  # The data map gets captured by the function,
+  # and its contained values can be modified between calls.
+  data.x += 1
+
+print! f(), f(), f()
+check! (100, 101, 102)
+</code></pre>
+<h3 id="variadic-functions"><a class="header" href="#variadic-functions">Variadic Functions</a></h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Variadic_function"><em>variadic function</em></a> can be created by appending <code>...</code> to the last argument.
+When the function is called, any extra arguments will be collected into a tuple.</p>
+<pre><code class="language-koto">f = |a, b, others...|
+  print "a: {a}, b: {b}, others: {others}"
+
+f 1, 2, 3, 4, 5
+check! a: 1, b: 2, others: (3, 4, 5)
+f 10, 20
+check! a: 10, b: 20, others: ()
+</code></pre>
+<h3 id="optional-arguments"><a class="header" href="#optional-arguments">Optional Arguments</a></h3>
+<p>Arguments can be made optional by assigning default values.</p>
+<pre><code class="language-koto">f = |a, b = 2, c = 3|
+  print a, b, c
+
+f 1
+check! (1, 2, 3)
+f 1, -2
+check! (1, -2, 3)
+f 1, -2, -3
+check! (1, -2, -3)
+</code></pre>
+<p>Default argument values behave like <a href="#captured-variables">captured variables</a>,
+with the same value being applied each time the function is called.</p>
+<pre><code class="language-koto">f = |x = 10|
+  x += 1
+  x
+
+print! f()
+check! 11
+print! f()
+check! 11
+</code></pre>
+<p>All arguments following an optional argument must also be optional,
+unless the last argument is <a href="#variadic-functions">variadic</a>.</p>
+<pre><code class="language-koto"># f = |a = 1, b| a, b
+#             ^ Error!
+
+f = |a = 1, b...| a, b
+#           ^ Ok!
+
+print! f()
+check! (1, ())
+print! f(1, 2, 3)
+check! (1, (2, 3))
+</code></pre>
+<h3 id="container-argument-unpacking"><a class="header" href="#container-argument-unpacking">Container Argument Unpacking</a></h3>
+<p>Functions that expect containers as arguments can <em>unpack</em> the contained
+elements directly in the argument declaration by using parentheses.</p>
+<pre><code class="language-koto"># A function that sums a container with three contained values
+f = |(a, b, c)| a + b + c
+
+x = [100, 10, 1]
+print! f x
+check! 111
+</code></pre>
+<p>Any container that supports indexing operations (like lists and tuples)
+with a matching number of elements will be unpacked,
+otherwise an error will be thrown.</p>
+<p>Unpacked arguments can also be nested.</p>
+<pre><code class="language-koto"># A function that sums elements from nested containers
+f = |((a, b), (c, d, e))|
+  a + b + c + d + e
+x = ([1, 2], [3, 4, 5])
+print! f x
+check! 15
+</code></pre>
+<p>Ellipses can be used to unpack any number of elements at the start or end of a
+container.</p>
+<pre><code class="language-koto">f = |(..., last)| last * last
+x = (1, 2, 3, 4)
+print! f x
+check! 16
+</code></pre>
+<p>A name can be added to ellipses to assign the unpacked elements.</p>
+<pre><code class="language-koto">f = |(first, others...)| first * others.sum()
+x = (10, 1, 2, 3)
+print! f x
+check! 60
+</code></pre>
+<h3 id="ignoring-arguments"><a class="header" href="#ignoring-arguments">Ignoring Arguments</a></h3>
+<p>As with <a href="#ignoring-unpacked-values">assignments</a>, <code>_</code> can be used to ignore function arguments.</p>
+<pre><code class="language-koto"># A function that sums the first and third elements of a container
+f = |(a, _, c)| a + c
+
+print! f [100, 10, 1]
+check! 101
+</code></pre>
+<pre><code class="language-koto">my_map = {foo1: 1, bar1: 2, foo2: 3, bar2: 4}
+
+print! my_map
+  .keep |(key, _value)| key.starts_with 'foo'
+  .to_tuple()
+check! (('foo1', 1), ('foo2', 3))
+</code></pre>
+<h3 id="packed-call-arguments"><a class="header" href="#packed-call-arguments">Packed Call Arguments</a></h3>
+<p>When calling a function, a <em>packed argument</em> is any argument to which <code>...</code> is appended.
+The runtime will replace the packed argument with the output of iterating over the argument’s contents.
+Any iterable value can be unpacked.</p>
+<pre><code class="language-koto">f = |a, b, c| a + b + c
+
+x = 10, 20, 30
+print! f x...
+check! 60
+
+print! f (1..10).take(3)...
+check! 6
+</code></pre>
+<p>This is especially useful when <a href="#variadic-functions">variadic arguments</a> need
+to be forwarded to another variadic function.</p>
+<pre><code class="language-koto">f = |args...|
+  for i, arg in args.enumerate()
+    print '{i}: {arg}'
+
+g = |args...| f args...
+g 2, 4, 6, 8
+check! 0: 2
+check! 1: 4
+check! 2: 6
+check! 3: 8
+</code></pre>
+<p>More than one argument can be unpacked during a call.</p>
+<pre><code class="language-koto">f = |args...|
+  for i, arg in args.enumerate()
+    print '{i}: {arg}'
+
+x = 10, 20
+y = 99, 100
+f x..., -1, y...
+check! 0: 10
+check! 1: 20
+check! 2: -1
+check! 3: 99
+check! 4: 100
+</code></pre>
+<h2 id="objects-and-metamaps"><a class="header" href="#objects-and-metamaps">Objects and Metamaps</a></h2>
+<p>Value types with custom behaviour can be defined in Koto through the concept of
+<em>objects</em>.</p>
+<p>An object is any map that includes one or more <em>metakeys</em>
+(keys prefixed with <code>@</code>), that are stored in the object’s <em>metamap</em>.
+Whenever operations are performed on the object, the runtime checks its metamap
+for corresponding metakeys.</p>
+<p>In the following example, the addition and multiply-assignment operators are
+implemented for a custom <code>Foo</code> object:</p>
+<pre><code class="language-koto"># Declare a function that makes Foo objects
+foo = |n|
+  data: n
+
+  # Declare the object's type
+  @type: 'Foo'
+
+  # Implement the addition operator
+  @+: |other|
+    # A new Foo is made using the result
+    # of adding the two data values together
+    foo self.data + other.data
+
+  # Implement the multiply-assignment operator
+  @*=: |other|
+    self.data *= other.data
+    self
+
+a = foo 10
+
+print! type a
+check! Foo
+
+b = foo 20
+
+print! (a + b).data
+check! 30
+
+a *= b
+print! a.data
+check! 200
+</code></pre>
+<h3 id="arithmetic-operators"><a class="header" href="#arithmetic-operators">Arithmetic Operators</a></h3>
+<p>Arithmetic operators used in binary expressions can all be implemented in an object’s metamap
+by implementing functions for the appropriate metakeys.</p>
+<p>When the object is on the left-hand side (<em>LHS</em>) of the expression the metakeys are
+<code>@+</code>, <code>@-</code>, <code>@*</code>, <code>@/</code>, and <code>@%</code>.</p>
+<p>If the value on the LHS of the expression doesn’t support the operation and the object is on the
+right-hand side (<em>RHS</em>), then the metakeys are <code>@r+</code>, <code>@r-</code>, <code>@r*</code>, <code>@r/</code>, and <code>@r%</code>.</p>
+<p>If your type only supports an operation when the input has a certain type,
+then throw a <a href="./core_lib/koto.html#unimplemented"><code>koto.unimplemented</code></a> error to let the runtime know that
+the RHS value should be checked. The runtime will catch the error and then attempt the operation
+with the implementation provided by the RHS value.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+
+  @type: 'Foo'
+
+  # The * operator when the object is on the LHS
+  @*: |rhs|
+    match type rhs
+      'Foo' then foo self.data * rhs.data
+      'Number' then foo self.data * rhs
+      else throw koto.unimplemented
+
+  # The * operator when the object is on the RHS
+  @r*: |lhs| foo lhs * self.data
+
+a = foo 2
+b = foo 3
+
+print! (a * b).data
+check! 6
+
+print! (10 * a).data
+check! 20
+</code></pre>
+<h3 id="comparison-operators"><a class="header" href="#comparison-operators">Comparison Operators</a></h3>
+<p>Comparison operators can also be implemented in an object’s metamap
+by using the metakeys <code>@==</code>, <code>@!=</code>, <code>@&lt;</code>, <code>@&lt;=</code>, <code>@&gt;</code>, and <code>@&gt;=</code>.</p>
+<p>By default, <code>@!=</code> will invert the result of calling <code>@==</code>,
+so it’s only necessary to implement it for types with special equality properties.</p>
+<p>Types that represent a <a href="https://en.wikipedia.org/wiki/Total_order">total order</a> only need to implement <code>@&lt;</code> and <code>@==</code>,
+and the runtime will automatically derive results for <code>@&lt;=</code>, <code>@&gt;</code>, and <code>@&gt;=</code>.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+
+  @==: |other| self.data == other.data
+  @&lt;: |other| self.data &lt; other.data
+
+a = foo 100
+b = foo 200
+
+print! a == a
+check! true
+
+# The result of != is derived by inverting the result of @==
+print! a != a
+check! false
+
+print! a &lt; b
+check! true
+
+# The result of &gt; is derived from the implementations of @&lt; and @==
+print! a &gt; b
+check! false
+</code></pre>
+<h3 id="metakeys"><a class="header" href="#metakeys">Metakeys</a></h3>
+<h4 id="negate"><a class="header" href="#negate"><code>@negate</code></a></h4>
+<p>The <code>@negate</code> metakey overrides the negation operator.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @negate: || foo -self.data
+
+x = -foo(100)
+print! x.data
+check! -100
+</code></pre>
+<h4 id="size-and-index"><a class="header" href="#size-and-index"><code>@size</code> and <code>@index</code></a></h4>
+<p>The <code>@size</code> metakey defines how an object should report its size,
+while the <code>@index</code> metakey defines which values should be returned
+when indexing is performed.</p>
+<p>If <code>@size</code> is implemented, then <code>@index</code> should also be implemented.</p>
+<pre><code class="language-koto">foo = |data|
+  data: data
+  @size: || size self.data
+  @index: |index| self.data[index]
+
+x = foo ('a', 'b', 'c')
+print! size x
+check! 3
+print! x[1]
+check! b
+</code></pre>
+<p>Implementing <code>@size</code> and <code>@index</code> allows an object to participate in argument unpacking.</p>
+<p>The <code>@index</code> implementation can support indexing by any input values that make
+sense for your object type, however for argument unpacking to work correctly, the
+runtime expects that indexing should be supported for at least single indices and ranges.</p>
+<pre><code class="language-koto">foo = |data|
+  data: data
+  @size: || size self.data
+  @index: |index| self.data[index]
+
+x = foo (10, 20, 30, 40, 50)
+
+# Unpack the first two elements in the value passed to the function and multiply them
+multiply_first_two = |(a, b, ...)| a * b
+print! multiply_first_two x
+check! 200
+
+# Inspect the first element in the object
+print! match x
+  (first, others...) then 'first: {first}, remaining: {size others}'
+check! first: 10, remaining: 4
+</code></pre>
+<h4 id="index_mut"><a class="header" href="#index_mut"><code>@index_mut</code></a></h4>
+<p>The <code>@index_mut</code> metakey defines how an object should behave when index-assignment is used.</p>
+<p>The given value should be a function that takes an index as the first argument,
+with the second argument being the value to be assigned.</p>
+<pre><code class="language-koto">foo = |data|
+  data: data
+  @index: |index| self.data[index]
+  @index_mut: |index, value| self.data[index] = value
+
+x = foo ['a', 'b', 'c']
+x[1] = 'hello'
+print! x[1]
+check! hello
+</code></pre>
+<h4 id="call"><a class="header" href="#call"><code>@call</code></a></h4>
+<p>The <code>@call</code> metakey defines how an object should behave when its called as a
+function.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @call: ||
+    self.data *= 2
+    self.data
+
+x = foo 2
+print! x()
+check! 4
+print! x()
+check! 8
+</code></pre>
+<h4 id="iterator"><a class="header" href="#iterator"><code>@iterator</code></a></h4>
+<p>The <code>@iterator</code> metakey defines how iterators should be created when an object
+is used in an iterable context.</p>
+<p>When called, <code>@iterator</code> should return an iterable value that will then be used
+for iterator operations.</p>
+<pre><code class="language-koto">foo = |n|
+  # Return a generator that yields the three numbers following n
+  @iterator: ||
+    yield n + 1
+    yield n + 2
+    yield n + 3
+
+print! foo(0).to_tuple()
+check! (1, 2, 3)
+
+print! foo(100).to_list()
+check! [101, 102, 103]
+</code></pre>
+<p>Note that this key will be ignored if the object also implements <code>@next</code>,
+which implies that the object is <em>already</em> an iterator.</p>
+<h4 id="next"><a class="header" href="#next"><code>@next</code></a></h4>
+<p>The <code>@next</code> metakey allows for objects to behave as iterators.</p>
+<p>Whenever the runtime needs to produce an iterator from an object, it will first
+check the metamap for an implementation of <code>@next</code>, before looking for <code>@iterator</code>.</p>
+<p>The <code>@next</code> function will be called repeatedly during iteration,
+with the returned value being used as the iterator’s output.
+When the returned value is <code>null</code> then the iterator will stop producing output.</p>
+<pre><code class="language-koto">foo = |start, end|
+  start: start
+  end: end
+  @next: ||
+    if self.start &lt; self.end
+      result = self.start
+      self.start += 1
+      result
+    else
+      null
+
+print! foo(10, 15).to_tuple()
+check! (10, 11, 12, 13, 14)
+</code></pre>
+<h4 id="next_back"><a class="header" href="#next_back"><code>@next_back</code></a></h4>
+<p>The <code>@next_back</code> metakey is used by <a href="./core_lib/iterator.html#reversed"><code>iterator.reversed</code></a>
+when producing a reversed iterator.</p>
+<p>The runtime will only look for <code>@next_back</code> if <code>@next</code> is implemented.</p>
+<pre><code class="language-koto">foo =
+  n: 0
+  @next: || self.n += 1
+  @next_back: || self.n -= 1
+
+print! foo
+  .skip 3 # 0, 1, 2
+  .reversed()
+  .take 3 # 2, 1, 0
+  .to_tuple()
+check! (2, 1, 0)
+</code></pre>
+<h4 id="display"><a class="header" href="#display"><code>@display</code></a></h4>
+<p>The <code>@display</code> metakey defines how an object should be represented when
+displaying the object as a string.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @display: || 'Foo({self.data})'
+
+print! foo 42
+check! Foo(42)
+
+x = foo -1
+print! "The value of x is '{x}'"
+check! The value of x is 'Foo(-1)'
+</code></pre>
+<h4 id="debug-1"><a class="header" href="#debug-1"><code>@debug</code></a></h4>
+<p>The <code>@debug</code> metakey defines how an object should be represented when
+displaying the object in a debug context, e.g. when using <a href="#debug-1"><code>debug</code></a>,
+or when the <a href="#representation"><code>?</code> representation</a> is used in an interpolated expression.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @display: || 'Foo({self.data})'
+  @debug: || '!!{self}!!'
+
+print! "{foo(123):?}"
+check! !!Foo(123)!!
+</code></pre>
+<p>If <code>@debug</code> isn’t defined, then <code>@display</code> will be used as a fallback.</p>
+<h4 id="type"><a class="header" href="#type"><code>@type</code></a></h4>
+<p>The <code>@type</code> metakey takes a string which is used when checking a
+value’s type, e.g. with <a href="#type-checks">type checks</a> or <a href="./core_lib/koto.html#type"><code>koto.type</code></a>.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @type: "Foo"
+
+let x: Foo = foo 42
+print! koto.type x
+check! Foo
+</code></pre>
+<h4 id="base"><a class="header" href="#base"><code>@base</code></a></h4>
+<p>Objects can inherit properties and behavior from other values,
+establishing a <em>base value</em> through the <code>@base</code> metakey.
+This allows objects to share common functionality while maintaining their own
+unique attributes.</p>
+<p>In the following example, two kinds of animals are created that share the
+<code>speak</code> function from their base value.</p>
+<pre><code class="language-koto">animal = |name|
+  @type: 'Animal'
+  name: name
+  speak: || '{self.noise}! My name is {self.name}!'
+
+dog = |name|
+  @base: animal name
+  @type: 'Dog'
+  noise: 'Woof'
+
+cat = |name|
+  @base: animal name
+  @type: 'Cat'
+  noise: 'Meow'
+
+let fido: Dog = dog 'Fido'
+print! fido.speak()
+check! Woof! My name is Fido!
+
+let smudge: Cat = cat 'Smudge'
+print! smudge.speak()
+check! Meow! My name is Smudge!
+
+# Type checks will refer to base class @type entries when needed
+let an_animal: Animal = if true then fido else smudge
+print! an_animal.name
+check! Fido
+</code></pre>
+<h4 id="meta"><a class="header" href="#meta"><code>@meta</code></a></h4>
+<p>The <code>@meta</code> metakey allows named metakeys to be added to the metamap.
+Metakeys defined with <code>@meta</code> are accessible via <code>.</code> access,
+similar to regular object <code>keys</code>, but they don’t appear as part of the object’s
+main data entries when treated as a regular map.</p>
+<pre><code class="language-koto">foo = |n|
+  data: n
+  @meta hello: "Hello!"
+  @meta get_info: ||
+    info = match self.data
+      0 then "zero"
+      n if n &lt; 0 then "negative"
+      else "positive"
+    "{self.data} is {info}"
+
+x = foo -1
+print! x.hello
+check! Hello!
+
+print x.get_info()
+check! -1 is negative
+
+print map.keys(x).to_tuple()
+check! ('data')
+</code></pre>
+<h3 id="sharing-metamaps"><a class="header" href="#sharing-metamaps">Sharing Metamaps</a></h3>
+<p>Metamaps can be shared between objects by using
+<a href="./core_lib/map.html#with_meta"><code>Map.with_meta</code></a>, which helps to avoid inefficient
+duplication when creating a lot of objects.</p>
+<p>In the following example, behavior is overridden in a single metamap, which is
+then shared between object instances.</p>
+<pre><code class="language-koto"># Create an empty map for global values
+global = {}
+
+# Define a function that makes a Foo object
+foo = |data|
+  # Make a new map that contains `data`,
+  # and then attach a shared copy of the metamap from foo_meta.
+  {data}.with_meta global.foo_meta
+
+# Define some metakeys in foo_meta
+global.foo_meta =
+  # Declare the object's type
+  @type: 'Foo'
+
+  # Override the + operator
+  @+: |other| foo self.data + other.data
+
+  # Define how the object should be displayed
+  @display: || "Foo({self.data})"
+
+print! (foo 10) + (foo 20)
+check! Foo(30)
+</code></pre>
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<p>Errors can be <em>thrown</em> in the Koto runtime, which then cause the runtime to stop
+execution.</p>
+<p>A <code>try</code> / <code>catch</code> expression can be used to <em>catch</em> any thrown errors,
+allowing execution to continue.
+An optional <code>finally</code> block can be used for cleanup actions that need to
+performed whether or not an error was caught.</p>
+<pre><code class="language-koto">x = [1, 2, 3]
+try
+  # Accessing an invalid index will throw an error
+  print x[100]
+catch error
+  print "Caught an error"
+finally
+  print "...and finally"
+check! Caught an error
+check! ...and finally
+</code></pre>
+<p><code>throw</code> can be used to explicitly throw an error when an exceptional condition
+has occurred.</p>
+<p><code>throw</code> accepts strings or objects that implement <code>@display</code>.</p>
+<pre><code class="language-koto">f = || throw "!Error!"
+
+try
+  f()
+catch error
+  print "Caught an error: '{error}'"
+check! Caught an error: '!Error!'
+</code></pre>
+<h3 id="type-checks-on-catch-blocks"><a class="header" href="#type-checks-on-catch-blocks">Type checks on <code>catch</code> blocks</a></h3>
+<p>Type hints can also be used in <code>try</code> expressions to implement different
+error handling logic depending on the type of error that has been thrown.
+A series of <code>catch</code> blocks can be added to the <code>try</code> expression, each catching
+an error that has a particular type.</p>
+<p>The final <code>catch</code> block needs to <em>not</em> have a type check so that it can catch
+any errors that were missed by the other blocks.</p>
+<pre><code class="language-koto">f = || throw 'Throwing a String'
+
+try
+  f()
+catch n: Number
+  print 'An error occurred: {n}'
+catch error: String
+  print error
+catch other
+  print 'Some other error occurred: {other}'
+check! Throwing a String
+</code></pre>
+<h2 id="modules"><a class="header" href="#modules">Modules</a></h2>
+<p>Koto includes a module system that helps you to organize and re-use your code
+when your program grows too large for a single file.</p>
+<h3 id="import"><a class="header" href="#import"><code>import</code></a></h3>
+<p>Values from other modules can be brought into the current scope using <code>import</code>.</p>
+<pre><code class="language-koto">from list import last
+from number import abs
+
+x = [1, 2, 3]
+print! last x
+check! 3
+
+print! abs -42
+check! 42
+</code></pre>
+<p>Multiple values from a single module can be imported at the same time.</p>
+<pre><code class="language-koto">from tuple import contains, first, last
+
+x = 'a', 'b', 'c'
+print! first x
+check! a
+print! last x
+check! c
+print! contains x, 'b'
+check! true
+</code></pre>
+<p>Imported values can be renamed using <code>as</code> for clarity or to avoid conflicts.</p>
+<pre><code class="language-koto">from list import first as list_first
+from tuple import first as tuple_first
+print! list_first [1, 2]
+check! 1
+print! tuple_first (3, 2, 1)
+check! 3
+</code></pre>
+<h3 id="export"><a class="header" href="#export"><code>export</code></a></h3>
+<p>A value can only be imported from a module if the module has <em>exported</em> it.</p>
+<p><code>export</code> is used to add values to the current module’s <em>exports map</em>,
+making them available to be imported by other modules.</p>
+<pre><code class="language-koto skip_run">##################
+# my_module.koto #
+##################
+
+# hello is a local variable, and isn't exported
+hello = 'Hello'
+
+# export say_hello to make it available to other modules
+export say_hello = |name| '{hello}, {name}!'
+
+##################
+#   other.koto   #
+##################
+
+from my_module import say_hello
+
+say_hello 'Koto'
+check! 'Hello, Koto!'
+</code></pre>
+<p>To add a <a href="#type_checks">type check</a> to an exported assignment, use a <code>let</code> expression:</p>
+<pre><code class="language-koto skip_run">export let foo: Number = -1
+</code></pre>
+<p><code>export</code> also accepts maps, or any other iterable value that yields a series of key/value pairs.
+This is convenient when exporting a lot of values, or generating exports programatically.</p>
+<pre><code class="language-koto">##################
+# my_module.koto #
+##################
+
+# Define some local values
+a, b, c = 1, 2, 3
+
+# Inline maps allow for shorthand syntax
+export { a, b, c, foo: 42 }
+
+# Map blocks can also be used with export
+export
+  bar: 99
+  baz: 'baz'
+
+# Any iterable value that yields key/value pairs can be used with export
+export (1..=3).each |i| 'generated_{i}', i
+</code></pre>
+<p>Once a value has been exported, it becomes available anywhere in the module.</p>
+<pre><code class="language-koto">get_x = ||
+  # x hasn't been created yet. When the function is called, the runtime
+  # will check the exports map for a matching value.
+  x
+
+export x = 123
+
+print! get_x()
+check! 123
+
+# A function that exports `y` with the given value
+export_y = |value|
+  export y = value
+
+# y hasn't been exported yet, so attempting to access it now throws an error.
+print! try
+  y
+catch _
+  'y not found'
+check! y not found
+
+# Calling export_y adds y to the exports map
+export_y 42
+print! y
+check! 42
+</code></pre>
+<p>Assigning a new value locally to a previously exported variable won’t change
+the exported value. If you need to update the exported value,
+then it needs to be re-exported.</p>
+<pre><code class="language-koto">export x = 99
+
+# Reassigning a new value to x locally doesn't affect the previously exported value
+print! x = 123
+check! 123
+
+# x has a local value of 123, but the exported value of x is still 99.
+export x = -1
+# x now has an exported and local value of -1
+print! x
+check! -1
+</code></pre>
+<h3 id="main"><a class="header" href="#main"><code>@main</code></a></h3>
+<p>A module can export a <code>@main</code> function, which will be called after the module has been compiled and successfully initialized.</p>
+<p>The use of <code>export</code> is optional when assigning to module metakeys like <code>@main</code>.</p>
+<pre><code class="language-koto skip_run">##################
+# my_module.koto #
+##################
+
+export say_hello = |name| 'Hello, {name}!'
+
+# Equivalent to `export @main = ...`
+@main = || print '`my_module` initialized'
+
+##################
+#   other.koto   #
+##################
+
+from my_module import say_hello
+check! `my_module` initialized
+
+say_hello 'Koto'
+check! 'Hello, Koto!'
+</code></pre>
+<h3 id="module-paths"><a class="header" href="#module-paths">Module Paths</a></h3>
+<p>When looking for a module, <code>import</code> will look for a <code>.koto</code> file with a matching
+name, or for a folder with a matching name that contains a <code>main.koto</code> file.</p>
+<p>E.g. When an <code>import foo</code> expression is run, then a <code>foo.koto</code> file will be
+looked for in the same location as the current script,
+and if <code>foo.koto</code> isn’t found then the runtime will look for <code>foo/main.koto</code>.</p>
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
+<p>Koto includes a simple testing framework that allows you to automatically check that your code is behaving as you would expect.</p>
+<h3 id="assertions"><a class="header" href="#assertions">Assertions</a></h3>
+<p>The core library includes a collection of <em>assertion</em> functions which
+throw errors if a given condition isn’t met.</p>
+<p>The assertion functions are found in the <a href="./core_lib/test.html"><code>test</code> module</a>,
+and are included by default in the <a href="#prelude">prelude</a>.</p>
+<pre><code class="language-koto">try
+  assert 1 + 1 == 3
+catch error
+  print 'An assertion failed'
+check! An assertion failed
+
+try
+  assert_eq 'hello', 'goodbye'
+catch error
+  print 'An assertion failed'
+check! An assertion failed
+</code></pre>
+<h3 id="module-tests"><a class="header" href="#module-tests">Module Tests</a></h3>
+<p>Tests can be added to a module by exporting <code>@test</code> functions. A test function is considered to have failed if it throws an error (e.g. from an assertion).</p>
+<p>If Koto is configured to run tests, then the tests will be run after a module has been successfully initialized.
+If the module also exports <code>@main</code> then it will be called after all tests have run successfully.</p>
+<p>The CLI doesn’t enable tests by default when running scripts, but they can be enabled <a href="./cli.html#running_tests">via a flag</a>.</p>
+<pre><code class="language-koto skip_run">##################
+# my_module.koto #
+##################
+
+export say_hello = |name| 'Hello, {name}!'
+
+@main = || print '`my_module` initialized'
+
+@test say_hello = ||
+  print 'Running @test say_hello'
+  assert_eq say_hello('Test'), 'Hello, Test!'
+
+##################
+#   other.koto   #
+##################
+
+from my_module import say_hello
+check! Running @test say_hello
+check! `my_module` initialized
+</code></pre>
+<p><code>@pre_test</code> and <code>@post_test</code> functions can be implemented alongside tests
+for setup and cleanup operations.
+<code>@pre_test</code> will be run before each <code>@test</code>, and <code>@post_test</code> will be run after.</p>
+<pre><code class="language-koto skip_run">##################
+# my_module.koto #
+##################
+
+export say_hello = |name| 'Hello, {name}!'
+
+@main = || print '`my_module` initialized'
+
+@pre_test = ||
+  print 'In @pre_test'
+
+@post_test = ||
+  print 'In @post_test'
+
+@test say_hello_1 = ||
+  print 'Running @test say_hello_1'
+  assert_eq say_hello('One'), 'Hello, One!'
+
+@test say_hello_2 = ||
+  print 'Running @test say_hello_2'
+  assert_eq say_hello('Two'), 'Hello, Two!'
+
+##################
+#   other.koto   #
+##################
+
+from my_module import say_hello
+check! In @pre_test
+check! Running @test say_hello_1
+check! In @post_test
+check! In @pre_test
+check! Running @test say_hello_2
+check! In @post_test
+check! `my_module` initialized
+</code></pre>
+<h3 id="running-tests-manually"><a class="header" href="#running-tests-manually">Running Tests Manually</a></h3>
+<p>Tests can be run manually by calling <a href="./core_lib/test.html#run_tests"><code>test.run_tests</code></a>
+with a map that contains <code>@test</code> functions.</p>
+<pre><code class="language-koto">my_tests =
+  @test add: || assert_eq 1 + 1, 2
+  @test subtract: || assert_eq 1 - 1, 0
+
+test.run_tests my_tests
+</code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="cli.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="core_lib/io.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="cli.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="core_lib/io.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
