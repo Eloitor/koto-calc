@@ -33,7 +33,7 @@ pub fn make_module() -> KMap {
         KNativeFunction::new(|ctx| match ctx.args() {
             [] => NN::NN::generator(ctx),
             [KValue::Number(n)] => Ok(NN::NN::make_koto_object(*n).into()),
-            unexpected => unexpected_args("|Number|", unexpected),
+            unexpected => unexpected_args("|Number for N natural|", unexpected),
         })
         .into(),
     );
@@ -57,7 +57,7 @@ pub fn make_module() -> KMap {
         MetaKey::Call,
         KNativeFunction::new(|ctx| match ctx.args() {
             [KValue::Number(n)] => Ok(ZZ::ZZ::make_koto_object(*n).into()),
-            unexpected => unexpected_args("|Number|", unexpected),
+            unexpected => unexpected_args("|Number for Z integer|", unexpected),
         })
         .into(),
     );

@@ -2,89 +2,108 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, RationalInterval, e, pi, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import N, Z, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, Zn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, RationalInterval, e, pi, legendre, jacobi, kronecker, eulers_constant, NN, ZZ, ZZn
 
 @post_test = ||
   print 'ok'
 
+@test canonical_domain_names = ||
+  write 'Testing canonical names \t'
+  assert_eq koto.type(N(12)), 'N'
+  assert_eq koto.type(Z(-5)), 'Z'
+  assert_eq koto.type(Zn(7)), 'Zn'
+  assert_eq koto.type(Zn(7).of(1)), 'ZnElement'
+
+  # Compatibility aliases construct the canonical runtime types.
+  assert_eq koto.type(NN(1)), 'N'
+  assert_eq koto.type(ZZ(1)), 'Z'
+  assert_eq koto.type(ZZn(7)), 'Zn'
+
+  # Constructor errors identify the mathematical domain, not just its letter.
+  caught = try
+    N(true)
+  catch error
+    error
+  assert caught.contains('Expected: |Number for N natural|')
+
 @test nn_tests = ||
-  write 'Testing NN \t'
-  assert_eq NN(5).factorial(), NN(120)
-  assert_eq NN(5) - NN(3), NN(2)
+  write 'Testing N \t'
+  assert_eq N(5).factorial(), N(120)
+  assert_eq N(5) - N(3), N(2)
 
-  assert NN(16).is_square()
-  assert not NN(18).is_square()
-  assert_eq NN(17).sqrt_floor(), NN(4)
-  assert_eq NN(17).sqrt_ceil(), NN(5)
+  assert N(16).is_square()
+  assert not N(18).is_square()
+  assert_eq N(17).sqrt_floor(), N(4)
+  assert_eq N(17).sqrt_ceil(), N(5)
 
-  a = NN(5)
-  a += NN(1)
-  a *= NN(2)
-  assert_eq a, NN(12)
+  a = N(5)
+  a += N(1)
+  a *= N(2)
+  assert_eq a, N(12)
 
 @test zz_tests = ||
-  write 'Testing ZZ \t'
-  assert_eq ZZ(-9).abs(), NN(9)
-  assert ZZ(9).is_square()
-  assert not ZZ(10).is_square()
+  write 'Testing Z \t'
+  assert_eq Z(-9).abs(), N(9)
+  assert Z(9).is_square()
+  assert not Z(10).is_square()
 
-  assert_eq ZZ(5) + ZZ(-3), ZZ(2)
-  assert_eq ZZ(5) + NN(3), ZZ(8)
-  assert_eq ZZ(7) + 5, ZZ(12)
-  assert_eq ZZ(4) * ZZ(-2), ZZ(-8)
+  assert_eq Z(5) + Z(-3), Z(2)
+  assert_eq Z(5) + N(3), Z(8)
+  assert_eq Z(7) + 5, Z(12)
+  assert_eq Z(4) * Z(-2), Z(-8)
 
-  a = ZZ(5)
-  a += ZZ(1)
+  a = Z(5)
+  a += Z(1)
   a += 1
-  a += NN(2)
-  a *= NN(3)
+  a += N(2)
+  a *= N(3)
   a *= 2
-  assert_eq a, ZZ(54)
+  assert_eq a, Z(54)
 
 @test numtheory_tests = ||
   write 'Testing numtheory \t'
 
-  # NN.primes: first 10 primes as an iterator
-  primes10 = NN.primes().take(10).to_list()
-  assert_eq primes10, [NN(2), NN(3), NN(5), NN(7), NN(11), NN(13), NN(17), NN(19), NN(23), NN(29)]
+  # N.primes: first 10 primes as an iterator
+  primes10 = N.primes().take(10).to_list()
+  assert_eq primes10, [N(2), N(3), N(5), N(7), N(11), N(13), N(17), N(19), N(23), N(29)]
 
   # divisors
-  assert_eq NN(12).divisors(), [NN(1), NN(2), NN(3), NN(4), NN(6), NN(12)]
-  assert_eq NN(1).divisors(), [NN(1)]
+  assert_eq N(12).divisors(), [N(1), N(2), N(3), N(4), N(6), N(12)]
+  assert_eq N(1).divisors(), [N(1)]
 
   # euler_totient
-  assert_eq NN(10).euler_totient(), NN(4)
-  assert_eq NN(1).euler_totient(), NN(1)
-  assert_eq NN(12).euler_totient(), NN(4)
+  assert_eq N(10).euler_totient(), N(4)
+  assert_eq N(1).euler_totient(), N(1)
+  assert_eq N(12).euler_totient(), N(4)
 
   # is_squarefree
-  assert not NN(12).is_squarefree()
-  assert NN(10).is_squarefree()
-  assert NN(1).is_squarefree()
+  assert not N(12).is_squarefree()
+  assert N(10).is_squarefree()
+  assert N(1).is_squarefree()
 
   # is_power_test
-  assert_eq NN(8).is_power_test(), (true, NN(2), NN(3))
-  assert_eq NN(6).is_power_test(), (false, null, null)
+  assert_eq N(8).is_power_test(), (true, N(2), N(3))
+  assert_eq N(6).is_power_test(), (false, null, null)
 
   # primality_test
-  assert_eq NN(17).primality_test(), 'prime'
-  assert_eq NN(12).primality_test(), 'composite'
-  assert_eq NN(1).primality_test(), 'composite'
+  assert_eq N(17).primality_test(), 'prime'
+  assert_eq N(12).primality_test(), 'composite'
+  assert_eq N(1).primality_test(), 'composite'
 
-  # ZZ::factor: negative integer, unit -1 ignored
-  assert_eq ZZ(-12).factor(), [(ZZ(2), NN(2)), (ZZ(3), NN(1))]
-  assert_eq ZZ(12).factor(), [(ZZ(2), NN(2)), (ZZ(3), NN(1))]
+  # Z::factor: negative integer, unit -1 ignored
+  assert_eq Z(-12).factor(), [(Z(2), N(2)), (Z(3), N(1))]
+  assert_eq Z(12).factor(), [(Z(2), N(2)), (Z(3), N(1))]
 
-  # ZZ::divmod / div_floor / mod
-  assert_eq ZZ(-7).divmod(ZZ(3)), (ZZ(-3), ZZ(2))
-  assert_eq ZZ(-7).div_floor(ZZ(3)), ZZ(-3)
-  assert_eq ZZ(-7).mod(ZZ(3)), ZZ(2)
-  assert_eq ZZ(13).div_floor(ZZ(5)), ZZ(2)
-  assert_eq ZZ(13).mod(ZZ(5)), ZZ(3)
-  assert_eq ZZ(-13).div_floor(ZZ(5)), ZZ(-3)
-  assert_eq ZZ(-13).mod(ZZ(5)), ZZ(2)
-  assert_eq ZZ(4).mod(ZZ(3)), ZZ(1)
-  assert_eq ZZ(-4).mod(ZZ(3)), ZZ(2)
+  # Z::divmod / div_floor / mod
+  assert_eq Z(-7).divmod(Z(3)), (Z(-3), Z(2))
+  assert_eq Z(-7).div_floor(Z(3)), Z(-3)
+  assert_eq Z(-7).mod(Z(3)), Z(2)
+  assert_eq Z(13).div_floor(Z(5)), Z(2)
+  assert_eq Z(13).mod(Z(5)), Z(3)
+  assert_eq Z(-13).div_floor(Z(5)), Z(-3)
+  assert_eq Z(-13).mod(Z(5)), Z(2)
+  assert_eq Z(4).mod(Z(3)), Z(1)
+  assert_eq Z(-4).mod(Z(3)), Z(2)
 
 
 @test q_tests = ||
@@ -94,30 +113,30 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq Q(6, 4), Q(3, 2)
   assert_eq Q(-2, -4), Q(1, 2)
   assert_eq Q(0, 5), Q(0, 1)
-  assert_eq Q(NN(1), NN(2)), Q(1, 2)
-  assert_eq Q(ZZ(-1), ZZ(2)), Q(-1, 2)
+  assert_eq Q(N(1), N(2)), Q(1, 2)
+  assert_eq Q(Z(-1), Z(2)), Q(-1, 2)
   assert_eq Q(Q(1, 2)), Q(1, 2)
   assert_eq Q(0.5), Q(1, 2)
   assert_eq Q(2), Q(2, 1)
 
-  # Aritmetica amb Q, NN, ZZ i Number
+  # Aritmetica amb Q, N, Z i Number
   assert_eq Q(1, 2) + Q(1, 3), Q(5, 6)
   assert_eq Q(1, 2) - Q(1, 4), Q(1, 4)
   assert_eq Q(2, 3) * Q(3, 4), Q(1, 2)
   assert_eq Q(1, 2) / Q(3, 4), Q(2, 3)
   assert_eq Q(1, 2) + 1, Q(3, 2)
-  assert_eq Q(1, 2) + NN(1), Q(3, 2)
-  assert_eq Q(1, 2) + ZZ(1), Q(3, 2)
+  assert_eq Q(1, 2) + N(1), Q(3, 2)
+  assert_eq Q(1, 2) + Z(1), Q(3, 2)
   assert_eq Q(1, 2) * 4, Q(2)
-  assert_eq Q(1, 2) / ZZ(2), Q(1, 4)
+  assert_eq Q(1, 2) / Z(2), Q(1, 4)
   assert_eq -Q(1, 2), Q(-1, 2)
 
   # Assignacio += -= *= /=
   a = Q(1, 2)
   a += Q(1, 4)
   a *= 2
-  a -= NN(1)
-  a /= ZZ(4)
+  a -= N(1)
+  a /= Z(4)
   assert_eq a, Q(1, 8)
 
   # Comparacions (amb Q i Number)
@@ -131,26 +150,26 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert Q(3, 2) > 1.25
 
   # Metodes num/den/is_integer/is_square/sqrt_if_square/height/to_float
-  assert_eq Q(3, 2).num(), ZZ(3)
-  assert_eq Q(-3, 2).num(), ZZ(-3)
-  assert_eq Q(3, 2).den(), NN(2)
-  assert_eq Q(3).den(), NN(1)
+  assert_eq Q(3, 2).num(), Z(3)
+  assert_eq Q(-3, 2).num(), Z(-3)
+  assert_eq Q(3, 2).den(), N(2)
+  assert_eq Q(3).den(), N(1)
   assert Q(4, 2).is_integer()
   assert not Q(3, 2).is_integer()
   assert Q(4, 9).is_square()
   assert not Q(2, 3).is_square()
   assert_eq Q(4, 9).sqrt_if_square(), Q(2, 3)
   assert_eq Q(2, 3).sqrt_if_square(), null
-  assert_eq Q(3, 2).height(), NN(3)
-  assert_eq Q(-2, 5).height(), NN(5)
+  assert_eq Q(3, 2).height(), N(3)
+  assert_eq Q(-2, 5).height(), N(5)
   assert_eq Q(3, 2).to_float(), 1.5
   assert_eq Q(-7, 4).to_float(), -1.75
 
-  # Conversions Q -> ZZ / NN
-  assert_eq Q(3).to_zz(), ZZ(3)
-  assert_eq Q(4, 2).to_zz(), ZZ(2)
-  assert_eq Q(4, 2).to_nn(), NN(2)
-  assert_eq Q(0).to_nn(), NN(0)
+  # Conversions Q -> Z / N
+  assert_eq Q(3).to_zz(), Z(3)
+  assert_eq Q(4, 2).to_zz(), Z(2)
+  assert_eq Q(4, 2).to_nn(), N(2)
+  assert_eq Q(0).to_nn(), N(0)
 
   # Display: fraccio reduida num/den, i nomes num si den == 1
   assert_eq '{Q(6, 4)}', '3/2'
@@ -180,19 +199,19 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   write 'Testing Poly \t'
 
   # Construccio: coeficients de grau 0 amunt (coeffs[0] = terme independent)
-  # ZZ per defecte, Q si hi ha fraccions
+  # Z per defecte, Q si hi ha fraccions
   p = Poly([6, -5, 1])          # x^2 - 5x + 6
-  assert_eq p.degree(), NN(2)
-  assert_eq p.coeffs(), [ZZ(6), ZZ(-5), ZZ(1)]
+  assert_eq p.degree(), N(2)
+  assert_eq p.coeffs(), [Z(6), Z(-5), Z(1)]
 
   q = Poly([3, Q(-5, 2), Q(1, 2)])   # 3 - (5/2)x + (1/2)x^2 = (1/2)(x-2)(x-3)
-  assert_eq q.degree(), NN(2)
+  assert_eq q.degree(), N(2)
   assert_eq q.coeffs(), [Q(3), Q(-5, 2), Q(1, 2)]
 
   # Polinomi zero i grau
-  assert_eq Poly([]).degree(), NN(0)
-  assert_eq Poly([0, 0, 0]).degree(), NN(0)
-  assert_eq Poly([7]).degree(), NN(0)
+  assert_eq Poly([]).degree(), N(0)
+  assert_eq Poly([0, 0, 0]).degree(), N(0)
+  assert_eq Poly([7]).degree(), N(0)
 
   # Suma / resta / multiplicacio (amb Poly i escalars)
   a = Poly([6, -5, 1])          # x^2 - 5x + 6
@@ -202,18 +221,18 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq a * b, Poly([6, 1, -4, 1])   # x^3 - 4x^2 + x + 6
   assert_eq a * 2, Poly([12, -10, 2])
   assert_eq 2 * a, Poly([12, -10, 2])
-  assert_eq a * NN(2), Poly([12, -10, 2])
-  assert_eq a * ZZ(2), Poly([12, -10, 2])
+  assert_eq a * N(2), Poly([12, -10, 2])
+  assert_eq a * Z(2), Poly([12, -10, 2])
   assert_eq a * Q(1, 2), Poly([3, Q(-5, 2), Q(1, 2)])
 
-  # Promocio ZZ -> Q en operacions mixtes
+  # Promocio Z -> Q en operacions mixtes
   mixed = Poly([Q(1, 2), 0, 1])  # x^2 + 1/2
   assert_eq mixed + a, Poly([Q(13, 2), Q(-5), Q(2)])
   assert_eq mixed * a, Poly([Q(3), Q(-5, 2), Q(13, 2), Q(-5), Q(1)])
 
-  # eval (x pot ser Number/NN/ZZ/Q)
-  assert_eq a.eval(2), ZZ(0)
-  assert_eq a.eval(ZZ(3)), ZZ(0)
+  # eval (x pot ser Number/N/Z/Q)
+  assert_eq a.eval(2), Z(0)
+  assert_eq a.eval(Z(3)), Z(0)
   assert_eq a.eval(Q(1, 2)), Q(15, 4)
   assert_eq a.eval(0.5), Q(15, 4)
 
@@ -229,17 +248,17 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # factor: x^2 - 5x + 6 -> (x-2)(x-3)
   f = a.factor()
-  assert_eq f, [(Poly([-2, 1]), NN(1)), (Poly([-3, 1]), NN(1))]
+  assert_eq f, [(Poly([-2, 1]), N(1)), (Poly([-3, 1]), N(1))]
 
   # factor sobre Q
   fq = q.factor()
-  assert_eq fq, [(Poly([-2, 1]), NN(1)), (Poly([-3, 1]), NN(1))]
+  assert_eq fq, [(Poly([-2, 1]), N(1)), (Poly([-3, 1]), N(1))]
 
-  # factor irreductible (sobre ZZ i sobre Q)
+  # factor irreductible (sobre Z i sobre Q)
   fi = Poly([1, 0, 1]).factor()
-  assert_eq fi, [(Poly([1, 0, 1]), NN(1))]
+  assert_eq fi, [(Poly([1, 0, 1]), N(1))]
   fiq = Poly([Q(3, 2), Q(-5, 2), Q(1, 2)]).factor()
-  assert_eq fiq, [(Poly([3, -5, 1]), NN(1))]
+  assert_eq fiq, [(Poly([3, -5, 1]), N(1))]
 
   # display: format estandard ascendent amb variable x
   assert_eq '{a}', '6 - 5x + x^2'
@@ -271,20 +290,20 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 @test mat_tests = ||
   write 'Testing Mat \t'
 
-  # Construccio: matriu per files, auto ZZ si tots enters
+  # Construccio: matriu per files, auto Z si tots enters
   m = Mat([[1, 2], [3, 4]])
-  assert_eq m.rows(), NN(2)
-  assert_eq m.cols(), NN(2)
-  assert_eq m.at(0, 0), ZZ(1)
-  assert_eq m.at(0, 1), ZZ(2)
-  assert_eq m.at(1, 0), ZZ(3)
-  assert_eq m.at(1, 1), ZZ(4)
+  assert_eq m.rows(), N(2)
+  assert_eq m.cols(), N(2)
+  assert_eq m.at(0, 0), Z(1)
+  assert_eq m.at(0, 1), Z(2)
+  assert_eq m.at(1, 0), Z(3)
+  assert_eq m.at(1, 1), Z(4)
   assert_eq Mat([[1, 2], [3, 4]]), Mat([[1, 2], [3, 4]])
 
   # Amb fraccions -> Mat sobre Q
   mq = Mat([[Q(1, 2), Q(1, 2)], [Q(1, 3), Q(2, 3)]])
-  assert_eq mq.rows(), NN(2)
-  assert_eq mq.cols(), NN(2)
+  assert_eq mq.rows(), N(2)
+  assert_eq mq.cols(), N(2)
   assert_eq mq.at(0, 0), Q(1, 2)
   assert_eq mq.at(1, 1), Q(2, 3)
 
@@ -306,11 +325,11 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq m * Q(1, 2), Mat([[Q(1, 2), 1], [Q(3, 2), 2]])
 
   # det
-  assert_eq m.det(), ZZ(-2)
+  assert_eq m.det(), Z(-2)
   assert_eq mq.det(), Q(1, 6)
-  assert_eq Mat([[1, 2, 3], [0, 1, 4], [5, 6, 0]]).det(), ZZ(1)
+  assert_eq Mat([[1, 2, 3], [0, 1, 4], [5, 6, 0]]).det(), Z(1)
 
-  # inverse (sobre Q; ZZ promociona a Q)
+  # inverse (sobre Q; Z promociona a Q)
   inv = m.inverse()
   assert_eq inv, Mat([[-2, 1], [Q(3, 2), Q(-1, 2)]])
   assert_eq inv * m, Mat([[1, 0], [0, 1]])
@@ -358,7 +377,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 @test quat_tests = ||
   write 'Testing Quat \t'
 
-  # Construccio: 4 coeficients Q (Number/NN/ZZ promocionats a Q)
+  # Construccio: 4 coeficients Q (Number/N/Z promocionats a Q)
   assert_eq Quat(1, 2, 3, 4).coeffs(), (Q(1), Q(2), Q(3), Q(4))
   assert_eq Quat(Q(1, 2), 2, 3, 4).coeffs(), (Q(1, 2), Q(2), Q(3), Q(4))
   assert_eq Quat(1, 2, 3, 4), Quat(Q(1), Q(2), Q(3), Q(4))
@@ -545,24 +564,24 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
 
 @test ideal_tests = ||
-  write 'Testing Ideal/ZZn \t'
+  write 'Testing Ideal/Zn \t'
 
   # Construccio: Ideal(6) = 6Z; Ideal(4, 6) = gcd(4, 6)Z = 2Z
   assert_eq Ideal(6), Ideal(6)
   assert_eq Ideal(4, 6), Ideal(2)
   assert_eq Ideal(-4, 6), Ideal(2)       # signes ignorats (generador canonic >= 0)
   assert_eq Ideal(0), Ideal(0)
-  assert_eq Ideal(4, 6).generator(), NN(2)
-  assert_eq Ideal(6).generator(), NN(6)
+  assert_eq Ideal(4, 6).generator(), N(2)
+  assert_eq Ideal(6).generator(), N(6)
 
-  # contains (amb NN, ZZ i Number)
+  # contains (amb N, Z i Number)
   assert Ideal(6).contains(12)
-  assert Ideal(6).contains(NN(6))
-  assert Ideal(6).contains(ZZ(-12))
+  assert Ideal(6).contains(N(6))
+  assert Ideal(6).contains(Z(-12))
   assert not Ideal(6).contains(5)
   assert Ideal(0).contains(0)
   assert not Ideal(0).contains(3)
-  assert Ideal(1).contains(17)            # ZZ sencer
+  assert Ideal(1).contains(17)            # Z sencer
 
   # sum = gcd, intersect = lcm, product = producte
   assert_eq Ideal(6).sum(Ideal(15)), Ideal(3)
@@ -586,24 +605,24 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq '{Ideal(4, 6)}', '2Z'
   assert_eq '{Ideal(0)}', '0Z'
 
-  # ZZn: aritmetica modular
-  assert_eq ZZn(6).of(7) + ZZn(6).of(5), ZZn(6).of(0)   # 7 + 5 = 12 = 0 mod 6
-  assert_eq ZZn(6).of(7) - ZZn(6).of(5), ZZn(6).of(2)   # 7 - 5 = 2 mod 6
-  assert_eq ZZn(6).of(7) * ZZn(6).of(5), ZZn(6).of(5)   # 7 * 5 = 35 = 5 mod 6
-  assert_eq -ZZn(6).of(1), ZZn(6).of(5)                 # -1 = 5 mod 6
-  assert_eq ZZn(6).of(-1), ZZn(6).of(5)                 # representants canonics
-  assert_eq ZZn(7).of(7), ZZn(7).of(0)
-  assert ZZn(6).of(2) != ZZn(6).of(3)
+  # Zn: aritmetica modular
+  assert_eq Zn(6).of(7) + Zn(6).of(5), Zn(6).of(0)   # 7 + 5 = 12 = 0 mod 6
+  assert_eq Zn(6).of(7) - Zn(6).of(5), Zn(6).of(2)   # 7 - 5 = 2 mod 6
+  assert_eq Zn(6).of(7) * Zn(6).of(5), Zn(6).of(5)   # 7 * 5 = 35 = 5 mod 6
+  assert_eq -Zn(6).of(1), Zn(6).of(5)                 # -1 = 5 mod 6
+  assert_eq Zn(6).of(-1), Zn(6).of(5)                 # representants canonics
+  assert_eq Zn(7).of(7), Zn(7).of(0)
+  assert Zn(6).of(2) != Zn(6).of(3)
 
   # invers de 5 mod 7 = 3 (5 * 3 = 15 = 1 mod 7)
-  assert_eq ZZn(7).of(5).inverse(), ZZn(7).of(3)
-  assert_eq ZZn(7).of(3).inverse(), ZZn(7).of(5)
-  assert_eq ZZn(11).of(4).inverse(), ZZn(11).of(3)      # 4 * 3 = 12 = 1 mod 11
-  assert_eq ZZn(1).of(0).inverse(), ZZn(1).of(0)        # anell trivial: 0 = 1
+  assert_eq Zn(7).of(5).inverse(), Zn(7).of(3)
+  assert_eq Zn(7).of(3).inverse(), Zn(7).of(5)
+  assert_eq Zn(11).of(4).inverse(), Zn(11).of(3)      # 4 * 3 = 12 = 1 mod 11
+  assert_eq Zn(1).of(0).inverse(), Zn(1).of(0)        # anell trivial: 0 = 1
 
   # Display: [x] mod n
-  assert_eq '{ZZn(6).of(7)}', '[1] mod 6'
-  assert_eq '{ZZn(7).of(5)}', '[5] mod 7'
+  assert_eq '{Zn(6).of(7)}', '[1] mod 6'
+  assert_eq '{Zn(7).of(5)}', '[5] mod 7'
 
   # Errors
   caught = try
@@ -617,22 +636,22 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    ZZn(0)
+    Zn(0)
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    ZZn(-6)
+    Zn(-6)
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    ZZn(6).of(2).inverse()      # 2 no es coprimer amb 6
+    Zn(6).of(2).inverse()      # 2 no es coprimer amb 6
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    ZZn(6).of(1) + ZZn(7).of(1) # moduls diferents
+    Zn(6).of(1) + Zn(7).of(1) # moduls diferents
   catch e
     'caught'
   assert_eq caught, 'caught'
@@ -641,16 +660,16 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   write 'Testing FF \t'
 
   # --- GF(7): construccio i elements ---
-  assert_eq FF(7).char(), NN(7)
-  assert_eq FF(7).degree(), NN(1)
+  assert_eq FF(7).char(), N(7)
+  assert_eq FF(7).degree(), N(1)
   assert_eq '{FF(7)}', 'GF(7)'
   assert_eq FF(7).of(3), FF(7).of(3)
   assert_eq FF(7).of(-1), FF(7).of(6)        # representants canonics 0..p-1
   assert_eq FF(7).of(10), FF(7).of(3)        # reduccio mod p
-  assert_eq FF(7).of(NN(3)), FF(7).of(3)
-  assert_eq FF(7).of(ZZ(-8)), FF(7).of(6)    # -8 = 6 mod 7
-  assert_eq FF(7).of(3).char(), NN(7)
-  assert_eq FF(7).of(3).coeffs(), [NN(3)]
+  assert_eq FF(7).of(N(3)), FF(7).of(3)
+  assert_eq FF(7).of(Z(-8)), FF(7).of(6)    # -8 = 6 mod 7
+  assert_eq FF(7).of(3).char(), N(7)
+  assert_eq FF(7).of(3).coeffs(), [N(3)]
 
   # --- aritmetica a GF(7) ---
   assert_eq FF(7).of(3) + FF(7).of(5), FF(7).of(1)   # 3 + 5 = 8 = 1 mod 7
@@ -670,18 +689,18 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq FF(7).of(0).pow(5), FF(7).of(0)
   assert_eq FF(7).of(2).pow(-1), FF(7).of(4)     # 2^-1 = 4 (2*4 = 8 = 1 mod 7)
   assert_eq FF(7).of(2).pow(-2), FF(7).of(2)     # 4^2 = 16 = 2 mod 7
-  assert_eq FF(7).of(3).order(), NN(6)           # 3 es primitiu mod 7
-  assert_eq FF(7).of(2).order(), NN(3)           # 2^3 = 8 = 1 mod 7
-  assert_eq FF(7).of(6).order(), NN(2)           # -1 te ordre 2
-  assert_eq FF(7).of(1).order(), NN(1)
+  assert_eq FF(7).of(3).order(), N(6)           # 3 es primitiu mod 7
+  assert_eq FF(7).of(2).order(), N(3)           # 2^3 = 8 = 1 mod 7
+  assert_eq FF(7).of(6).order(), N(2)           # -1 te ordre 2
+  assert_eq FF(7).of(1).order(), N(1)
 
   # Display de GF(p): l'enter 0..p-1
   assert_eq '{FF(7).of(3)}', '3'
   assert_eq '{FF(7).of(6)}', '6'
 
   # --- GF(4) = GF(2)[x]/(x^2 + x + 1), Conway [2,2] ---
-  assert_eq FF(2, 2).char(), NN(2)
-  assert_eq FF(2, 2).degree(), NN(2)
+  assert_eq FF(2, 2).char(), N(2)
+  assert_eq FF(2, 2).degree(), N(2)
   assert_eq '{FF(2, 2)}', 'GF(2^2)'
   x = FF(2, 2).of([0, 1])           # x
   x1 = FF(2, 2).of([1, 1])          # x + 1
@@ -695,14 +714,14 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq x.inverse(), x1
   assert_eq x1.inverse(), x
   assert_eq x / x1, x1              # x / (x+1) = x * x = x^2 = x + 1 (x^2 + x + 1 = 0)
-  assert_eq x.order(), NN(3)        # grup multiplicatiu d'ordre 3
-  assert_eq x1.order(), NN(3)
+  assert_eq x.order(), N(3)        # grup multiplicatiu d'ordre 3
+  assert_eq x1.order(), N(3)
   assert_eq x.pow(3), FF(2, 2).of(1)
   assert_eq x.pow(-1), x1
   assert_eq FF(2, 2).of([1, 0, 1]), x      # x^2 + 1 es redueix a x
   assert_eq FF(2, 2).of([3, 5]), x1        # coeficients reduits mod 2: [1, 1]
   assert_eq FF(2, 2).of(2), FF(2, 2).of(0) # 2 = 0 mod 2
-  assert_eq x.coeffs(), [NN(0), NN(1)]
+  assert_eq x.coeffs(), [N(0), N(1)]
 
   # Display de GF(p^k): polinomi en ordre descendent de grau
   assert_eq '{x}', 'x'
@@ -711,12 +730,12 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq '{FF(3, 2).of(2)}', '2'
 
   # --- GF(9) = GF(3)[x]/(x^2 + 2x + 2), Conway [3,2] ---
-  assert_eq FF(3, 2).char(), NN(3)
-  assert_eq FF(3, 2).degree(), NN(2)
+  assert_eq FF(3, 2).char(), N(3)
+  assert_eq FF(3, 2).degree(), N(2)
   y = FF(3, 2).of([0, 1])                  # x
   assert_eq y * y, FF(3, 2).of([1, 1])     # x^2 = x + 1 (mod 3)
   assert_eq y.inverse(), FF(3, 2).of([2, 1])  # x^-1 = x + 2: x(x+2) = x^2+2x = 1
-  assert_eq y.order(), NN(8)               # x es primitiu a GF(9)* (ordre 8)
+  assert_eq y.order(), N(8)               # x es primitiu a GF(9)* (ordre 8)
   assert_eq y.pow(8), FF(3, 2).of(1)
   assert_eq FF(3, 2).of([1, 1]) * FF(3, 2).of([1, 1]), FF(3, 2).of(2)  # (x+1)^2 = 2
   assert_eq FF(3, 2).of([2, 2]) + FF(3, 2).of([1, 1]), FF(3, 2).of(0)  # (2x+2)+(x+1)=0
@@ -724,11 +743,11 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq y.pow(-1), FF(3, 2).of([2, 1])
 
   # --- GF(8) = GF(2)[x]/(x^3 + x + 1), Conway [2,3] ---
-  assert_eq FF(2, 3).char(), NN(2)
+  assert_eq FF(2, 3).char(), N(2)
   z = FF(2, 3).of([0, 1, 0])               # x
   assert_eq z.pow(3), FF(2, 3).of([1, 1])  # x^3 = x + 1
   assert_eq z.pow(7), FF(2, 3).of(1)       # x^7 = 1
-  assert_eq z.order(), NN(7)               # grup multiplicatiu d'ordre 7 (primer)
+  assert_eq z.order(), N(7)               # grup multiplicatiu d'ordre 7 (primer)
   assert_eq z.pow(100), FF(2, 3).of([0, 0, 1])  # x^100 = x^(7*14+2) = x^2
   assert_eq z.inverse(), FF(2, 3).of([1, 0, 1])  # x(x^2+1) = x^3+x = 1
   assert_eq '{z.pow(3)}', 'x + 1'
@@ -801,16 +820,16 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # ---- Quadratic symbols: Legendre (a/p) with p an odd prime ----
   # Squares mod 7 are {1, 2, 4}, so (2/7) = 1 and (3/7) = -1.
-  assert_eq legendre(2, 7), ZZ(1)
-  assert_eq legendre(3, 7), ZZ(-1)
-  assert_eq legendre(1, 7), ZZ(1)
-  assert_eq legendre(4, 7), ZZ(1)
-  assert_eq legendre(5, 7), ZZ(-1)
-  assert_eq legendre(6, 7), ZZ(-1)
-  assert_eq legendre(0, 7), ZZ(0)
-  assert_eq legendre(-1, 7), ZZ(-1)  # 7 = 3 mod 4
-  assert_eq legendre(2, 13), ZZ(-1)  # 13 = 5 mod 8
-  assert_eq legendre(NN(2), ZZ(7)), ZZ(1)  # accepts NN/ZZ
+  assert_eq legendre(2, 7), Z(1)
+  assert_eq legendre(3, 7), Z(-1)
+  assert_eq legendre(1, 7), Z(1)
+  assert_eq legendre(4, 7), Z(1)
+  assert_eq legendre(5, 7), Z(-1)
+  assert_eq legendre(6, 7), Z(-1)
+  assert_eq legendre(0, 7), Z(0)
+  assert_eq legendre(-1, 7), Z(-1)  # 7 = 3 mod 4
+  assert_eq legendre(2, 13), Z(-1)  # 13 = 5 mod 8
+  assert_eq legendre(N(2), Z(7)), Z(1)  # accepts N/Z
 
   # Legendre errors: p must be an odd prime
   caught = try
@@ -830,13 +849,13 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq caught, 'caught'
 
   # ---- Jacobi (a/n) with n odd (no primality required) ----
-  assert_eq jacobi(2, 9), ZZ(1)  # (2/3)^2
-  assert_eq jacobi(3, 9), ZZ(0)  # 3 | 9
-  assert_eq jacobi(5, 9), ZZ(1)  # (5/3)^2 = (-1)^2
-  assert_eq jacobi(2, 15), ZZ(1)  # (2/3)(2/5) = (-1)(-1)
-  assert_eq jacobi(7, 15), ZZ(-1)  # (7/3)(7/5) = (1)(-1)
-  assert_eq jacobi(-1, 9), ZZ(1)  # (-1)^((9-1)/2) = 1
-  assert_eq jacobi(1, 1), ZZ(1)
+  assert_eq jacobi(2, 9), Z(1)  # (2/3)^2
+  assert_eq jacobi(3, 9), Z(0)  # 3 | 9
+  assert_eq jacobi(5, 9), Z(1)  # (5/3)^2 = (-1)^2
+  assert_eq jacobi(2, 15), Z(1)  # (2/3)(2/5) = (-1)(-1)
+  assert_eq jacobi(7, 15), Z(-1)  # (7/3)(7/5) = (1)(-1)
+  assert_eq jacobi(-1, 9), Z(1)  # (-1)^((9-1)/2) = 1
+  assert_eq jacobi(1, 1), Z(1)
 
   # Jacobi errors: n must be odd
   caught = try
@@ -851,16 +870,16 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq caught, 'caught'
 
   # ---- Kronecker (a/n): extends to even and negative n ----
-  assert_eq kronecker(2, 7), ZZ(1)  # coincides with Legendre for odd primes
-  assert_eq kronecker(3, 7), ZZ(-1)
-  assert_eq kronecker(2, 8), ZZ(0)  # (2/2)^3 = 0
-  assert_eq kronecker(3, 8), ZZ(-1)  # 3 = 3 mod 8
-  assert_eq kronecker(-1, 4), ZZ(1)  # (-1)^2 factor
-  assert_eq kronecker(2, -1), ZZ(1)  # sign convention for n = -1
-  assert_eq kronecker(-2, -1), ZZ(-1)
-  assert_eq kronecker(1, 0), ZZ(1)  # (1/0) = 1
-  assert_eq kronecker(2, 0), ZZ(0)
-  assert_eq kronecker(4, 12), ZZ(0)
+  assert_eq kronecker(2, 7), Z(1)  # coincides with Legendre for odd primes
+  assert_eq kronecker(3, 7), Z(-1)
+  assert_eq kronecker(2, 8), Z(0)  # (2/2)^3 = 0
+  assert_eq kronecker(3, 8), Z(-1)  # 3 = 3 mod 8
+  assert_eq kronecker(-1, 4), Z(1)  # (-1)^2 factor
+  assert_eq kronecker(2, -1), Z(1)  # sign convention for n = -1
+  assert_eq kronecker(-2, -1), Z(-1)
+  assert_eq kronecker(1, 0), Z(1)  # (1/0) = 1
+  assert_eq kronecker(2, 0), Z(0)
+  assert_eq kronecker(4, 12), Z(0)
 
   # ---- Continued fractions ----
   # Finite CF: 22/7 = [3, 7]
@@ -868,7 +887,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq CF([3, 7]).convergent(0), Q(3)
   assert_eq CF([3, 7]).convergent(1), Q(22, 7)
   assert_eq CF([3, 7]).to_float(), 22.0 / 7.0
-  assert_eq CF([3, 7]).take(4), [ZZ(3), ZZ(7)]
+  assert_eq CF([3, 7]).take(4), [Z(3), Z(7)]
   assert_eq '{CF([3, 7])}', '[3, 7]'
   assert_eq '{CF([1, 2, 3])}', '[1, 2, 3]'
 
@@ -887,7 +906,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # Euler's constant e = [2; 1, 2, 1, 1, 4, 1, 1, 6, ...]
   e_cf = eulers_constant()
-  assert_eq e_cf.take(9), [ZZ(2), ZZ(1), ZZ(2), ZZ(1), ZZ(1), ZZ(4), ZZ(1), ZZ(1), ZZ(6)]
+  assert_eq e_cf.take(9), [Z(2), Z(1), Z(2), Z(1), Z(1), Z(4), Z(1), Z(1), Z(6)]
   assert_eq e_cf.convergent(0), Q(2)
   assert_eq e_cf.convergent(1), Q(3)
   assert_eq e_cf.convergent(2), Q(8, 3)
@@ -932,16 +951,16 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq Q(-1, 3).simplest_between(Q(1, 3)), Q(0)
   assert_eq Q(1, 3).simplest_between(Q(2, 5)), Q(1, 3)
   assert_eq Q(1, 3).simplest_between(Q(1, 3)), Q(1, 3)
-  assert_eq Q(355, 113).approximate(NN(100)), Q(311, 99)
-  assert_eq Q(355, 113).approximate(NN(10)), Q(22, 7)
-  assert_eq Q(22, 7).approximate(NN(10)), Q(22, 7)
+  assert_eq Q(355, 113).approximate(N(100)), Q(311, 99)
+  assert_eq Q(355, 113).approximate(N(10)), Q(22, 7)
+  assert_eq Q(22, 7).approximate(N(10)), Q(22, 7)
   caught = try
     Q(1, 2).simplest_between(Q(1, 3))  # requires self <= other
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    Q(1, 2).approximate(NN(0))  # max_denominator must be positive
+    Q(1, 2).approximate(N(0))  # max_denominator must be positive
   catch e
     'caught'
   assert_eq caught, 'caught'
@@ -988,7 +1007,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq (-sqrt2).cmp(sqrt2), -1
   assert_eq ((-sqrt2) + sqrt2).cmp(Q(0)), 0
 
-  # Operacions amb escalars Q / ZZ / NN / Number
+  # Operacions amb escalars Q / Z / N / Number
   # sqrt2 + Q(1): min_poly (x-1)^2 - 2 = x^2 - 2x - 1
   s1 = sqrt2 + Q(1)
   assert s1 > 2.41
@@ -1008,10 +1027,10 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert dv > 0.707
   assert dv < 0.708
   assert_eq dv.cmp(inv), 0
-  # sqrt2 + 1 (Number) i amb ZZ / NN
+  # sqrt2 + 1 (Number) i amb Z / N
   assert_eq (sqrt2 + 1).cmp(sqrt2 + Q(1)), 0
-  assert_eq (sqrt2 * ZZ(2)).cmp(m2), 0
-  assert_eq (sqrt2 * NN(3)).cmp(sqrt2 * 3), 0
+  assert_eq (sqrt2 * Z(2)).cmp(m2), 0
+  assert_eq (sqrt2 * N(3)).cmp(sqrt2 * 3), 0
 
   # Arrel quadrada: sqrt(sqrt(2)) = 2^(1/4) ~ 1.18921
   r = sqrt2.sqrt()
@@ -1045,22 +1064,22 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 @test mat_decomp_tests = ||
   write 'Testing Mat decomp \t'
 
-  # --- Smith normal form (ZZ): retorna [S, U, V, rank] amb U*M*V = S ---
+  # --- Smith normal form (Z): retorna [S, U, V, rank] amb U*M*V = S ---
   s = Mat([[1, 2], [3, 4]]).smith()
   assert_eq s[0], Mat([[1, 0], [0, 2]])
   assert_eq s[1].mul(Mat([[1, 2], [3, 4]])).mul(s[2]), s[0]
-  assert_eq s[3], NN(2)
+  assert_eq s[3], N(2)
 
   # Matriu 2x3 de rang 2: invariants 1, 3
   s2 = Mat([[1, 2, 3], [4, 5, 6]]).smith()
   assert_eq s2[0], Mat([[1, 0, 0], [0, 3, 0]])
   assert_eq s2[1].mul(Mat([[1, 2, 3], [4, 5, 6]])).mul(s2[2]), s2[0]
-  assert_eq s2[3], NN(2)
+  assert_eq s2[3], N(2)
 
   # Matriu singular de rang 1
   s3 = Mat([[2, 4], [4, 8]]).smith()
   assert_eq s3[0], Mat([[2, 0], [0, 0]])
-  assert_eq s3[3], NN(1)
+  assert_eq s3[3], N(1)
 
   # --- Hermite normal form (files / columnes) ---
   assert_eq Mat([[1, 2], [3, 4]]).hermite('rows'), Mat([[1, 0], [0, 2]])
@@ -1070,15 +1089,15 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   mq = Mat([[Q(1, 2), Q(1, 2)], [Q(1, 3), Q(2, 3)]])
   assert_eq mq.hermite('rows'), Mat([[1, 0], [0, 1]])
 
-  # --- Rang (ZZ i Q) ---
-  assert_eq Mat([[1, 2], [3, 4]]).rank(), NN(2)
-  assert_eq Mat([[1, 2], [2, 4]]).rank(), NN(1)
-  assert_eq Mat([[1, 2, 3], [4, 5, 6]]).rank(), NN(2)
-  assert_eq mq.rank(), NN(2)
+  # --- Rang (Z i Q) ---
+  assert_eq Mat([[1, 2], [3, 4]]).rank(), N(2)
+  assert_eq Mat([[1, 2], [2, 4]]).rank(), N(1)
+  assert_eq Mat([[1, 2, 3], [4, 5, 6]]).rank(), N(2)
+  assert_eq mq.rank(), N(2)
 
   # --- Nuclis: 'cols' = {v : M*v = 0}, 'rows' = {v : v*M = 0} ---
-  assert_eq Mat([[1, 2], [3, 6]]).kernel('cols'), [[ZZ(2), ZZ(-1)]]
-  assert_eq Mat([[1, 2], [3, 6]]).kernel('rows'), [[ZZ(3), ZZ(-1)]]
+  assert_eq Mat([[1, 2], [3, 6]]).kernel('cols'), [[Z(2), Z(-1)]]
+  assert_eq Mat([[1, 2], [3, 6]]).kernel('rows'), [[Z(3), Z(-1)]]
   # mqk = [[1/2,1/2],[1/3,1/3]]: nucli dret = span{(1,-1)}
   mqk = Mat([[Q(1, 2), Q(1, 2)], [Q(1, 3), Q(1, 3)]])
   assert_eq mqk.kernel('cols'), [[Q(1), Q(-1)]]
@@ -1107,10 +1126,10 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # QR rectangular 3x2 (mes files que columnes)
   qr2 = Mat([[1, 2], [3, 4], [5, 6]]).qr()
-  assert_eq qr2[0].rows(), NN(3)
-  assert_eq qr2[0].cols(), NN(2)
-  assert_eq qr2[1].rows(), NN(2)
-  assert_eq qr2[1].cols(), NN(2)
+  assert_eq qr2[0].rows(), N(3)
+  assert_eq qr2[0].cols(), N(2)
+  assert_eq qr2[1].rows(), N(2)
+  assert_eq qr2[1].cols(), N(2)
   assert_eq qr2[0].mul(qr2[1]), Mat([[1, 2], [3, 4], [5, 6]])
   assert_eq qr2[0].transpose().mul(qr2[0]).at(0, 1), Q(0)
 
@@ -1126,13 +1145,13 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # LQ rectangular 2x3 (mes columnes que files)
   lq2 = Mat([[1, 2, 3], [4, 5, 6]]).lq()
-  assert_eq lq2[0].rows(), NN(2)
-  assert_eq lq2[1].cols(), NN(3)
+  assert_eq lq2[0].rows(), N(2)
+  assert_eq lq2[1].cols(), N(3)
   assert_eq lq2[0].mul(lq2[1]), Mat([[1, 2, 3], [4, 5, 6]])
 
   # --- Errors ---
   caught = try
-    mq.smith()  # Smith nomes per matrius ZZ
+    mq.smith()  # Smith nomes per matrius Z
   catch e
     'caught'
   assert_eq caught, 'caught'
@@ -1299,7 +1318,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq i.conjugate().real().cmp(Q(0)), 0
   assert_eq i.conjugate().imag().cmp(Q(-1)), 0
   assert_eq i.min_poly(), Poly([1, 0, 1])
-  assert_eq i.degree(), NN(2)
+  assert_eq i.degree(), N(2)
 
   # arrels de x^2 + 1 = i i -i (ordre [-i, i] d'algebraeon)
   roots = ComplexAlg(Poly([1, 0, 1]))
@@ -1359,8 +1378,8 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # min_poly i grau
   assert_eq z1.min_poly(), Poly([5, -2, 1])   # (x-1)^2 + 4 = x^2 - 2x + 5
-  assert_eq z1.degree(), NN(2)
-  assert_eq ComplexAlg(Q(7)).degree(), NN(1)
+  assert_eq z1.degree(), N(2)
+  assert_eq ComplexAlg(Q(7)).degree(), N(1)
   assert_eq ComplexAlg(Q(0)).real().cmp(Q(0)), 0
 
   # to_float: parell [real, imag]
@@ -1399,7 +1418,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   # QSqrt(d) is the field Q(sqrt(d)); .of(a, b) and the three-argument
   # constructor both create the exact element a + b sqrt(d).
   q2 = QSqrt(2)
-  assert_eq q2.d(), ZZ(2)
+  assert_eq q2.d(), Z(2)
   assert_eq '{q2}', 'Q(sqrt(2))'
   sqrt2 = q2.generator()
   assert_eq sqrt2, QSqrt(2, 0, 1)
@@ -1478,12 +1497,12 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
 
   # Q(i) = Q[x]/(x^2 + 1); representatives are reduced modulo x^2 + 1.
   qi = PolyQuot(Poly([1, 0, 1]))
-  assert_eq qi.degree(), NN(2)
+  assert_eq qi.degree(), N(2)
   assert_eq '{qi}', 'Q[x]/(1 + x^2)'
   i = qi.generator()
   assert_eq i, qi.of(Poly([0, 1]))
   assert_eq i, qi.of([0, 1])
-  assert_eq i.degree(), NN(2)
+  assert_eq i.degree(), N(2)
   assert_eq i.to_poly(), Poly([0, 1])
   assert_eq (i * i).to_poly(), Poly([-1])
   assert_eq '{qi.of([0, 0, 1])}', '-1'
@@ -1510,8 +1529,8 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   # A cubic number field: alpha^3 = 2 in Q[x]/(x^3 - 2).
   qc = PolyQuot(Poly([-2, 0, 0, 1]))
   alpha = qc.generator()
-  assert_eq qc.degree(), NN(3)
-  assert_eq alpha.degree(), NN(3)
+  assert_eq qc.degree(), N(3)
+  assert_eq alpha.degree(), N(3)
   assert_eq (alpha * alpha * alpha).to_poly(), Poly([2])
   assert_eq alpha.inverse().to_poly(), Poly([0, 0, Q(1, 2)])
   assert_eq (alpha * alpha.inverse()).to_poly(), Poly([1])
@@ -1554,9 +1573,9 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   # Terms are [map variable-name -> exponent, integer coefficient].
   p = MultiPoly([x, y], [[{'x': 1}, 2], [{'y': 1}, 3]])
   assert_eq p.vars(), ['x', 'y']
-  assert_eq p.degree(), NN(1)
-  assert_eq p.eval({'x': 2, 'y': 3}), ZZ(13)
-  assert_eq p.terms(), [[{'x': NN(1)}, ZZ(2)], [{'y': NN(1)}, ZZ(3)]]
+  assert_eq p.degree(), N(1)
+  assert_eq p.eval({'x': 2, 'y': 3}), Z(13)
+  assert_eq p.terms(), [[{'x': N(1)}, Z(2)], [{'y': N(1)}, Z(3)]]
 
   assert_eq '{p}', '2x + 3y'
   assert_eq '{p + p}', '4x + 6y'
@@ -1572,7 +1591,7 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   # e_2(x, y, z) = xy + xz + yz.
   e2 = MultiPoly.elementary(2, [x, y, z])
   assert_eq '{e2}', 'x*y + x*z + y*z'
-  assert_eq e2.eval({'x': 2, 'y': 3, 'z': 5}), ZZ(31)
+  assert_eq e2.eval({'x': 2, 'y': 3, 'z': 5}), Z(31)
   assert e2.is_symmetric([x, y, z])
 
 
@@ -1580,35 +1599,35 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   write 'Testing Stirling \t'
 
   # Stirling numbers of the second kind
-  assert_eq NN(5).stirling2(NN(2)), NN(15)
-  assert_eq NN(7).stirling2(NN(3)), NN(301)
-  assert_eq NN(3).stirling2(NN(2)), NN(3)
-  assert_eq NN(1).stirling2(NN(1)), NN(1)
+  assert_eq N(5).stirling2(N(2)), N(15)
+  assert_eq N(7).stirling2(N(3)), N(301)
+  assert_eq N(3).stirling2(N(2)), N(3)
+  assert_eq N(1).stirling2(N(1)), N(1)
 
-  # Stirling numbers of the first kind, unsigned, on NN
-  assert_eq NN(4).stirling1(NN(2)), NN(11)
-  assert_eq NN(5).stirling1(NN(2)), NN(50)
-  assert_eq NN(3).stirling1(NN(2)), NN(3)
+  # Stirling numbers of the first kind, unsigned, on N
+  assert_eq N(4).stirling1(N(2)), N(11)
+  assert_eq N(5).stirling1(N(2)), N(50)
+  assert_eq N(3).stirling1(N(2)), N(3)
 
-  # Stirling numbers of the first kind, signed, on ZZ
-  assert_eq ZZ(4).stirling1_signed(NN(2)), ZZ(11)
-  assert_eq ZZ(5).stirling1_signed(NN(2)), ZZ(-50)
-  assert_eq ZZ(3).stirling1_signed(NN(2)), ZZ(-3)
-  assert_eq ZZ(5).stirling1_signed(NN(1)), ZZ(24)
+  # Stirling numbers of the first kind, signed, on Z
+  assert_eq Z(4).stirling1_signed(N(2)), Z(11)
+  assert_eq Z(5).stirling1_signed(N(2)), Z(-50)
+  assert_eq Z(3).stirling1_signed(N(2)), Z(-3)
+  assert_eq Z(5).stirling1_signed(N(1)), Z(24)
 
   # k > n is an error on every method
   caught = try
-    NN(5).stirling2(NN(6))
+    N(5).stirling2(N(6))
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    NN(4).stirling1(NN(5))
+    N(4).stirling1(N(5))
   catch e
     'caught'
   assert_eq caught, 'caught'
   caught = try
-    ZZ(4).stirling1_signed(NN(5))
+    Z(4).stirling1_signed(N(5))
   catch e
     'caught'
   assert_eq caught, 'caught'
