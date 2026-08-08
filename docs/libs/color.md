@@ -1,5 +1,7 @@
 # color
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 Utilities for working with color in Koto.
 
 At the core of the library is the [`Color`](#color-1) type, with various initializers

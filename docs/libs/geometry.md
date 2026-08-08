@@ -1,5 +1,7 @@
 # geometry
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 Utilities for working with geometry in Koto.
 
 The module contains the [`Vec2`](#vec2-1), [`Vec3`](#vec3-1), and

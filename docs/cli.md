@@ -1,77 +1,69 @@
-# The Koto CLI
+# koto-calc CLI
 
-Koto was originally designed as an extension language for Rust applications,
-but it is also usable as a standalone scripting language via the Koto [CLI][cli].
-The CLI can run `.koto` scripts, and provides an interactive [REPL][repl].
+koto-calc provides a command-line interface for running `.koto` scripts and an
+interactive REPL.
 
 ## Installation
 
-Installing the Koto CLI currently requires the [Rust][rust] toolchain
-(see [rustup.sh][rustup] for installation instructions).
+Build from source with the [Rust](https://rust-lang.org) toolchain
+(see [rustup.sh](https://rustup.sh) for installation instructions):
 
-With Rust available on your system, run `cargo install koto_cli`,
-which provides you with the `koto` command.
+```bash
+cargo build --release
+cargo install --path .
+```
+
+This provides the `koto_calc` command.
+
+## Usage
+
+```
+koto_calc [FLAGS] [script] [<args>...]
+```
+
+### Flags
+
+| Flag | Description |
+|---|---|
+| `-e`, `--eval` | Evaluate the argument as a script string instead of loading from disk |
+| `-i`, `--show_instructions` | Show compiled instructions annotated with source lines |
+| `-b`, `--show_bytecode` | Show the script's compiled bytecode |
+| `-t`, `--tests` | Run the script's tests before running the script |
+| `-T`, `--import_tests` | Run the script's tests, plus tests in imported modules |
+| `-f`, `--format` | Format the input (from script path or stdin) |
+| `-c`, `--config PATH` | Config file to load |
+| `-C`, `--print_config` | Print the default config |
+| `-v`, `--version` | Print version information |
+| `-h`, `--help` | Print help information |
+
+### Arguments
+
+Arguments following the script name are available to the script via
+[`os.args`](./core_lib/os.md#args).
 
 ## Running Scripts
 
-Koto scripts can be run by the CLI by passing the script's name as the first argument.
+```bash
+# Run a script from a file
+koto_calc examples/fibonacci.koto
 
+# Evaluate an expression directly
+koto_calc -e "print (1..10).sum()"
+# Output: 55
+
+# Run tests in a script
+koto_calc -t tests/example.koto
+
+# Pass arguments to the script
+koto_calc print_args.koto a b c
 ```
-» cat say_hello.koto
-print 'Hello!'
-
-» koto say_hello.koto
-Hello!
-```
-
-### Command Arguments
-
-Arguments following the script are made available via [`os.args`][os-args].
-
-```
-» cat print_args.koto
-for i, arg in os.args.enumerate()
-  print '{i + 1}: {arg}'
-
-» koto print_args.koto a b c
-1: a
-2: b
-3: c
-```
-
-### Running Tests
-
-Tests are disabled by default in the CLI, but can be enabled by using the `--tests` flag.
-
-```
-» cat testing.koto
-@main = ||
-  print 'Hello!'
-
-@test always_fails = ||
-  assert false
-
-» koto testing.koto
-Hello!
-
-» koto --tests testing.koto
-Error: assertion failed (while running test 'always_fails')
---- testing.koto - 5:3
-   |
- 5 |   assert false
-   |   ^^^^^^^^^^^^
-```
-
-`--tests` only enables tests in the script that's being run,
-use the `--import_tests` flag to also enable tests in any imported modules.
 
 ## Using the REPL
 
-Running `koto` without any arguments will start the Koto REPL,
-where Koto expressions can be entered and evaluated interactively.
+Running `koto_calc` without arguments starts the REPL:
 
 ```
-> koto
+> koto_calc
 Welcome to Koto
 
 » 1 + 1
@@ -79,35 +71,17 @@ Welcome to Koto
 
 » 'hello!'
 ➝ hello!
+
+» size [1, 2, 3]
+➝ 3
 ```
 
-## Help
-
-The [language guide][guide] and the [core library reference][core],
-can be accessed in the REPL using the `help` command.
+The `help` command in the REPL provides access to the language guide and core
+library reference:
 
 ```
-> koto
-Welcome to Koto
-
-» help bool
-
-  Booleans
-  ========
-
-  Booleans are declared with the `true` and `false` keywords,
-  and combined using the `and` and `or` operators.
-
-  |
-  |  true and false
-  |  # ➝ false
-  ...
+» help number
+Numbers and Arithmetic
+======================
+...
 ```
-
-[cli]: https://en.wikipedia.org/wiki/Command-line_interface
-[core]: ./core_lib/
-[os-args]: ./core_lib/os.md#args
-[guide]: ./language_guide.md
-[repl]: https://en.wikipedia.org/wiki/Read–eval–print_loop
-[rust]: https://rust-lang.org
-[rustup]: https://rustup.sh

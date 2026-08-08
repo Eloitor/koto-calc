@@ -1,5 +1,7 @@
 # json
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 [JSON](https://www.json.org) support for Koto.
 
 ## from_string

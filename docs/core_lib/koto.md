@@ -1,5 +1,7 @@
 # koto
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 A collection of utilities for working with the Koto runtime.
 
 ## copy

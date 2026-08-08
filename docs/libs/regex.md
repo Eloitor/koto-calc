@@ -1,5 +1,7 @@
 # regex
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 [Regular expression][regex-wiki] utilities for Koto.
 
 ## new

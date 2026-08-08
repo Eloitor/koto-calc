@@ -1,5 +1,7 @@
 # toml
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 [TOML](https://toml.io) support for Koto.
 
 ## from_string

@@ -1,5 +1,4 @@
-A rendered version of this document can be found
-[here](https://koto.dev/docs/next/language).
+Derived from the Koto Language Guide (MIT, github.com/koto-lang/koto), maintained for koto-calc.
 
 See the neighboring [readme](./README.md) for an explanation of the
 `print!` and `check!` commands used in the following example.

@@ -1,5 +1,7 @@
 # random
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 Utilities for generating random values in Koto.
 
 At the core of the module is the `Rng` type, which is a seedable random

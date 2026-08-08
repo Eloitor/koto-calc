@@ -1,0 +1,5 @@
+[book]
+title = "koto-calc"
+description = "A programmable calculator with the Koto language"
+language = "en"
+src = "docs"

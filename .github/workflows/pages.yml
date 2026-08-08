@@ -1,0 +1,41 @@
+# Build and deploy mdBook to GitHub Pages.
+#
+# Triggered on pushes to main that touch docs/, book.toml, or this workflow.
+# After the first deploy, enable Pages in repo Settings:
+#   Settings → Pages → Source: Deploy from a branch → Branch: gh-pages
+
+name: Deploy mdBook to Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'book.toml'
+      - '.github/workflows/pages.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book
+          publish_branch: gh-pages

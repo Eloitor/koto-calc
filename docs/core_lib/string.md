@@ -1,5 +1,7 @@
 # string
 
+Derived from Koto documentation (MIT, github.com/koto-lang/koto), maintained for koto-calc.
+
 ## bytes
 
 ```kototype
