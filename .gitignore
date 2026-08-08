@@ -1,3 +1,4 @@
 /target
+/book
 *.sage.py
 scripts/__pycache__/
