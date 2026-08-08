@@ -1,7 +1,7 @@
 use koto_runtime::{IsIterable, KIteratorOutput, KotoVm, Result, derive::*, prelude::*};
 
 use algebraeon::nzq::Natural;
-use algebraeon_rings::natural::NaturalFns;
+use algebraeon_rings::structure::MetaFactoringMonoid;
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
 pub struct NNIterator {
@@ -30,12 +30,12 @@ impl NN {
 
     #[koto_method]
     pub fn is_prime(&self) -> KValue {
-        KValue::from(self.0.is_prime())
+        KValue::from(self.0.is_irreducible())
     }
 
     #[koto_method]
     pub fn factor(&self) -> KValue {
-        match self.0.clone().factor() {
+        match self.0.clone().factor().into_powers() {
             Some(factors) => {
                 let koto_factors: Vec<KValue> = factors
                     .into_iter()

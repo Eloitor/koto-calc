@@ -3,7 +3,7 @@ use koto_runtime::{Result, derive::*, prelude::*};
 
 use algebraeon::nzq::Integer;
 use algebraeon::nzq::traits::Abs;
-use algebraeon_rings::structure::MetaFactorableSignature;
+use algebraeon_rings::structure::MetaFactoringMonoid;
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
 pub struct ZZ(Integer);
