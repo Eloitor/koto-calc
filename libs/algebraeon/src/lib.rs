@@ -1,8 +1,10 @@
 mod Alg;
 mod CF;
 mod FF;
+mod Group;
 mod Ideal;
 mod Mat;
+mod Perm;
 mod NN;
 mod Poly;
 mod Q;
@@ -209,6 +211,68 @@ pub fn make_module() -> KMap {
         [KValue::List(initial), KValue::List(repeats)] => CF::CF::periodic(initial, repeats),
         unexpected => unexpected_args("|List, List|", unexpected),
     });
+
+    let mut perm = KMap::default();
+
+    perm.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| match ctx.args() {
+            [KValue::List(list)] => Ok(Perm::Perm::from_koto_list(list)?.into()),
+            unexpected => unexpected_args("|List of images|", unexpected),
+        })
+        .into(),
+    );
+
+    perm.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Perm".into())).into(),
+    );
+
+    perm.add_fn("all", |ctx| match ctx.args() {
+        [n] => {
+            let n = Perm::usize_from_value(n)?;
+            let perms: Vec<KValue> = algebraeon::groups::permutation::Permutation::all_permutations(n)
+                .map(|p| KValue::Object(KObject::from(Perm::Perm { perm: p })))
+                .collect();
+            Ok(KValue::List(KList::with_data(perms.into())))
+        }
+        unexpected => unexpected_args("|n|", unexpected),
+    });
+
+    result.insert("Perm", perm);
+
+    let mut group = KMap::default();
+
+    group.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("Group".into())).into(),
+    );
+
+    group.add_fn("cyclic", |ctx| match ctx.args() {
+        [n] => Ok(Group::Group::cyclic(Perm::usize_from_value(n)?)?.into()),
+        unexpected => unexpected_args("|n|", unexpected),
+    });
+
+    group.add_fn("dihedral", |ctx| match ctx.args() {
+        [n] => Ok(Group::Group::dihedral(Perm::usize_from_value(n)?)?.into()),
+        unexpected => unexpected_args("|n|", unexpected),
+    });
+
+    group.add_fn("symmetric", |ctx| match ctx.args() {
+        [n] => Ok(Group::Group::symmetric(Perm::usize_from_value(n)?)?.into()),
+        unexpected => unexpected_args("|n|", unexpected),
+    });
+
+    group.add_fn("alternating", |ctx| match ctx.args() {
+        [n] => Ok(Group::Group::alternating(Perm::usize_from_value(n)?)?.into()),
+        unexpected => unexpected_args("|n|", unexpected),
+    });
+
+    group.add_fn("klein4", |_ctx| Ok(Group::Group::klein4()?.into()));
+    group.add_fn("quaternion", |_ctx| Ok(Group::Group::quaternion()?.into()));
+    group.add_fn("trivial", |_ctx| Ok(Group::Group::trivial()?.into()));
+
+    result.insert("Group", group);
 
     result.insert("CF", cf);
 
