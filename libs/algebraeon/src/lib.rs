@@ -1,4 +1,5 @@
 mod Alg;
+mod FF;
 mod Ideal;
 mod Mat;
 mod NN;
@@ -173,6 +174,20 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("ZZn", zzn);
+
+    let mut ff = KMap::default();
+
+    ff.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| FF::FF::from_args(ctx.args())).into(),
+    );
+
+    ff.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("FF".into())).into(),
+    );
+
+    result.insert("FF", ff);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {
