@@ -1,4 +1,5 @@
 use crate::NN::NN;
+use crate::Poly::{Poly, PolyCoeff};
 use crate::Q::Q;
 use crate::ZZ::ZZ;
 use koto_runtime::{Result, derive::*, prelude::*};
@@ -7,6 +8,7 @@ use algebraeon::nzq::{Integer, Natural, Rational};
 use algebraeon::nzq::traits::Fraction;
 use algebraeon::rings::matrix::{Matrix, StandardInnerProduct};
 use algebraeon::sets::structure::MetaType;
+use algebraeon_rings::polynomial::{Polynomial, ToPolynomialSignature};
 use std::str::FromStr;
 
 /// A matrix over the integers (Mat::ZZ) or over the rationals (Mat::Q).
@@ -32,6 +34,24 @@ fn mat_opp_err(e: &algebraeon::rings::matrix::MatOppErr) -> &'static str {
 
 fn mat_error(msg: &str, e: &algebraeon::rings::matrix::MatOppErr) -> koto_runtime::Error {
     koto_runtime::Error::from(format!("{}: {}", msg, mat_opp_err(e)))
+}
+
+/// Converts a rational polynomial (as produced by the characteristic/minimal
+/// polynomial computations, which work over Q) into a koto `Poly`. The ZZ
+/// coefficient field is chosen when every coefficient happens to be an
+/// integer, matching the auto-selection rule of the `Poly` constructor.
+fn poly_from_rational(p: Polynomial<Rational>) -> Poly {
+    let all_integer = (0..p.num_coeffs()).all(|i| p.coeff(i).as_ref().is_integer());
+    if all_integer {
+        let ints = p.apply_map(|c| Integer::try_from(c).unwrap());
+        Poly {
+            poly: PolyCoeff::ZZ(Integer::structure().polynomials().reduce_poly(ints)),
+        }
+    } else {
+        Poly {
+            poly: PolyCoeff::QQ(Rational::structure().polynomials().reduce_poly(p)),
+        }
+    }
 }
 
 fn is_mat(value: &KValue) -> bool {
@@ -321,6 +341,224 @@ impl Mat {
                 "Mat.lll: LLL reduction is only defined for integer (ZZ) matrices"
             ),
         }
+    }
+
+    /// Smith normal form over ZZ.
+    ///
+    /// Returns a list `[S, U, V, rank]` such that `U*M*V = S`, where `S` is
+    /// the Smith normal form (diagonal with positive entries dividing the
+    /// next one), `U` and `V` are unimodular matrices, and `rank` (an NN) is
+    /// the number of non-zero diagonal entries of `S`. Only defined for
+    /// integer (ZZ) matrices.
+    #[koto_method]
+    pub fn smith(&self) -> Result<KValue> {
+        match self {
+            Mat::ZZ(m) => {
+                let (u, s, v, k) = m.smith_algorithm();
+                Ok(KValue::List(KList::with_data(vec![
+                    KValue::Object(KObject::from(Mat::ZZ(s))),
+                    KValue::Object(KObject::from(Mat::ZZ(u))),
+                    KValue::Object(KObject::from(Mat::ZZ(v))),
+                    KValue::Object(KObject::from(NN(k.into()))),
+                ]
+                .into())))
+            }
+            Mat::Q(_) => runtime_error!(
+                "Mat.smith: Smith normal form is only defined for integer (ZZ) matrices"
+            ),
+        }
+    }
+
+    /// Reduced Hermite normal form, by rows or by columns.
+    ///
+    /// `.hermite('rows')` returns the reduced row Hermite normal form
+    /// `H = U*M` (with `U` unimodular): upper triangular with positive
+    /// pivots and entries above a pivot reduced modulo it. `.hermite('cols')`
+    /// returns the reduced column Hermite normal form `H = M*V`. Defined for
+    /// ZZ and Q matrices (over Q the row form is the reduced row echelon
+    /// form).
+    #[koto_method]
+    pub fn hermite(&self, args: &[KValue]) -> Result<KValue> {
+        let mode = match args {
+            [KValue::Str(s)] => s.as_str(),
+            unexpected => return unexpected_args("|'rows' or 'cols'|", unexpected),
+        };
+        if mode != "rows" && mode != "cols" {
+            return runtime_error!("Mat.hermite: mode must be 'rows' or 'cols', got '{}'", mode);
+        }
+        match (mode, self) {
+            ("rows", Mat::ZZ(m)) => Ok(KValue::Object(KObject::from(Mat::ZZ(
+                m.row_reduced_hermite_normal_form(),
+            )))),
+            ("rows", Mat::Q(m)) => Ok(KValue::Object(KObject::from(Mat::Q(
+                m.row_reduced_hermite_normal_form(),
+            )))),
+            ("cols", Mat::ZZ(m)) => Ok(KValue::Object(KObject::from(Mat::ZZ(
+                m.col_reduced_hermite_normal_form(),
+            )))),
+            ("cols", Mat::Q(m)) => Ok(KValue::Object(KObject::from(Mat::Q(
+                m.col_reduced_hermite_normal_form(),
+            )))),
+            _ => unreachable!(),
+        }
+    }
+
+    /// Rank of the matrix (over ZZ or Q).
+    #[koto_method]
+    pub fn rank(&self) -> KValue {
+        let r = match self {
+            Mat::ZZ(m) => m.rank(),
+            Mat::Q(m) => m.rank(),
+        };
+        KValue::Object(KObject::from(NN(r.into())))
+    }
+
+    /// Basis of the kernel, by rows or by columns.
+    ///
+    /// `.kernel('rows')` returns a list of vectors forming a basis of the
+    /// left kernel `{v : v*M = 0}` (each vector has length `rows`).
+    /// `.kernel('cols')` returns a basis of the right kernel `{v : M*v = 0}`
+    /// (each vector has length `cols`). Entries are ZZ for integer matrices
+    /// and Q for rational matrices.
+    #[koto_method]
+    pub fn kernel(&self, args: &[KValue]) -> Result<KValue> {
+        let mode = match args {
+            [KValue::Str(s)] => s.as_str(),
+            unexpected => return unexpected_args("|'rows' or 'cols'|", unexpected),
+        };
+        if mode != "rows" && mode != "cols" {
+            return runtime_error!("Mat.kernel: mode must be 'rows' or 'cols', got '{}'", mode);
+        }
+        let basis: Vec<Vec<KValue>> = match (mode, self) {
+            ("rows", Mat::ZZ(m)) => m
+                .clone()
+                .row_kernel()
+                .basis()
+                .into_iter()
+                .map(|row| {
+                    row.into_iter()
+                        .map(|e| KValue::Object(KObject::from(ZZ::from_integer(e))))
+                        .collect()
+                })
+                .collect(),
+            ("rows", Mat::Q(m)) => m
+                .clone()
+                .row_kernel()
+                .basis()
+                .into_iter()
+                .map(|row| {
+                    row.into_iter()
+                        .map(|e| KValue::Object(KObject::from(Q(e))))
+                        .collect()
+                })
+                .collect(),
+            ("cols", Mat::ZZ(m)) => m
+                .clone()
+                .col_kernel()
+                .basis()
+                .into_iter()
+                .map(|row| {
+                    row.into_iter()
+                        .map(|e| KValue::Object(KObject::from(ZZ::from_integer(e))))
+                        .collect()
+                })
+                .collect(),
+            ("cols", Mat::Q(m)) => m
+                .clone()
+                .col_kernel()
+                .basis()
+                .into_iter()
+                .map(|row| {
+                    row.into_iter()
+                        .map(|e| KValue::Object(KObject::from(Q(e))))
+                        .collect()
+                })
+                .collect(),
+            _ => unreachable!(),
+        };
+        Ok(KValue::List(KList::with_data(
+            basis
+                .into_iter()
+                .map(|v| KValue::List(KList::with_data(v.into())))
+                .collect::<Vec<_>>()
+                .into(),
+        )))
+    }
+
+    /// Characteristic polynomial as a Poly.
+    ///
+    /// Computed over Q (integer matrices are promoted); the result is a ZZ
+    /// Poly when all coefficients are integers. Errors for non-square
+    /// matrices.
+    #[koto_method]
+    pub fn char_poly(&self) -> Result<KValue> {
+        self.as_rational()
+            .characteristic_polynomial()
+            .map(|p| KValue::Object(KObject::from(poly_from_rational(p))))
+            .map_err(|e| mat_error("Mat.char_poly", &e))
+    }
+
+    /// Minimal polynomial as a Poly.
+    ///
+    /// Computed over Q (integer matrices are promoted); the result is a ZZ
+    /// Poly when all coefficients are integers. Errors for non-square
+    /// matrices.
+    #[koto_method]
+    pub fn min_poly(&self) -> Result<KValue> {
+        self.as_rational()
+            .minimal_polynomial()
+            .map(|p| KValue::Object(KObject::from(poly_from_rational(p))))
+            .map_err(|e| mat_error("Mat.min_poly", &e))
+    }
+
+    /// QR decomposition over Q (integer matrices are promoted).
+    ///
+    /// Returns a list `[Q, R]` such that `A = Q*R` with `Q` column-orthogonal
+    /// (`Q^T*Q` is diagonal) and `R` upper triangular. The decomposition uses
+    /// Gram-Schmidt orthogonalization without normalization, so no square
+    /// roots are needed and all entries stay rational. Requires the columns
+    /// to be linearly independent (full column rank).
+    #[koto_method]
+    pub fn qr(&self) -> Result<KValue> {
+        let a = self.as_rational();
+        if a.rank() < a.cols() {
+            return runtime_error!(
+                "Mat.qr: QR decomposition requires linearly independent columns"
+            );
+        }
+        let (q, r_inv) = a.gram_schmidt_col_orthogonalization_algorithm(
+            &StandardInnerProduct::new(Rational::structure()),
+        );
+        let r = r_inv.inv().map_err(|e| mat_error("Mat.qr", &e))?;
+        Ok(KValue::List(KList::with_data(vec![
+            KValue::Object(KObject::from(Mat::Q(q))),
+            KValue::Object(KObject::from(Mat::Q(r))),
+        ]
+        .into())))
+    }
+
+    /// LQ decomposition over Q (integer matrices are promoted).
+    ///
+    /// Returns a list `[L, Q]` such that `A = L*Q` with `L` lower triangular
+    /// and `Q` row-orthogonal (`Q*Q^T` is diagonal). The decomposition uses
+    /// Gram-Schmidt orthogonalization without normalization, so no square
+    /// roots are needed and all entries stay rational. Requires the rows to
+    /// be linearly independent (full row rank).
+    #[koto_method]
+    pub fn lq(&self) -> Result<KValue> {
+        let a = self.as_rational();
+        if a.rank() < a.rows() {
+            return runtime_error!("Mat.lq: LQ decomposition requires linearly independent rows");
+        }
+        let (l_inv, q) = a.gram_schmidt_row_orthogonalization_algorithm(
+            &StandardInnerProduct::new(Rational::structure()),
+        );
+        let l = l_inv.inv().map_err(|e| mat_error("Mat.lq", &e))?;
+        Ok(KValue::List(KList::with_data(vec![
+            KValue::Object(KObject::from(Mat::Q(l))),
+            KValue::Object(KObject::from(Mat::Q(q))),
+        ]
+        .into())))
     }
 }
 
