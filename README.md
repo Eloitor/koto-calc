@@ -3,10 +3,12 @@
 An interactive calculator and REPL built in Rust on top of the
 [Koto](https://github.com/koto-lang/koto) language, with an
 [Algebraeon](https://crates.io/crates/algebraeon) module for exact algebra:
-`NN` (natural numbers), `ZZ` (integers), `Q` (rationals), `Poly`
+`N` (natural numbers), `Z` (integers), `Q` (rationals), `Poly`
 (polynomials), `Mat` (matrices), `Quat` (Hamilton quaternions), `Alg` (real
 algebraic numbers), `ComplexAlg` (complex algebraic numbers), `Perm`/`Group`
 (group theory), `FF` (finite fields), `CF` (continued fractions), and more.
+The compatibility aliases `NN`, `ZZ`, and `ZZn` remain available during the
+0.2 transition, but new code should use `N`, `Z`, and `Zn`.
 
 ## Installation
 

@@ -12,30 +12,41 @@ and calculate in finite fields without losing information.
 Import the types you need from the built-in `algebraeon` module:
 
 ```koto
-from algebraeon import Q, Poly, Mat, Alg
+from algebraeon import N, Z, Q, Zn, Poly, Mat, Alg
 ```
+
+### Naming convention
+
+Basic number domains use their ASCII mathematical symbols: `N` for natural
+numbers, `Z` for integers, and `Q` for rationals. `Zn(n)` denotes the residue
+ring ℤ/nℤ. Other structures use descriptive PascalCase names or established
+acronyms such as `Poly`, `Mat`, `FF`, and `CF`.
+
+For compatibility with 0.1 scripts, `NN`, `ZZ`, and `ZZn` remain aliases for
+`N`, `Z`, and `Zn`; values created through an alias still have the canonical
+runtime type name.
 
 ## The exact-algebra toolbox
 
 | Type or family | What it does |
 |---|---|
-| `NN` | Arbitrary-precision natural numbers, with primes, factorization, divisors, and combinatorics. |
-| `ZZ` | Arbitrary-precision signed integers and integer number theory. |
+| `N` | Arbitrary-precision natural numbers, with primes, factorization, divisors, and combinatorics. |
+| `Z` | Arbitrary-precision signed integers and integer number theory. |
 | `Q` | Reduced rational numbers, so values such as `1/3` stay exact. |
 | `QSqrt` | Elements of quadratic fields `Q(sqrt(d))`, including exact conjugates, norms, and inverses. |
 | `Alg` | Exact real algebraic numbers represented as isolated roots of polynomials. |
 | `ComplexAlg` | Exact complex algebraic numbers, including polynomial roots and the imaginary unit. |
 | `CF` | Finite and periodic continued fractions, convergents, and exact rational values. |
 | `FF` | Prime and extension finite fields `GF(p^k)` with exact field arithmetic. |
-| `Ideal` / `ZZn` | Ideals of the integers and residue rings such as `Z/12Z`. |
-| `Poly` | Univariate polynomials over `ZZ` or `Q`, with evaluation, gcd, derivatives, and factorization. |
+| `Ideal` / `Zn` | Ideals of the integers and residue rings such as `Z/12Z`. |
+| `Poly` | Univariate polynomials over `Z` or `Q`, with evaluation, gcd, derivatives, and factorization. |
 | `MultiPoly` | Symbolic multivariate integer polynomials with evaluation and symmetric-polynomial tools. |
 | `PolyQuot` | Exact number fields presented as quotient rings `Q[x]/(f)`. |
 | `Mat` | Integer and rational matrices with determinants, exact inverses, and LLL reduction. |
 | `Perm` | Permutations with composition, inverses, signs, and cycle decomposition. |
 | `Group` | Finite groups represented by multiplication tables, with standard constructors. |
 | `Quat` | Hamilton quaternions over the rationals, with conjugate, norm, and inverse. |
-| Stirling numbers | Exact first- and second-kind Stirling numbers via `NN` and `ZZ`. |
+| Stirling numbers | Exact first- and second-kind Stirling numbers via `N` and `Z`. |
 
 ## A quick tour
 
@@ -56,9 +67,9 @@ reduced fraction `1/2`.
 ### Factor arbitrary-precision integers
 
 ```koto
-from algebraeon import NN
+from algebraeon import N
 
-print NN(12345).factor() # [(3, 1), (5, 1), (823, 1)]
+print N(12345).factor() # [(3, 1), (5, 1), (823, 1)]
 ```
 
 ### Work with an exact square root

@@ -3,41 +3,52 @@
 [Algebraeon](https://crates.io/crates/algebraeon) support for Koto:
 arbitrary precision arithmetic, number theory, polynomials, and matrices.
 
-The module provides the types [`NN`](#nn) (natural numbers),
-[`ZZ`](#zz) (integers), [`Q`](#q) (rationals),
+The module provides the types [`N`](#n) (natural numbers),
+[`Z`](#z) (integers), [`Q`](#q) (rationals),
 [`Poly`](#poly) (univariate polynomials), [`Mat`](#mat) (matrices),
 [`Quat`](#quat) (Hamilton quaternions) and [`Alg`](#alg) (real algebraic
 numbers), plus the module-level functions [`gcd`](#gcd) and [`lcm`](#lcm).
 
-## NN
+## Naming convention
+
+Basic number domains use ASCII forms of their mathematical symbols: `N`
+(naturals), `Z` (integers), and `Q` (rationals). `Zn(n)` is the residue ring
+ℤ/nℤ. Other structures use PascalCase names or established acronyms, for
+example `Poly`, `Mat`, `ComplexAlg`, `FF`, and `CF`.
+
+The former constructors `NN`, `ZZ`, and `ZZn` remain compatibility aliases
+during the 0.2 transition. They construct the same canonical `N`, `Z`, and
+`Zn` runtime types.
+
+## N
 
 ```kototype
 || -> Iterator
-|Number| -> NN
+|Number| -> N
 ```
 
 Natural (non-negative integer) values with arbitrary precision.
 
-Called with no arguments, `NN()` returns an iterator over the natural numbers
+Called with no arguments, `N()` returns an iterator over the natural numbers
 `0, 1, 2, ...`.
 
 ### Example
 
 ```koto
-print! NN(5).factorial()
+print! N(5).factorial()
 check! 120
 
-print! NN(5) - NN(3)
+print! N(5) - N(3)
 check! 2
 
-print! NN().take(4).to_list()
+print! N().take(4).to_list()
 check! [0, 1, 2, 3]
 ```
 
-## NN.bitcount
+## N.bitcount
 
 ```kototype
-|NN| -> Number
+|N| -> Number
 ```
 
 Returns the number of bits needed to represent the value.
@@ -45,14 +56,14 @@ Returns the number of bits needed to represent the value.
 ### Example
 
 ```koto
-print! NN(5).bitcount()
+print! N(5).bitcount()
 check! 3
 ```
 
-## NN.is_prime
+## N.is_prime
 
 ```kototype
-|NN| -> Bool
+|N| -> Bool
 ```
 
 Returns `true` if the value is prime.
@@ -60,17 +71,17 @@ Returns `true` if the value is prime.
 ### Example
 
 ```koto
-print! NN(17).is_prime()
+print! N(17).is_prime()
 check! true
 
-print! NN(12).is_prime()
+print! N(12).is_prime()
 check! false
 ```
 
-## NN.is_squarefree
+## N.is_squarefree
 
 ```kototype
-|NN| -> Bool
+|N| -> Bool
 ```
 
 Returns `true` if the value has no repeated prime factors.
@@ -78,17 +89,17 @@ Returns `true` if the value has no repeated prime factors.
 ### Example
 
 ```koto
-print! NN(10).is_squarefree()
+print! N(10).is_squarefree()
 check! true
 
-print! NN(12).is_squarefree()
+print! N(12).is_squarefree()
 check! false
 ```
 
-## NN.factor
+## N.factor
 
 ```kototype
-|NN| -> [(NN, NN)]
+|N| -> [(N, N)]
 ```
 
 Returns the prime factorization of the value as a list of
@@ -97,14 +108,14 @@ Returns the prime factorization of the value as a list of
 ### Example
 
 ```koto
-print! NN(60).factor()
+print! N(60).factor()
 check! [(2, 2), (3, 1), (5, 1)]
 ```
 
-## NN.factorial
+## N.factorial
 
 ```kototype
-|NN| -> NN
+|N| -> N
 ```
 
 Returns the factorial of the value.
@@ -112,14 +123,14 @@ Returns the factorial of the value.
 ### Example
 
 ```koto
-print! NN(5).factorial()
+print! N(5).factorial()
 check! 120
 ```
 
-## NN.divisors
+## N.divisors
 
 ```kototype
-|NN| -> [NN]
+|N| -> [N]
 ```
 
 Returns the value's divisors in ascending order.
@@ -127,14 +138,14 @@ Returns the value's divisors in ascending order.
 ### Example
 
 ```koto
-print! NN(12).divisors()
+print! N(12).divisors()
 check! [1, 2, 3, 4, 6, 12]
 ```
 
-## NN.euler_totient
+## N.euler_totient
 
 ```kototype
-|NN| -> NN
+|N| -> N
 ```
 
 Returns the value of [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function),
@@ -143,14 +154,14 @@ the count of positive integers up to the value that are coprime to it.
 ### Example
 
 ```koto
-print! NN(10).euler_totient()
+print! N(10).euler_totient()
 check! 4
 ```
 
-## NN.is_square
+## N.is_square
 
 ```kototype
-|NN| -> Bool
+|N| -> Bool
 ```
 
 Returns `true` if the value is a perfect square.
@@ -158,17 +169,17 @@ Returns `true` if the value is a perfect square.
 ### Example
 
 ```koto
-print! NN(16).is_square()
+print! N(16).is_square()
 check! true
 
-print! NN(18).is_square()
+print! N(18).is_square()
 check! false
 ```
 
-## NN.sqrt_floor
+## N.sqrt_floor
 
 ```kototype
-|NN| -> NN
+|N| -> N
 ```
 
 Returns the floor of the square root of the value.
@@ -176,14 +187,14 @@ Returns the floor of the square root of the value.
 ### Example
 
 ```koto
-print! NN(17).sqrt_floor()
+print! N(17).sqrt_floor()
 check! 4
 ```
 
-## NN.sqrt_ceil
+## N.sqrt_ceil
 
 ```kototype
-|NN| -> NN
+|N| -> N
 ```
 
 Returns the ceiling of the square root of the value.
@@ -191,14 +202,14 @@ Returns the ceiling of the square root of the value.
 ### Example
 
 ```koto
-print! NN(17).sqrt_ceil()
+print! N(17).sqrt_ceil()
 check! 5
 ```
 
-## NN.is_power_test
+## N.is_power_test
 
 ```kototype
-|NN| -> (Bool, NN?, NN?)
+|N| -> (Bool, N?, N?)
 ```
 
 Returns `(true, base, exponent)` if the value can be written as `base^exponent`
@@ -207,17 +218,17 @@ with `exponent > 1`, otherwise `(false, null, null)`.
 ### Example
 
 ```koto
-print! NN(8).is_power_test()
+print! N(8).is_power_test()
 check! (true, 2, 3)
 
-print! NN(6).is_power_test()
+print! N(6).is_power_test()
 check! (false, null, null)
 ```
 
-## NN.primality_test
+## N.primality_test
 
 ```kototype
-|NN| -> String
+|N| -> String
 ```
 
 Returns `'prime'` or `'composite'` (both `0` and `1` are reported as
@@ -226,14 +237,14 @@ Returns `'prime'` or `'composite'` (both `0` and `1` are reported as
 ### Example
 
 ```koto
-print! NN(17).primality_test()
+print! N(17).primality_test()
 check! prime
 
-print! NN(12).primality_test()
+print! N(12).primality_test()
 check! composite
 ```
 
-## NN.primes
+## N.primes
 
 ```kototype
 || -> Iterator
@@ -244,53 +255,53 @@ Returns an iterator over the prime numbers.
 ### Example
 
 ```koto
-print! NN.primes().take(6).to_list()
+print! N.primes().take(6).to_list()
 check! [2, 3, 5, 7, 11, 13]
 ```
 
-## ZZ
+## Z
 
 ```kototype
-|Number| -> ZZ
+|Number| -> Z
 ```
 
 Integer values with arbitrary precision.
 
-`ZZ` supports arithmetic (`+ - *`), comparisons, and assignment operators
-(`+= -= *=`) with other `ZZ` values, `NN` values, and plain numbers.
+`Z` supports arithmetic (`+ - *`), comparisons, and assignment operators
+(`+= -= *=`) with other `Z` values, `N` values, and plain numbers.
 
 ### Example
 
 ```koto
-print! ZZ(5) + ZZ(-3)
+print! Z(5) + Z(-3)
 check! 2
 
-print! ZZ(4) * ZZ(-2)
+print! Z(4) * Z(-2)
 check! -8
 
-print! ZZ(5) + NN(3)
+print! Z(5) + N(3)
 check! 8
 ```
 
-## ZZ.abs
+## Z.abs
 
 ```kototype
-|ZZ| -> NN
+|Z| -> N
 ```
 
-Returns the absolute value of the integer as an `NN`.
+Returns the absolute value of the integer as an `N`.
 
 ### Example
 
 ```koto
-print! ZZ(-9).abs()
+print! Z(-9).abs()
 check! 9
 ```
 
-## ZZ.is_irreducible
+## Z.is_irreducible
 
 ```kototype
-|ZZ| -> Bool
+|Z| -> Bool
 ```
 
 Returns `true` if the value is irreducible (i.e. a prime, up to sign).
@@ -298,17 +309,17 @@ Returns `true` if the value is irreducible (i.e. a prime, up to sign).
 ### Example
 
 ```koto
-print! ZZ(7).is_irreducible()
+print! Z(7).is_irreducible()
 check! true
 
-print! ZZ(9).is_irreducible()
+print! Z(9).is_irreducible()
 check! false
 ```
 
-## ZZ.is_square
+## Z.is_square
 
 ```kototype
-|ZZ| -> Bool
+|Z| -> Bool
 ```
 
 Returns `true` if the value is a perfect square.
@@ -316,17 +327,17 @@ Returns `true` if the value is a perfect square.
 ### Example
 
 ```koto
-print! ZZ(9).is_square()
+print! Z(9).is_square()
 check! true
 
-print! ZZ(10).is_square()
+print! Z(10).is_square()
 check! false
 ```
 
-## ZZ.factor
+## Z.factor
 
 ```kototype
-|ZZ| -> [(ZZ, NN)]
+|Z| -> [(Z, N)]
 ```
 
 Returns the prime factorization of the value as a list of
@@ -335,14 +346,14 @@ Returns the prime factorization of the value as a list of
 ### Example
 
 ```koto
-print! ZZ(-12).factor()
+print! Z(-12).factor()
 check! [(2, 2), (3, 1)]
 ```
 
-## ZZ.divmod
+## Z.divmod
 
 ```kototype
-|ZZ, ZZ| -> (ZZ, ZZ)
+|Z, Z| -> (Z, Z)
 ```
 
 Returns the quotient and remainder of a floor division, with a
@@ -351,14 +362,14 @@ non-negative remainder.
 ### Example
 
 ```koto
-print! ZZ(-7).divmod(ZZ(3))
+print! Z(-7).divmod(Z(3))
 check! (-3, 2)
 ```
 
-## ZZ.div_floor
+## Z.div_floor
 
 ```kototype
-|ZZ, ZZ| -> ZZ
+|Z, Z| -> Z
 ```
 
 Returns the quotient of a floor division.
@@ -366,29 +377,29 @@ Returns the quotient of a floor division.
 ### Example
 
 ```koto
-print! ZZ(-7).div_floor(ZZ(3))
+print! Z(-7).div_floor(Z(3))
 check! -3
 
-print! ZZ(-13).div_floor(ZZ(5))
+print! Z(-13).div_floor(Z(5))
 check! -3
 ```
 
-## ZZ.mod
+## Z.mod
 
 ```kototype
-|ZZ, ZZ| -> ZZ
+|Z, Z| -> Z
 ```
 
 Returns the non-negative remainder of a floor division, coherent with
-[`div_floor`](#zz-div-floor).
+[`div_floor`](#z-div-floor).
 
 ### Example
 
 ```koto
-print! ZZ(-7).mod(ZZ(3))
+print! Z(-7).mod(Z(3))
 check! 2
 
-print! ZZ(-13).mod(ZZ(5))
+print! Z(-13).mod(Z(5))
 check! 2
 ```
 
@@ -403,7 +414,7 @@ Rational numbers, stored as reduced fractions `num / den`.
 
 The denominator must be non-zero. A single argument is treated as a whole
 number. `Q` supports arithmetic (`+ - * /`), comparisons, and assignment
-operators (`+= -= *= /=`) with other `Q` values, `NN` values, `ZZ` values and
+operators (`+= -= *= /=`) with other `Q` values, `N` values, `Z` values and
 plain numbers.
 
 The display form is the reduced fraction `num/den`, or just `num` when the
@@ -431,7 +442,7 @@ check! 3
 ## Q.num
 
 ```kototype
-|Q| -> ZZ
+|Q| -> Z
 ```
 
 Returns the numerator of the reduced fraction.
@@ -449,7 +460,7 @@ check! -3
 ## Q.den
 
 ```kototype
-|Q| -> NN
+|Q| -> N
 ```
 
 Returns the denominator of the reduced fraction.
@@ -519,7 +530,7 @@ check! null
 ## Q.height
 
 ```kototype
-|Q| -> NN
+|Q| -> N
 ```
 
 Returns the height of the value: `max(|num|, den)` of the reduced fraction.
@@ -552,10 +563,10 @@ check! 1.5
 ## Q.to_zz
 
 ```kototype
-|Q| -> ZZ
+|Q| -> Z
 ```
 
-Converts the value to a `ZZ` (the value must be a whole number).
+Converts the value to a `Z` (the value must be a whole number).
 
 ### Example
 
@@ -570,10 +581,10 @@ check! 2
 ## Q.to_nn
 
 ```kototype
-|Q| -> NN
+|Q| -> N
 ```
 
-Converts the value to an `NN` (the value must be a non-negative whole number).
+Converts the value to an `N` (the value must be a non-negative whole number).
 
 ### Example
 
@@ -591,15 +602,15 @@ check! 0
 |List| -> Poly
 ```
 
-Univariate polynomials over `ZZ` or `Q`.
+Univariate polynomials over `Z` or `Q`.
 
 The constructor takes a list of coefficients in ascending order, with the
 first element being the constant term: `Poly([6, -5, 1])` represents
 `6 - 5x + x^2`.
 
-The coefficients are stored as `ZZ` when all of them are integers, and
+The coefficients are stored as `Z` when all of them are integers, and
 promoted to `Q` when any of them is a fraction. Arithmetic (`+ - *`) works
-with other polynomials and with `NN`/`ZZ`/`Q` scalars, promoting `ZZ` to `Q`
+with other polynomials and with `N`/`Z`/`Q` scalars, promoting `Z` to `Q`
 when needed.
 
 The display form shows the terms in ascending order of degree, e.g.
@@ -622,7 +633,7 @@ check! 3 - (5/2)x + (1/2)x^2
 ## Poly.degree
 
 ```kototype
-|Poly| -> NN
+|Poly| -> N
 ```
 
 Returns the degree of the polynomial (the zero polynomial has degree `0`).
@@ -640,7 +651,7 @@ check! 0
 ## Poly.coeffs
 
 ```kototype
-|Poly| -> [ZZ] | [Q]
+|Poly| -> [Z] | [Q]
 ```
 
 Returns the coefficients in ascending order, starting with the constant term.
@@ -658,10 +669,10 @@ check! [3, -5/2, 1/2]
 ## Poly.eval
 
 ```kototype
-|Poly, x: Number| -> ZZ | Q
+|Poly, x: Number| -> Z | Q
 ```
 
-Evaluates the polynomial at `x` (which may be a `Number`, `NN`, `ZZ` or `Q`).
+Evaluates the polynomial at `x` (which may be a `Number`, `N`, `Z` or `Q`).
 
 ### Example
 
@@ -711,7 +722,7 @@ check! -2 + x
 ## Poly.factor
 
 ```kototype
-|Poly| -> [(Poly, NN)]
+|Poly| -> [(Poly, N)]
 ```
 
 Returns the irreducible factorization of the polynomial as a list of
@@ -733,12 +744,12 @@ check! [(1 + x^2, 1)]
 |List of lists| -> Mat
 ```
 
-Matrices over `ZZ` or `Q`, given row by row: `Mat([[1, 2], [3, 4]])` is the
+Matrices over `Z` or `Q`, given row by row: `Mat([[1, 2], [3, 4]])` is the
 `2x2` matrix with rows `[1, 2]` and `[3, 4]`.
 
-The entries are stored as `ZZ` when all of them are integers, and promoted
+The entries are stored as `Z` when all of them are integers, and promoted
 to `Q` when any of them is a fraction. Arithmetic (`+ - *`) works with other
-matrices and with `NN`/`ZZ`/`Q` scalars.
+matrices and with `N`/`Z`/`Q` scalars.
 
 The display form is a list of rows, e.g. `[[1, 2], [3, 4]]`.
 
@@ -759,7 +770,7 @@ check! -2
 ## Mat.rows
 
 ```kototype
-|Mat| -> NN
+|Mat| -> N
 ```
 
 Returns the number of rows.
@@ -774,7 +785,7 @@ check! 2
 ## Mat.cols
 
 ```kototype
-|Mat| -> NN
+|Mat| -> N
 ```
 
 Returns the number of columns.
@@ -789,7 +800,7 @@ check! 2
 ## Mat.at
 
 ```kototype
-|Mat, row: Number, col: Number| -> ZZ | Q
+|Mat, row: Number, col: Number| -> Z | Q
 ```
 
 Returns the entry at the given row and column (zero-based).
@@ -835,7 +846,7 @@ check! [[19, 22], [43, 50]]
 ## Mat.det
 
 ```kototype
-|Mat| -> ZZ | Q
+|Mat| -> Z | Q
 ```
 
 Returns the determinant (only defined for square matrices).
@@ -853,7 +864,7 @@ check! -2
 |Mat| -> Mat
 ```
 
-Returns the inverse of the matrix over `Q` (a `ZZ` matrix is promoted to
+Returns the inverse of the matrix over `Q` (a `Z` matrix is promoted to
 `Q`). An error is thrown if the matrix is singular.
 
 ### Example
@@ -887,7 +898,7 @@ check! [[-1, 0], [0, 1]]
 ## gcd
 
 ```kototype
-|NN, NN| -> NN
+|N, N| -> N
 ```
 
 Returns the greatest common divisor of two natural numbers.
@@ -895,14 +906,14 @@ Returns the greatest common divisor of two natural numbers.
 ### Example
 
 ```koto
-print! gcd(NN(12), NN(18))
+print! gcd(N(12), N(18))
 check! 6
 ```
 
 ## lcm
 
 ```kototype
-|NN, NN| -> NN
+|N, N| -> N
 ```
 
 Returns the least common multiple of two natural numbers.
@@ -910,7 +921,7 @@ Returns the least common multiple of two natural numbers.
 ### Example
 
 ```koto
-print! lcm(NN(4), NN(6))
+print! lcm(N(4), N(6))
 check! 12
 ```
 
@@ -922,7 +933,7 @@ check! 12
 
 [Hamilton quaternions](https://en.wikipedia.org/wiki/Quaternion) over `Q`,
 constructed from four coefficients `a + bi + cj + dk` (each
-`Number`/`NN`/`ZZ`/`Q` argument is promoted to `Q`).
+`Number`/`N`/`Z`/`Q` argument is promoted to `Q`).
 
 Multiplication is the Hamilton product, defined by
 `i^2 = j^2 = k^2 = ijk = -1` with `i*j = k`, `j*k = i` and `k*i = j` (the
@@ -933,7 +944,7 @@ produced wrong signs in the `i`/`j` cross terms of
 `QuaternionAlgebraStructure::mul`.
 
 `Quat` supports arithmetic (`+ - *`) with other `Quat` values and with
-scalars (`Number`/`NN`/`ZZ`/`Q`, on either side), negation, and equality
+scalars (`Number`/`N`/`Z`/`Q`, on either side), negation, and equality
 (`==`, `!=`).
 
 The display form is e.g. `1 + 2i - 3j + (1/2)k`: zero terms are omitted,
@@ -1071,14 +1082,14 @@ check! (1.0, 2.0, 3.0, 4.0)
 ```
 
 Real algebraic numbers: exact real roots of polynomials. The constructor
-takes a `Poly` (over `ZZ` or `Q`) or a coefficient list (as in
+takes a `Poly` (over `Z` or `Q`) or a coefficient list (as in
 `Poly([...])`), and returns the **list of isolated real roots in increasing
 order**, with multiplicity. Polynomials of degree `0` (including the zero
 polynomial) and polynomials without real roots give an empty list.
 
 Each `Alg` value is a root with an isolating interval, so comparisons are
 exact: `<`, `<=`, `>`, `>=` and `==` work between two `Alg` values and
-between an `Alg` and a scalar (`Q`/`NN`/`ZZ`/`Number`, compared exactly as
+between an `Alg` and a scalar (`Q`/`N`/`Z`/`Number`, compared exactly as
 a rational). Arithmetic between algebraic numbers is not exposed.
 
 The display form is a decimal approximation with 9 significant decimals
@@ -1115,7 +1126,7 @@ check! [-1.414213562, 1.414213562]
 ```
 
 Exact comparison: `-1` if smaller, `0` if equal, `1` if greater. The
-argument may be another `Alg` or a scalar (`Number`/`NN`/`ZZ`/`Q`),
+argument may be another `Alg` or a scalar (`Number`/`N`/`Z`/`Q`),
 compared exactly as a rational.
 
 ### Example
@@ -1216,7 +1227,7 @@ check! 6.0
 |Number, ...| -> Ideal
 ```
 
-Ideals of `ZZ` are principal. `Ideal(a, b, ...)` is the ideal generated by
+Ideals of `Z` are principal. `Ideal(a, b, ...)` is the ideal generated by
 its integer arguments; its canonical non-negative generator is displayed with
 suffix `Z`. Thus `Ideal(4, 6)` is `2Z`.
 
@@ -1242,13 +1253,13 @@ check! false
 |Ideal, Number| -> Bool
 ```
 
-Tests whether an integer belongs to the ideal. `NN` and `ZZ` values are also
+Tests whether an integer belongs to the ideal. `N` and `Z` values are also
 accepted.
 
 ### Example
 
 ```koto
-print! Ideal(6).contains(ZZ(-12))
+print! Ideal(6).contains(Z(-12))
 check! true
 
 print! Ideal(0).contains(3)
@@ -1258,7 +1269,7 @@ check! false
 ## Ideal.generator
 
 ```kototype
-|Ideal| -> NN
+|Ideal| -> N
 ```
 
 Returns the canonical non-negative generator.
@@ -1276,7 +1287,7 @@ check! 2
 |Ideal, Ideal| -> Ideal
 ```
 
-Returns the sum of two ideals. In `ZZ`, this is the ideal generated by the
+Returns the sum of two ideals. In `Z`, this is the ideal generated by the
 greatest common divisor of their generators.
 
 ### Example
@@ -1292,7 +1303,7 @@ check! 3Z
 |Ideal, Ideal| -> Ideal
 ```
 
-Returns the intersection of two ideals. In `ZZ`, its generator is the least
+Returns the intersection of two ideals. In `Z`, its generator is the least
 common multiple of the two generators.
 
 ### Example
@@ -1323,7 +1334,7 @@ check! 90Z
 |Ideal, Ideal| -> Ideal
 ```
 
-Returns the ideal quotient `(I : J) = {x in ZZ : xJ subset I}`.
+Returns the ideal quotient `(I : J) = {x in Z : xJ subset I}`.
 
 ### Example
 
@@ -1351,13 +1362,13 @@ print! Ideal(6) == Ideal(-6)
 check! true
 ```
 
-## ZZn
+## Zn
 
 ```kototype
-|Number| -> ZZn
+|Number| -> Zn
 ```
 
-The ring `ZZn(n)` is the ring of integers modulo a positive modulus `n`.
+The ring `Zn(n)` is ℤ/nℤ, the ring of integers modulo a positive modulus `n`.
 Call `.of(x)` to create the residue class of an integer. Classes from the same
 ring support `+`, `-`, `*` and unary `-`; their display is `[x] mod n` with a
 canonical representative.
@@ -1365,39 +1376,39 @@ canonical representative.
 ### Example
 
 ```koto
-print! ZZn(6)
-check! ZZn
+print! Zn(6)
+check! Zn
 
-print! ZZn(6).of(7) + ZZn(6).of(5)
+print! Zn(6).of(7) + Zn(6).of(5)
 check! [0] mod 6
 
-print! -ZZn(6).of(1)
+print! -Zn(6).of(1)
 check! [5] mod 6
 ```
 
-## ZZn.of
+## Zn.of
 
 ```kototype
-|ZZn, Number| -> ZZnElement
+|Zn, Number| -> ZnElement
 ```
 
 Creates a residue class, reducing the argument modulo the ring modulus.
-`NN` and `ZZ` values are accepted too.
+`N` and `Z` values are accepted too.
 
 ### Example
 
 ```koto
-print! ZZn(7).of(-1)
+print! Zn(7).of(-1)
 check! [6] mod 7
 
-print! ZZn(6).of(7) * ZZn(6).of(5)
+print! Zn(6).of(7) * Zn(6).of(5)
 check! [5] mod 6
 ```
 
-## ZZnElement.inverse
+## ZnElement.inverse
 
 ```kototype
-|ZZnElement| -> ZZnElement
+|ZnElement| -> ZnElement
 ```
 
 Returns a multiplicative inverse. It errors when the residue is not coprime
@@ -1406,7 +1417,7 @@ to the modulus.
 ### Example
 
 ```koto
-print! ZZn(7).of(5).inverse()
+print! Zn(7).of(5).inverse()
 check! [3] mod 7
 ```
 
@@ -1478,7 +1489,7 @@ check! 5
 ## FFElement.order
 
 ```kototype
-|FFElement| -> NN
+|FFElement| -> N
 ```
 
 Returns the multiplicative order of a non-zero element.
@@ -1571,7 +1582,7 @@ check! 22/7
 ## CF.convergent
 
 ```kototype
-|CF, NN| -> Q
+|CF, N| -> Q
 ```
 
 Returns the convergent at index `n`, starting at index zero. Convergents also
@@ -1587,10 +1598,10 @@ check! 41/29
 ## CF.take
 
 ```kototype
-|CF, NN| -> [ZZ]
+|CF, N| -> [Z]
 ```
 
-Returns the first `n` coefficients as a list of `ZZ` values. A finite
+Returns the first `n` coefficients as a list of `Z` values. A finite
 continued fraction stops when its coefficients run out.
 
 ### Example
@@ -1930,7 +1941,7 @@ check! 5 - 2x + x^2
 ## ComplexAlg.degree
 
 ```kototype
-|ComplexAlg| -> NN
+|ComplexAlg| -> N
 ```
 
 Returns the degree of the minimal polynomial.
@@ -1960,7 +1971,7 @@ check! [1.0, 2.0]
 ## legendre
 
 ```kototype
-|Number, Number| -> ZZ
+|Number, Number| -> Z
 ```
 
 Returns the Legendre symbol `(a / p)` as `-1`, `0` or `1`. The bottom
@@ -1979,7 +1990,7 @@ check! -1
 ## jacobi
 
 ```kototype
-|Number, Number| -> ZZ
+|Number, Number| -> Z
 ```
 
 Returns the Jacobi symbol `(a / n)` for an odd positive `n`; `n` need not be
@@ -1998,7 +2009,7 @@ check! 0
 ## kronecker
 
 ```kototype
-|Number, Number| -> ZZ
+|Number, Number| -> Z
 ```
 
 Returns the Kronecker symbol `(a / n)`, extending the Jacobi symbol to even,
@@ -2034,10 +2045,10 @@ print! e_cf.convergent(5)
 check! 87/32
 ```
 
-## ZZ.ideal
+## Z.ideal
 
 ```kototype
-|ZZ| -> Ideal
+|Z| -> Ideal
 ```
 
 Returns the principal ideal generated by the integer. The generator is
@@ -2047,9 +2058,9 @@ values.
 ### Example
 
 ```koto
-print! ZZ(-6).ideal()
+print! Z(-6).ideal()
 check! 6Z
 
-print! ZZ(0).ideal()
+print! Z(0).ideal()
 check! 0Z
 ```

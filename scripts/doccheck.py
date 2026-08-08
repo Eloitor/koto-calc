@@ -42,8 +42,8 @@ import tempfile
 # sense import; la resta de docs s'auto-importen o usen el mòdul qualificat.
 IMPORT_PREFIX = {
     "algebraeon.md": (
-        "from algebraeon import NN, ZZ, Q, Poly, Mat, Quat, Alg, "
-        "Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, "
+        "from algebraeon import N, Z, Q, Poly, Mat, Quat, Alg, "
+        "Ideal, Zn, FF, CF, Perm, Group, ComplexAlg, "
         "gcd, lcm, legendre, jacobi, kronecker, eulers_constant\n"
     ),
 }
