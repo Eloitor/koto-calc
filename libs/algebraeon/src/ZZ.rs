@@ -2,7 +2,7 @@ use crate::NN::NN;
 use koto_runtime::{Result, derive::*, prelude::*};
 
 use algebraeon::nzq::Integer;
-use algebraeon::nzq::traits::Abs;
+use algebraeon::nzq::traits::{Abs, DivMod};
 use algebraeon_rings::structure::MetaFactoringMonoid;
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
@@ -10,6 +10,14 @@ pub struct ZZ(Integer);
 
 #[koto_impl]
 impl ZZ {
+    pub fn from_integer(i: Integer) -> Self {
+        Self(i)
+    }
+
+    pub fn to_integer(&self) -> Integer {
+        self.0.clone()
+    }
+
     pub fn make_koto_object(n: KNumber) -> KObject {
         let my_int = Integer::from(i64::from(n));
         KObject::from(Self(my_int))
@@ -28,6 +36,75 @@ impl ZZ {
     #[koto_method]
     pub fn is_square(&self) -> KValue {
         self.0.is_square().into()
+    }
+
+    #[koto_method]
+    pub fn factor(&self) -> KValue {
+        match self.0.clone().factor().into_powers() {
+            Some(factors) => {
+                let koto_factors: Vec<KValue> = factors
+                    .into_iter()
+                    .map(|(prime, exp)| {
+                        let prime_val = KValue::Object(KObject::from(ZZ(prime)));
+                        let exp_val = KValue::Object(KObject::from(NN(exp)));
+                        KValue::Tuple(vec![prime_val, exp_val].into())
+                    })
+                    .collect();
+
+                KValue::List(KList::with_data(koto_factors.into()))
+            }
+            None => KValue::Null,
+        }
+    }
+
+    #[koto_method]
+    pub fn divmod(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [KValue::Object(other)] if other.is_a::<ZZ>() => {
+                let other = other.cast::<ZZ>().unwrap();
+                let (q, r) = self.0.clone().div_mod(other.0.clone());
+                Ok(KValue::Tuple(
+                    vec![
+                        KValue::Object(KObject::from(ZZ(q))),
+                        KValue::Object(KObject::from(ZZ(r))),
+                    ]
+                    .into(),
+                ))
+            }
+            unexpected => unexpected_args("|ZZ|", unexpected),
+        }
+    }
+
+    #[koto_method]
+    pub fn div_floor(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [KValue::Object(other)] if other.is_a::<ZZ>() => {
+                let other = other.cast::<ZZ>().unwrap();
+                let (q, _r) = self.0.clone().div_mod(other.0.clone());
+                Ok(KValue::Object(KObject::from(ZZ(q))))
+            }
+            unexpected => unexpected_args("|ZZ|", unexpected),
+        }
+    }
+
+    #[koto_method(alias = "mod")]
+    pub fn modulo(&self, args: &[KValue]) -> Result<KValue> {
+        match args {
+            [KValue::Object(other)] if other.is_a::<ZZ>() => {
+                let other = other.cast::<ZZ>().unwrap();
+                let (_q, r) = self.0.clone().div_mod(other.0.clone());
+                // div_mod returns a remainder with the same sign as the divisor;
+                // adjust it to be a non-negative remainder (coherent with div_floor
+                // for positive divisors).
+                let r = if r < Integer::ZERO {
+                    r + Integer::from(other.0.clone().abs())
+                } else {
+                    r
+                };
+                Ok(KValue::Object(KObject::from(ZZ(r))))
+            }
+            unexpected => unexpected_args("|ZZ|", unexpected),
+        }
     }
 }
 

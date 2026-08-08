@@ -40,7 +40,52 @@ from algebraeon import NN, ZZ
   a *= NN(3)
   a *= 2
   assert_eq a, ZZ(54)
-  
+
+@test numtheory_tests = ||
+  write 'Testing numtheory \t'
+
+  # NN.primes: first 10 primes as an iterator
+  primes10 = NN.primes().take(10).to_list()
+  assert_eq primes10, [NN(2), NN(3), NN(5), NN(7), NN(11), NN(13), NN(17), NN(19), NN(23), NN(29)]
+
+  # divisors
+  assert_eq NN(12).divisors(), [NN(1), NN(2), NN(3), NN(4), NN(6), NN(12)]
+  assert_eq NN(1).divisors(), [NN(1)]
+
+  # euler_totient
+  assert_eq NN(10).euler_totient(), NN(4)
+  assert_eq NN(1).euler_totient(), NN(1)
+  assert_eq NN(12).euler_totient(), NN(4)
+
+  # is_squarefree
+  assert not NN(12).is_squarefree()
+  assert NN(10).is_squarefree()
+  assert NN(1).is_squarefree()
+
+  # is_power_test
+  assert_eq NN(8).is_power_test(), (true, NN(2), NN(3))
+  assert_eq NN(6).is_power_test(), (false, null, null)
+
+  # primality_test
+  assert_eq NN(17).primality_test(), 'prime'
+  assert_eq NN(12).primality_test(), 'composite'
+  assert_eq NN(1).primality_test(), 'composite'
+
+  # ZZ::factor: negative integer, unit -1 ignored
+  assert_eq ZZ(-12).factor(), [(ZZ(2), NN(2)), (ZZ(3), NN(1))]
+  assert_eq ZZ(12).factor(), [(ZZ(2), NN(2)), (ZZ(3), NN(1))]
+
+  # ZZ::divmod / div_floor / mod
+  assert_eq ZZ(-7).divmod(ZZ(3)), (ZZ(-3), ZZ(2))
+  assert_eq ZZ(-7).div_floor(ZZ(3)), ZZ(-3)
+  assert_eq ZZ(-7).mod(ZZ(3)), ZZ(2)
+  assert_eq ZZ(13).div_floor(ZZ(5)), ZZ(2)
+  assert_eq ZZ(13).mod(ZZ(5)), ZZ(3)
+  assert_eq ZZ(-13).div_floor(ZZ(5)), ZZ(-3)
+  assert_eq ZZ(-13).mod(ZZ(5)), ZZ(2)
+  assert_eq ZZ(4).mod(ZZ(3)), ZZ(1)
+  assert_eq ZZ(-4).mod(ZZ(3)), ZZ(2)
+
 
 @main = ||
   print 'Algebraeon Koto tests passed'

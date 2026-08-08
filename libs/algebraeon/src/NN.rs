@@ -1,7 +1,10 @@
 use koto_runtime::{IsIterable, KIteratorOutput, KotoVm, Result, derive::*, prelude::*};
 
 use algebraeon::nzq::Natural;
-use algebraeon_rings::structure::MetaFactoringMonoid;
+use algebraeon::nzq::primes;
+use algebraeon::rings::natural::factorization::primes::{PrimalityTestResult, primality_test};
+use algebraeon::rings::natural::functions::{IsPowerTestResult, is_power_test};
+use algebraeon_rings::structure::{MetaFactoringMonoid, MetaFactoringMonoidNaturalExponent, UniqueFactorizationMonoidSignature};
 
 #[derive(PartialEq, Clone, KotoCopy, KotoType, Eq, Debug)]
 pub struct NNIterator {
@@ -10,6 +13,36 @@ pub struct NNIterator {
 
 #[koto_impl]
 impl NNIterator {
+    // Empty implementation block to satisfy Koto requirements
+}
+
+/// Infinite iterator over the prime numbers (2, 3, 5, 7, ...)
+#[derive(KotoType)]
+pub struct NNPrimesIterator {
+    iter: Box<dyn Iterator<Item = usize>>,
+}
+
+impl NNPrimesIterator {
+    pub fn new() -> Self {
+        Self {
+            iter: Box::new(primes()),
+        }
+    }
+}
+
+// The underlying iterator is not cloneable, so copies start a fresh prime iterator.
+impl KotoCopy for NNPrimesIterator {
+    fn copy(&self) -> KObject {
+        KObject::from(NNPrimesIterator::new())
+    }
+
+    fn deep_copy(&self) -> KObject {
+        self.copy()
+    }
+}
+
+#[koto_impl]
+impl NNPrimesIterator {
     // Empty implementation block to satisfy Koto requirements
 }
 
@@ -53,6 +86,72 @@ impl NN {
     }
 
     #[koto_method]
+    pub fn is_squarefree(&self) -> KValue {
+        KValue::from(self.0.is_squarefree())
+    }
+
+    #[koto_method]
+    pub fn divisors(&self) -> KValue {
+        let factored = self.0.clone().factor();
+        let factorizations = Natural::structure_ref().factorizations();
+        match factorizations.divisors(&factored) {
+            Some(divisors) => {
+                let mut divisors: Vec<Natural> = divisors.collect();
+                divisors.sort();
+                let koto_divisors: Vec<KValue> = divisors
+                    .into_iter()
+                    .map(|d| KValue::Object(KObject::from(NN(d))))
+                    .collect();
+                KValue::List(KList::with_data(koto_divisors.into()))
+            }
+            None => KValue::List(KList::with_data(vec![].into())),
+        }
+    }
+
+    #[koto_method]
+    pub fn euler_totient(&self) -> KValue {
+        let factored = self.0.clone().factor();
+        let phi = Natural::structure_ref()
+            .factorizations()
+            .euler_totient(&factored);
+        KValue::Object(KObject::from(NN(phi)))
+    }
+
+    #[koto_method]
+    pub fn is_power_test(&self) -> KValue {
+        match is_power_test(&self.0) {
+            IsPowerTestResult::Power(base, exp) => KValue::Tuple(
+                vec![
+                    KValue::Bool(true),
+                    KValue::Object(KObject::from(NN(base))),
+                    KValue::Object(KObject::from(NN(Natural::from(exp)))),
+                ]
+                .into(),
+            ),
+            IsPowerTestResult::Zero | IsPowerTestResult::One | IsPowerTestResult::No => {
+                KValue::Tuple(
+                    vec![
+                        KValue::Bool(false),
+                        KValue::Null,
+                        KValue::Null,
+                    ]
+                    .into(),
+                )
+            }
+        }
+    }
+
+    #[koto_method]
+    pub fn primality_test(&self) -> KValue {
+        match primality_test(&self.0) {
+            PrimalityTestResult::Prime => KValue::from("prime"),
+            PrimalityTestResult::Zero
+            | PrimalityTestResult::One
+            | PrimalityTestResult::Composite => KValue::from("composite"),
+        }
+    }
+
+    #[koto_method]
     pub fn factorial(&self) -> KValue {
         KValue::Object(KObject::from(NN::from(NN(self.0.factorial()))))
     }
@@ -90,6 +189,21 @@ impl KotoObject for NNIterator {
         let result = KValue::Object(KObject::from(NN(self.counter.clone())));
         self.counter += Natural::ONE;
         Some(KIteratorOutput::Value(result))
+    }
+}
+
+impl KotoObject for NNPrimesIterator {
+    fn is_iterable(&self) -> IsIterable {
+        IsIterable::ForwardIterator
+    }
+
+    fn iterator_next(&mut self, _vm: &mut KotoVm) -> Option<KIteratorOutput> {
+        match self.iter.next() {
+            Some(p) => Some(KIteratorOutput::Value(KValue::Object(KObject::from(
+                NN(Natural::from(p)),
+            )))),
+            None => None,
+        }
     }
 }
 
