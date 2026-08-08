@@ -32,10 +32,29 @@ koto_calc -e "print (1..10).sum()"
 koto_calc -t script.koto
 ```
 
+## Algebraeon: Exact Algebra
+
+Algebraeon is what turns koto-calc into more than a general-purpose REPL. It
+provides arbitrary-precision integers and rationals, exact algebraic numbers,
+polynomials, matrices, finite fields, permutations and groups, quaternions,
+continued fractions, and more — without hidden floating-point rounding.
+
+```koto
+from algebraeon import Q, Poly
+
+print Q(1, 3) + Q(1, 6)        # 1/2
+print Poly([6, -5, 1]).factor() # [(-2 + x, 1), (-3 + x, 1)]
+```
+
+Explore the
+[Algebraeon exact-algebra toolbox](https://eloitor.github.io/koto-calc/algebraeon.html).
+
 ## Documentation
 
 Full documentation is available at <https://eloitor.github.io/koto-calc/>.
 
+- [Algebraeon Overview](docs/algebraeon.md)
+- [Algebraeon Full Reference](docs/libs/algebraeon.md)
 - [Language Guide](docs/language_guide.md)
 - [Core Library Reference](docs/core_lib/)
 - [Library Modules](docs/libs/)
