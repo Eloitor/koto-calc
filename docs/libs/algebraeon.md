@@ -5,8 +5,9 @@ arbitrary precision arithmetic, number theory, polynomials, and matrices.
 
 The module provides the types [`NN`](#nn) (natural numbers),
 [`ZZ`](#zz) (integers), [`Q`](#q) (rationals),
-[`Poly`](#poly) (univariate polynomials) and [`Mat`](#mat) (matrices),
-plus the module-level functions [`gcd`](#gcd) and [`lcm`](#lcm).
+[`Poly`](#poly) (univariate polynomials), [`Mat`](#mat) (matrices),
+[`Quat`](#quat) (Hamilton quaternions) and [`Alg`](#alg) (real algebraic
+numbers), plus the module-level functions [`gcd`](#gcd) and [`lcm`](#lcm).
 
 ## NN
 
@@ -911,4 +912,300 @@ Returns the least common multiple of two natural numbers.
 ```koto
 print! lcm(NN(4), NN(6))
 check! 12
+```
+
+## Quat
+
+```kototype
+|Number, Number, Number, Number| -> Quat
+```
+
+[Hamilton quaternions](https://en.wikipedia.org/wiki/Quaternion) over `Q`,
+constructed from four coefficients `a + bi + cj + dk` (each
+`Number`/`NN`/`ZZ`/`Q` argument is promoted to `Q`).
+
+Multiplication is the Hamilton product, defined by
+`i^2 = j^2 = k^2 = ijk = -1` with `i*j = k`, `j*k = i` and `k*i = j` (the
+cross terms anti-commute: `j*i = -k`, ...), so multiplication is not
+commutative. The product is computed directly on the coefficients: the
+wrapper works around a bug in algebraeon 0.0.17 (upstream issue #244) that
+produced wrong signs in the `i`/`j` cross terms of
+`QuaternionAlgebraStructure::mul`.
+
+`Quat` supports arithmetic (`+ - *`) with other `Quat` values and with
+scalars (`Number`/`NN`/`ZZ`/`Q`, on either side), negation, and equality
+(`==`, `!=`).
+
+The display form is e.g. `1 + 2i - 3j + (1/2)k`: zero terms are omitted,
+the coefficient `1` is dropped on `i`/`j`/`k`, and fractional coefficients
+are parenthesized.
+
+### Example
+
+```koto
+q = Quat(1, 2, 3, 4)
+print! q
+check! 1 + 2i + 3j + 4k
+
+print! q + Quat(1, -2, -3, -4)
+check! 2
+
+print! q * 2
+check! 2 + 4i + 6j + 8k
+
+print! 1 - q
+check! -2i - 3j - 4k
+
+print! Quat(1, 2, 0, 0) * Quat(3, 4, 0, 0)
+check! -5 + 10i
+
+# Hamilton rules: i*j = k, j*i = -k, i*i = -1
+i = Quat(0, 1, 0, 0)
+j = Quat(0, 0, 1, 0)
+k = Quat(0, 0, 0, 1)
+print! i * j
+check! k
+
+print! j * i
+check! -k
+
+print! i * i
+check! -1
+
+# Associativity: (i*j)*k = -1
+print! (i * j) * k
+check! -1
+```
+
+## Quat.conjugate
+
+```kototype
+|Quat| -> Quat
+```
+
+Returns the conjugate `a - bi - cj - dk`.
+
+### Example
+
+```koto
+print! Quat(1, 2, 3, 4).conjugate()
+check! 1 - 2i - 3j - 4k
+
+print! Quat(1, 2, 3, 4).conjugate().conjugate()
+check! 1 + 2i + 3j + 4k
+```
+
+## Quat.norm
+
+```kototype
+|Quat| -> Q
+```
+
+Returns the reduced norm `a^2 + b^2 + c^2 + d^2`.
+
+### Example
+
+```koto
+print! Quat(1, 2, 3, 4).norm()
+check! 30
+
+print! Quat(3, -4, 0, 0).norm()
+check! 25
+```
+
+## Quat.trace
+
+```kototype
+|Quat| -> Q
+```
+
+Returns the reduced trace `2a`.
+
+### Example
+
+```koto
+print! Quat(1, 2, 3, 4).trace()
+check! 2
+
+print! Quat(3, -4, 0, 0).trace()
+check! 6
+```
+
+## Quat.coeffs
+
+```kototype
+|Quat| -> (Q, Q, Q, Q)
+```
+
+Returns the four coefficients as a tuple `(a, b, c, d)`.
+
+### Example
+
+```koto
+print! Quat(1, 2, 3, 4).coeffs()
+check! (1, 2, 3, 4)
+
+print! Quat(Q(1, 2), 0, 0, 0).coeffs()
+check! (1/2, 0, 0, 0)
+```
+
+## Quat.to_float
+
+```kototype
+|Quat| -> (Number, Number, Number, Number)
+```
+
+Converts the four coefficients to floating point numbers.
+
+### Example
+
+```koto
+print! Quat(1, 2, 3, 4).to_float()
+check! (1.0, 2.0, 3.0, 4.0)
+```
+
+## Alg
+
+```kototype
+|Poly | List| -> [Alg]
+```
+
+Real algebraic numbers: exact real roots of polynomials. The constructor
+takes a `Poly` (over `ZZ` or `Q`) or a coefficient list (as in
+`Poly([...])`), and returns the **list of isolated real roots in increasing
+order**, with multiplicity. Polynomials of degree `0` (including the zero
+polynomial) and polynomials without real roots give an empty list.
+
+Each `Alg` value is a root with an isolating interval, so comparisons are
+exact: `<`, `<=`, `>`, `>=` and `==` work between two `Alg` values and
+between an `Alg` and a scalar (`Q`/`NN`/`ZZ`/`Number`, compared exactly as
+a rational). Arithmetic between algebraic numbers is not exposed.
+
+The display form is a decimal approximation with 9 significant decimals
+(e.g. `1.414213562`), or the exact reduced fraction for rational values
+(e.g. `6`).
+
+### Example
+
+```koto
+roots = Alg(Poly([-2, 0, 1]))  # roots of x^2 - 2
+print! roots
+check! [-1.414213562, 1.414213562]
+
+print! size(roots)
+check! 2
+
+print! roots[0] < roots[1]
+check! true
+
+print! Alg(Poly([1, -2, 1]))  # (x - 1)^2, multiplicity kept
+check! [1, 1]
+
+print! Alg(Poly([1, 0, 1]))  # x^2 + 1 has no real roots
+check! []
+
+print! Alg([-2, 0, 1])  # coefficient list form
+check! [-1.414213562, 1.414213562]
+```
+
+## Alg.cmp
+
+```kototype
+|Alg, Alg | Number| -> Number
+```
+
+Exact comparison: `-1` if smaller, `0` if equal, `1` if greater. The
+argument may be another `Alg` or a scalar (`Number`/`NN`/`ZZ`/`Q`),
+compared exactly as a rational.
+
+### Example
+
+```koto
+roots = Alg(Poly([-2, 0, 1]))
+print! roots[0].cmp(roots[1])
+check! -1
+
+sqrt2 = roots[1]
+print! sqrt2.cmp(Q(141, 100))  # sqrt(2) > 141/100
+check! 1
+```
+
+## Alg.accuracy
+
+```kototype
+|Alg| -> Q
+```
+
+Returns the width of the isolating interval (an exact rational). Rational
+values have accuracy `0`.
+
+### Example
+
+```koto
+print! Alg(Poly([-2, 0, 1]))[0].accuracy() > Q(0)
+check! true
+
+print! Alg(Poly([-6, 1]))[0].accuracy()  # rational root
+check! 0
+```
+
+## Alg.refine
+
+```kototype
+|Alg, accuracy: Q | Number| -> Alg
+```
+
+Returns a new `Alg` whose isolating interval has been refined to the
+requested (positive) accuracy. Rational values are returned unchanged.
+
+### Example
+
+```koto
+sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+r = sqrt2.refine(Q(1, 1000))
+print! r.accuracy() < Q(1, 1000)
+check! true
+
+print! r.cmp(sqrt2)
+check! 0
+```
+
+## Alg.min_poly
+
+```kototype
+|Alg| -> Poly
+```
+
+Returns the minimal polynomial of the algebraic number (a `Poly` over `Q`).
+For a rational value `n/d` it is `d*x - n`.
+
+### Example
+
+```koto
+sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+print! sqrt2.min_poly()
+check! -2 + x^2
+
+print! Alg(Poly([-6, 1]))[0].min_poly()
+check! -6 + x
+```
+
+## Alg.to_float
+
+```kototype
+|Alg| -> Number
+```
+
+Returns a floating point approximation; the isolating interval is refined
+to accuracy `10^-15` before converting the midpoint.
+
+### Example
+
+```koto
+sqrt2 = Alg(Poly([-2, 0, 1]))[1]
+print! sqrt2.to_float()
+check! 1.4142135623730951
+
+print! Alg(Poly([-6, 1]))[0].to_float()
+check! 6.0
 ```
