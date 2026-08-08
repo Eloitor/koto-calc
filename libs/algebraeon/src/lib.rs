@@ -9,6 +9,7 @@ mod Perm;
 mod NN;
 mod Poly;
 mod Q;
+mod QSqrt;
 mod Quat;
 mod ZZ;
 use algebraeon_rings::num_theory::{
@@ -125,6 +126,20 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("Mat", mat);
+
+    let mut qsqrt = KMap::default();
+
+    qsqrt.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| QSqrt::QSqrt::from_args(ctx.args())).into(),
+    );
+
+    qsqrt.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("QSqrt".into())).into(),
+    );
+
+    result.insert("QSqrt", qsqrt);
 
     let mut quat = KMap::default();
 

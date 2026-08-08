@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -1388,6 +1388,86 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, Quat, Alg, Ideal, ZZn, FF, CF, Perm
   assert_eq caught, 'caught'
   caught = try
     1 / ComplexAlg(Q(0))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test qsqrt_tests = ||
+  write 'Testing QSqrt \t'
+
+  # QSqrt(d) is the field Q(sqrt(d)); .of(a, b) and the three-argument
+  # constructor both create the exact element a + b sqrt(d).
+  q2 = QSqrt(2)
+  assert_eq q2.d(), ZZ(2)
+  assert_eq '{q2}', 'Q(sqrt(2))'
+  sqrt2 = q2.generator()
+  assert_eq sqrt2, QSqrt(2, 0, 1)
+  assert_eq QSqrt(2, sqrt2), sqrt2
+  assert_eq sqrt2.a(), Q(0)
+  assert_eq sqrt2.b(), Q(1)
+  assert sqrt2.to_float() > 1.41
+  assert sqrt2.to_float() < 1.42
+  assert_eq '{sqrt2}', 'sqrt(2)'
+
+  x = q2.of(1, 1)
+  y = QSqrt(2, 3, -4)
+  assert_eq x, QSqrt(2, 1, 1)
+  assert_eq x + y, QSqrt(2, 4, -3)
+  assert_eq x - y, QSqrt(2, -2, 5)
+  assert_eq x * y, QSqrt(2, -5, -1)
+  assert_eq x / y, QSqrt(2, Q(-11, 23), Q(-7, 23))
+  assert_eq -x, QSqrt(2, -1, -1)
+  # Rational scalars embed through Q -> Q(sqrt(d)).
+  assert_eq x + 1, QSqrt(2, 2, 1)
+  assert_eq 1 - x, QSqrt(2, 0, -1)
+
+  # Galois conjugation, norm, trace, and an exact reciprocal.
+  assert_eq x.conjugate(), QSqrt(2, 1, -1)
+  assert_eq x.norm(), Q(-1)
+  assert_eq x.trace(), Q(2)
+  inv = x.inverse()
+  assert_eq inv, QSqrt(2, -1, 1)
+  assert_eq 1 / x, inv
+  assert_eq x * inv, QSqrt(2, 1, 0)
+  assert_eq '{QSqrt(2, Q(1, 2), Q(-3, 2))}', '1/2 - (3/2)sqrt(2)'
+
+  # A negative d is an imaginary square root, not a rejected radicand.
+  i = QSqrt(-1, 0, 1)
+  assert_eq '{i}', 'sqrt(-1)'
+  assert_eq i * i, QSqrt(-1, -1, 0)
+  assert_eq i.conjugate(), QSqrt(-1, 0, -1)
+  assert_eq i.norm(), Q(1)
+  assert_eq i.trace(), Q(0)
+  assert_eq i.to_float(), [0.0, 1.0]
+
+  # The ring of integers uses algebraeon's exact integrality test. For d = 5
+  # it contains (1 + sqrt(5))/2, not just Z[sqrt(5)].
+  o2 = q2.ring_of_integers()
+  assert_eq '{o2}', 'O_Q(sqrt(2))'
+  assert_eq o2.of(1, 1), x
+  o5 = QSqrt(5).ring_of_integers()
+  assert_eq o5.of(Q(1, 2), Q(1, 2)), QSqrt(5, Q(1, 2), Q(1, 2))
+
+  # d must define a genuine squarefree quadratic field, and arithmetic may
+  # never silently combine distinct fields.
+  caught = try
+    QSqrt(1)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    QSqrt(4)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    x + QSqrt(3, 1, 0)
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+  caught = try
+    x / QSqrt(2, 0, 0)
   catch e
     'caught'
   assert_eq caught, 'caught'
