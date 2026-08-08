@@ -13,6 +13,7 @@ mod Q;
 mod QSqrt;
 mod MultiPoly;
 mod Quat;
+mod Real;
 mod ZZ;
 use algebraeon_rings::num_theory::{
     JacobiSymbolError, LegendreSymbolError, jacobi_symbol, kronecker_symbol, legendre_symbol,
@@ -405,6 +406,28 @@ pub fn make_module() -> KMap {
 
     result.add_fn("eulers_constant", |_ctx| {
         Ok(KValue::Object(KObject::from(CF::CF::eulers_constant())))
+    });
+
+    let mut rational_interval = KMap::default();
+
+    rational_interval.insert_meta(
+        MetaKey::Call,
+        KNativeFunction::new(|ctx| Real::RationalInterval::from_args(ctx.args())).into(),
+    );
+
+    rational_interval.insert_meta(
+        MetaKey::UnaryOp(UnaryOp::Display),
+        KNativeFunction::new(|_ctx| Ok("RationalInterval".into())).into(),
+    );
+
+    result.insert("RationalInterval", rational_interval);
+
+    result.add_fn("e", |_ctx| {
+        Ok(KValue::Object(KObject::from(Real::Real::e())))
+    });
+
+    result.add_fn("pi", |_ctx| {
+        Ok(KValue::Object(KObject::from(Real::Real::pi())))
     });
 
     result.add_fn("gcd", |ctx| match ctx.args() {

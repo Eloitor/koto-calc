@@ -2,7 +2,7 @@
 # Run with: `cargo run -- --tests tests/koto/algebraeon_tests.koto`
 
 write = |s| io.stdout().write(s)
-from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, legendre, jacobi, kronecker, eulers_constant
+from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF, CF, Perm, Group, ComplexAlg, QSqrt, Variable, MultiPoly, RationalInterval, e, pi, legendre, jacobi, kronecker, eulers_constant
 
 @post_test = ||
   print 'ok'
@@ -1609,6 +1609,53 @@ from algebraeon import NN, ZZ, Q, Mat, Poly, PolyQuot, Quat, Alg, Ideal, ZZn, FF
   assert_eq caught, 'caught'
   caught = try
     ZZ(4).stirling1_signed(NN(5))
+  catch e
+    'caught'
+  assert_eq caught, 'caught'
+
+
+@test constants_tests = ||
+  write 'Testing constants \t'
+
+  # pi lies between 3.14 and 3.15 once the interval is tight enough.
+  p = pi()
+  while p.bounds()[0] < Q(314, 100) or p.bounds()[1] > Q(315, 100)
+    p.refine()
+  b = p.bounds()
+  assert b[0] >= Q(314, 100)
+  assert b[1] <= Q(315, 100)
+
+  # e lies between 2.71 and 2.72 once the interval is tight enough.
+  ev = e()
+  while ev.bounds()[0] < Q(271, 100) or ev.bounds()[1] > Q(272, 100)
+    ev.refine()
+  b = ev.bounds()
+  assert b[0] >= Q(271, 100)
+  assert b[1] <= Q(272, 100)
+
+  # to_float with decimals rounds correctly.
+  assert_eq pi().to_float(2), 3.14
+  assert_eq pi().to_float(5), 3.14159
+  assert_eq e().to_float(2), 2.72
+  assert_eq e().to_float(5), 2.71828
+
+  # Refinement narrows the interval: accuracy (interval length) shrinks.
+  p = pi()
+  a0 = p.accuracy()
+  p.refine()
+  assert p.accuracy() < a0
+  b = p.bounds()
+  assert b[0] <= b[1]
+
+  # RationalInterval: constructor from two Q values, endpoints, neg, display.
+  iv = RationalInterval(Q(1, 2), Q(3, 2))
+  assert_eq iv.a(), Q(1, 2)
+  assert_eq iv.b(), Q(3, 2)
+  assert_eq iv.neg().a(), Q(-3, 2)
+  assert_eq iv.neg().b(), Q(-1, 2)
+  assert_eq '{iv}', '(1/2, 3/2)'
+  caught = try
+    RationalInterval(Q(1), Q(1))
   catch e
     'caught'
   assert_eq caught, 'caught'
