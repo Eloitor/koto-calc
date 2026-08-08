@@ -27,7 +27,7 @@ koto_yaml = "0.16.0"
 mimalloc = "0.1.46"
 pico-args = "0.5.0"
 pulldown-cmark = "0.13.0"
-rustyline = { version = "16.0.0", default-features = true }
+rustyline = { version = "18.0.1", default-features = true }
 serde = "1.0.228"
 textwrap = "0.16.2"
 
