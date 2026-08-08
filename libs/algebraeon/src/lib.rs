@@ -1,5 +1,4 @@
 mod NN;
-mod Q;
 mod ZZ;
 use koto_runtime::prelude::*;
 
@@ -50,32 +49,6 @@ pub fn make_module() -> KMap {
     );
 
     result.insert("ZZ", zz);
-
-    let mut q = KMap::default();
-
-    q.insert_meta(
-        MetaKey::Call,
-        KNativeFunction::new(|ctx| match ctx.args() {
-            [num] => Ok(Q::Q::rational_from_value(num).map(Q::Q).map(KObject::from)?.into()),
-            [num, den] => {
-                let numerator = Q::Q::rational_from_value(num)?;
-                let denominator = Q::Q::rational_from_value(den)?;
-                if denominator == algebraeon::nzq::Rational::ZERO {
-                    return runtime_error!("Q: denominator must not be zero");
-                }
-                Ok(KValue::Object(KObject::from(Q::Q(numerator / denominator))))
-            }
-            unexpected => unexpected_args("|Number| or |Number, Number|", unexpected),
-        })
-        .into(),
-    );
-
-    q.insert_meta(
-        MetaKey::UnaryOp(UnaryOp::Display),
-        KNativeFunction::new(|_ctx| Ok("Q".into())).into(),
-    );
-
-    result.insert("Q", q);
 
     result.add_fn("gcd", |ctx| match ctx.args() {
         [KValue::Object(n), KValue::Object(m)] => {
